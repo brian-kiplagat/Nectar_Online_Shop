@@ -20,11 +20,16 @@ import java.util.List;
  * Use the {@link Fragment_Shop#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment_Shop extends Fragment implements Adapter_Shop.InterfaceListener {
+public class Fragment_Shop extends Fragment implements Adapter_Shop.InterfaceListener, Adapter_Chips.ChipInterfaceListener {
     private RecyclerView recyclerView;
+    private RecyclerView recyclerChips;
     private Context context;
     private RecyclerView.Adapter adapter;
+    private RecyclerView.Adapter adapter_chips;
+
     private List<Object> list = new ArrayList<>();
+    private List<Object> listChips = new ArrayList<>();
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -72,21 +77,44 @@ public class Fragment_Shop extends Fragment implements Adapter_Shop.InterfaceLis
         context = getActivity().getApplicationContext();
         View v = inflater.inflate(R.layout.fragment__shop, container, false);
         recyclerView = v.findViewById(R.id.recycler_view);
+        recyclerChips = v.findViewById(R.id.recycler_view_horizontal);
+        recyclerChips.setHasFixedSize(true);
+        recyclerChips.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false));
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        fetchChips();
         String queryWord = "";
-        boolean search=false;
-        fetch(search,queryWord);
+        boolean search = false;
+        fetch(search, queryWord);
         return v;
     }
 
-    public void fetch(boolean search,String queryWord) {
-        if (search==true){
+    private void fetchChips() {
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add("Trousers");
+        arrayList.add("Shirts");
+        arrayList.add("Shoes");
+        arrayList.add("Sneakers");
+        arrayList.add("Liqour");
+        arrayList.add("Vodka");
+        for (int i = 0; i < arrayList.size(); i++) {
+            Model_Chips chips = new Model_Chips(arrayList.get(i));
+            listChips.add(chips);
+            Log.i("VALUE", arrayList.get(i));
+            adapter_chips=new Adapter_Chips(listChips,context,this);
+            adapter_chips.notifyDataSetChanged();
+            recyclerChips.setAdapter(adapter_chips);
+
+        }
+    }
+
+    public void fetch(boolean search, String queryWord) {
+        if (search == true) {
             //Make the code to search the database for matching keywords
-            String searchEndpoint="https://cashmobil.co.ke/nectar/search.php";
-        }else{
+            String searchEndpoint = "https://cashmobil.co.ke/nectar/search.php";
+        } else {
             //Make the code to pull everything in database indiscriminately
-            String generalEndpoint="https://cashmobil.co.ke/nectar/search.php";
+            String generalEndpoint = "https://cashmobil.co.ke/nectar/search.php";
 
         }
         if (queryWord.isEmpty()) {//get every thing in the shop
@@ -115,5 +143,11 @@ public class Fragment_Shop extends Fragment implements Adapter_Shop.InterfaceLis
     @Override
     public void communicateBack(String string) {
         Log.i("communicateBack: ", string);
+    }
+
+
+    @Override
+    public void onClicked(String string) {
+    fetch(true,string);
     }
 }

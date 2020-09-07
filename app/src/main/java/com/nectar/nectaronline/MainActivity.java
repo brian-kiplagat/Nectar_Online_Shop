@@ -14,6 +14,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -74,6 +75,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i("NO SEARCH", "Query");
 
         }
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
+        }
 
     }
 
@@ -120,14 +124,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public boolean onQueryTextSubmit(String searchQuery) {
                // Log.i("Query", searchQuery);
-                shop.fetch(searchQuery);
+                boolean search=true;
+                shop.fetch(search,searchQuery);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                //Log.i("Query Text Change", newText);
-                shop.fetch(newText);
+                boolean search=true;
+                shop.fetch(search,newText);
                 return false;
             }
         });

@@ -24,7 +24,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Shop.InterfaceLis
     private RecyclerView recyclerView;
     private Context context;
     private RecyclerView.Adapter adapter;
-    private List<Object> list=new ArrayList<>();
+    private List<Object> list = new ArrayList<>();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -75,14 +75,23 @@ public class Fragment_Shop extends Fragment implements Adapter_Shop.InterfaceLis
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         String queryWord = "";
-        fetch(queryWord);
+        boolean search=false;
+        fetch(search,queryWord);
         return v;
     }
 
-    public void fetch(String queryWord) {
+    public void fetch(boolean search,String queryWord) {
+        if (search==true){
+            //Make the code to search the database for matching keywords
+            String searchEndpoint="https://cashmobil.co.ke/nectar/search.php";
+        }else{
+            //Make the code to pull everything in database indiscriminately
+            String generalEndpoint="https://cashmobil.co.ke/nectar/search.php";
+
+        }
         if (queryWord.isEmpty()) {//get every thing in the shop
             Log.i("fetch", "Empty");
-        } else {//get the query word and use it to search against database
+        } else if (queryWord.contains("search")) {//get the query word and use it to search against database
             Log.i("fetch", queryWord);
         }
         //To reduce time,,,,,

@@ -9,4 +9,8 @@
     <string name="hint">Search</string>
     <string name="developer">DEVELOPER</string>
     <string name="app_about">Powering online commerce</string>
+    <string name="not_a_member">Not a member ?</string>
+    <string name="facebook_adress">https://cashmobil.co.ke</string>
+    <string name="website_adress">https://cashmobil.co.ke</string>
+    <string name="twitter_adress">https://cashmobil.co.ke</string>
 </resources>

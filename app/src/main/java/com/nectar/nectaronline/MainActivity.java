@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TabLayout tabLayout;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,9 +47,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         tabLayout = findViewById(R.id.tabLayout);
         setSupportActionBar(toolbar);
 
-        shop=new Fragment_Shop();
-        cart=new Fragment_Cart();
-        profile=new Fragment_Profile();
+        shop = new Fragment_Shop();
+        cart = new Fragment_Cart();
+        profile = new Fragment_Profile();
 
         tabLayout.setupWithViewPager(viewPager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), 0);
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -116,14 +118,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                Log.i("Query", query);
+            public boolean onQueryTextSubmit(String searchQuery) {
+               // Log.i("Query", searchQuery);
+                shop.fetch(searchQuery);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.i("Query Text Change", newText);
+               //Log.i("Query Text Change", newText);
+                shop.fetch(newText);
                 return false;
             }
         });
@@ -189,4 +193,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
     }
+
+
 }

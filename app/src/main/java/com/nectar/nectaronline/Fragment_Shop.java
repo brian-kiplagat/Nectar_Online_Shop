@@ -7,18 +7,24 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link Fragment_Shop#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment_Shop extends Fragment {
-    RecyclerView recyclerView;
-    Context context;
+public class Fragment_Shop extends Fragment implements Adapter_Shop.InterfaceListener {
+    private RecyclerView recyclerView;
+    private Context context;
+    private RecyclerView.Adapter adapter;
+    private List<Object> list=new ArrayList<>();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -63,21 +69,42 @@ public class Fragment_Shop extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        context=getActivity().getApplicationContext();
+        context = getActivity().getApplicationContext();
         View v = inflater.inflate(R.layout.fragment__shop, container, false);
-        recyclerView=v.findViewById(R.id.recycler_view);
+        recyclerView = v.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        String queryWord="";
+        String queryWord = "";
         fetch(queryWord);
         return v;
     }
 
-    private void fetch(String queryWord) {
-        if (queryWord.isEmpty()){//get every thing in the shop
-
-        }else{//get the query word and use it to search against database
-
+    public void fetch(String queryWord) {
+        if (queryWord.isEmpty()) {//get every thing in the shop
+            Log.i("fetch", "Empty");
+        } else {//get the query word and use it to search against database
+            Log.i("fetch", queryWord);
         }
+        //To reduce time,,,,,
+        // can get items list on app login
+        // then save all the items locally in shared prefrences
+        // so that no network requests is made only via loaing icon items
+        // locally
+        list.clear();//Clear te list from previous oncreates and ondestroys
+        //Id need to use a key to acces jon array
+        //use a for loop to the Json array elements
+        //Store the elements in strings
+        //Fill up the model with the elements
+        //add the list with the model in each iteration
+        //Initialise the adapter with context.list etc.
+        //ModeL_Shop_Items model=new ModeL_Shop_Items("","",)
+        adapter = new Adapter_Shop(context, list, this);
+
+    }
+
+
+    @Override
+    public void communicateBack(String string) {
+        Log.i("communicateBack: ", string);
     }
 }

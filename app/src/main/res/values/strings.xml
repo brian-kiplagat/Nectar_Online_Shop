@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Nectar Online Shop</string>
+    <string name="Search">Search</string>
+    <string name="contact">CONTACT</string>
+    <string name="about">ABOUT US</string>
+    <string name="openNavDrawer">Navigation Drawer Open</string>
+    <string name="closeNavDrawer">Navigation Drawer Close</string>
+    <string name="about_us">Connecting lives</string>
+    <string name="hint">Search</string>
+    <string name="developer">DEVELOPER</string>
+    <string name="app_about">Powering online commerce</string>
+</resources>

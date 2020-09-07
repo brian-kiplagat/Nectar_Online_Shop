@@ -1,8 +1,11 @@
 package com.nectar.nectaronline;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +17,8 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class Fragment_Shop extends Fragment {
-
+    RecyclerView recyclerView;
+    Context context;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -59,6 +63,21 @@ public class Fragment_Shop extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment__shop, container, false);
+        context=getActivity().getApplicationContext();
+        View v = inflater.inflate(R.layout.fragment__shop, container, false);
+        recyclerView=v.findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        String queryWord="";
+        fetch(queryWord);
+        return v;
+    }
+
+    private void fetch(String queryWord) {
+        if (queryWord.isEmpty()){//get every thing in the shop
+
+        }else{//get the query word and use it to search against database
+
+        }
     }
 }

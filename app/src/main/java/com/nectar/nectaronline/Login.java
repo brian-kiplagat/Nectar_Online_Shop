@@ -165,7 +165,6 @@ public class Login extends AppCompatActivity {
                         dismissDialoge(dialogBuilder);
                         break;
 
-
                     } catch (Exception e) {
                         Log.i("ERROR", e.getLocalizedMessage());
                     }
@@ -243,4 +242,8 @@ public class Login extends AppCompatActivity {
 
     }
 
+    public void signIn(View view) {
+        startActivity(new Intent(getApplicationContext(),SignUp.class));
+
+    }
 }

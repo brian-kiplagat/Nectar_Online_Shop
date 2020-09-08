@@ -246,4 +246,8 @@ public class Login extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(),SignUp.class));
 
     }
+
+    public void forgotPassword(View view) {
+
+    }
 }

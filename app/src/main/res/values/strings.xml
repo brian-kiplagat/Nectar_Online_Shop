@@ -16,4 +16,5 @@
     <string name="delivery_ku">Delivered within 20 minutes within KU, for other areas our agent will be in contact shortly to make your delivery</string>
     <string name="delivery_policy">The agent will call you immediately the order is made and make the delivery from our warehouse. If you chose GPS, We can get your location and come to you wherever you are provided you stay there</string>
     <string name="waranty">All our products come with a one year warranty</string>
+    <string name="welcome_text">Enter your details below to start your unique Online shopping delivery experience,</string>
 </resources>

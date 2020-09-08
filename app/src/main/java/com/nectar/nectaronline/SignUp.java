@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.view.View;
 
 public class SignUp extends AppCompatActivity {
 
@@ -14,5 +15,8 @@ public class SignUp extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
 
+    }
+
+    public void signUp(View view) {
     }
 }

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-    tools:context=".Login">
+    tools:context=".SignUp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,16 +13,55 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@drawable/ic_blue_bar_small" />
+            android:layout_height="70dp"
+            android:background="@drawable/ic_asset_7" />
 
 
 
         <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+              >
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/ic_door"
+                    app:tint="@color/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/text1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/image"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="WELCOME,"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/text2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/text1"
+                    android:layout_marginTop="1dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/welcome_text"
+                    android:textColor="@color/material_on_background_emphasis_medium"
+                    android:textSize="15sp"
+                  />
+            </RelativeLayout>
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/name"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -211,22 +250,5 @@
                 android:onClick="web"
                 android:src="@drawable/ic_baseline_web_24" />
         </LinearLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp"
-                android:src="@drawable/ic_logo_cart_empty_straight_lines_bold_svg"
-                app:tint="@color/colorPrimary" />
-        </RelativeLayout>
-    </LinearLayout>
-
-</ScrollView>
+  </LinearLayout>
+   </ScrollView>

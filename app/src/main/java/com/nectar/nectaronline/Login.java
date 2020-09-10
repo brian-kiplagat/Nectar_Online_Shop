@@ -1,12 +1,6 @@
 package com.nectar.nectaronline;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ActivityNotFoundException;
-import android.content.ClipData;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -20,10 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.textfield.TextInputLayout;
 
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import okhttp3.FormBody;
@@ -149,18 +144,19 @@ public class Login extends AppCompatActivity {
                         JSONObject obj = new JSONObject(res);
                         String code = obj.getString("RESPONSE_CODE");
                         String desc = obj.getString("RESPONSE_DESC");
-                        String itemsArray = obj.getString("RESPONSE_SHOP");
+                       //
                         if (code.contentEquals("SUCCESS")) {
                             SharedPreferences preferences = getSharedPreferences("nectar",MODE_PRIVATE);
                             SharedPreferences.Editor editor = preferences.edit();
                             editor.putString("email", mail);
                             editor.putString("password", pass);
+                            String itemsArray = obj.getString("ITEMS");
                             editor.putString("items", itemsArray);
                             editor.apply();
                             startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                            finish();
+                           finish();
                         } else {
-                            toast("We could not log you in, Check your credentials if you have an account");
+                            toast(desc);
                         }
                         dismissDialoge(dialogBuilder);
                         break;

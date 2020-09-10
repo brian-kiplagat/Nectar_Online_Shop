@@ -17,17 +17,16 @@
             android:background="@drawable/ic_asset_7" />
 
 
-
         <LinearLayout
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:orientation="vertical">
+
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-              >
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/image"
@@ -59,9 +58,9 @@
                     android:fontFamily="sans-serif-medium"
                     android:text="@string/welcome_text"
                     android:textColor="@color/material_on_background_emphasis_medium"
-                    android:textSize="15sp"
-                  />
+                    android:textSize="15sp" />
             </RelativeLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/name"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -76,11 +75,13 @@
                 app:startIconDrawable="@drawable/ic_outline_account_circle_24">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/name_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/email"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -95,6 +96,7 @@
                 app:startIconDrawable="@drawable/ic_baseline_alternate_email_24">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress" />
@@ -115,6 +117,7 @@
                 app:startIconDrawable="@drawable/ic_baseline_security_24">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password__edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
@@ -131,16 +134,17 @@
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="3dp"
                 android:hint="Phone"
-                app:prefixText="+254"
                 app:endIconMode="clear_text"
                 app:errorEnabled="true"
                 app:helperText="Your Mpesa payments number"
                 app:startIconDrawable="@drawable/ic_baseline_phone_android_24">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/number_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="phone" />
+                    android:inputType="phone"
+                    android:text="+254" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -152,15 +156,19 @@
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="3dp"
                 android:hint="Address"
-                app:endIconMode="clear_text"
+                app:endIconMode="dropdown_menu"
                 app:errorEnabled="true"
                 app:helperText="Your email goes here"
                 app:startIconDrawable="@drawable/ic_baseline_home_24">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
+                    android:id="@+id/dropdown_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:drawablePadding="3dp"
+
+                    />
+
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -178,6 +186,7 @@
                 app:startIconDrawable="@drawable/ic_baseline_home_work_24">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/desc_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textLongMessage" />
@@ -200,7 +209,6 @@
                 android:padding="10dp"
                 android:text="FINISH"
                 android:textSize="20dp" />
-
 
 
         </LinearLayout>
@@ -250,5 +258,5 @@
                 android:onClick="web"
                 android:src="@drawable/ic_baseline_web_24" />
         </LinearLayout>
-  </LinearLayout>
-   </ScrollView>
+    </LinearLayout>
+</ScrollView>

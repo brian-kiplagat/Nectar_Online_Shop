@@ -1,9 +1,10 @@
 package com.nectar.nectaronline;
 
 public class ModeL_Shop_Items {
+
     public String name;//name of the product
     public String brand;//brand/producer of the product
-    public String seller;//seller of the product
+    public String id;
     public String finalPrice;
     public String initialPrice;
     public String description;
@@ -15,11 +16,14 @@ public class ModeL_Shop_Items {
     public String material;
     public String insideBox;
     public String warranty;
+    public String instock;
+    public String state;
+    public String images;
 
-    public ModeL_Shop_Items(String name, String brand, String seller, String finalPrice, String initialPrice, String description, String keyFeatures, String specification, String colour, String size, String weight, String material, String insideBox, String warranty) {
+    public ModeL_Shop_Items(String name, String brand, String id, String finalPrice, String initialPrice, String description, String keyFeatures, String specification, String colour, String size, String weight, String material, String insideBox, String warranty, String instock, String state, String images) {
         this.name = name;
         this.brand = brand;
-        this.seller = seller;
+        this.id = id;
         this.finalPrice = finalPrice;
         this.initialPrice = initialPrice;
         this.description = description;
@@ -31,6 +35,9 @@ public class ModeL_Shop_Items {
         this.material = material;
         this.insideBox = insideBox;
         this.warranty = warranty;
+        this.instock = instock;
+        this.state = state;
+        this.images = images;
     }
 
     public String getName() {
@@ -41,8 +48,8 @@ public class ModeL_Shop_Items {
         return brand;
     }
 
-    public String getSeller() {
-        return seller;
+    public String getId() {
+        return id;
     }
 
     public String getFinalPrice() {
@@ -87,5 +94,17 @@ public class ModeL_Shop_Items {
 
     public String getWarranty() {
         return warranty;
+    }
+
+    public String getInstock() {
+        return instock;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public String getImages() {
+        return images;
     }
 }

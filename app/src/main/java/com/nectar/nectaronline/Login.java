@@ -44,7 +44,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void checkForStoredPassword() {
-        SharedPreferences preferences = getSharedPreferences("nectar",MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences("nectar", MODE_PRIVATE);
 
         if (preferences.contains("password")) {//preference contains password,,,so it contains email also since both are put at same time
             String mail = preferences.getString("email", "");
@@ -144,17 +144,18 @@ public class Login extends AppCompatActivity {
                         JSONObject obj = new JSONObject(res);
                         String code = obj.getString("RESPONSE_CODE");
                         String desc = obj.getString("RESPONSE_DESC");
-                       //
+                        //
                         if (code.contentEquals("SUCCESS")) {
-                            SharedPreferences preferences = getSharedPreferences("nectar",MODE_PRIVATE);
+                            SharedPreferences preferences = getSharedPreferences("nectar", MODE_PRIVATE);
                             SharedPreferences.Editor editor = preferences.edit();
                             editor.putString("email", mail);
                             editor.putString("password", pass);
                             String itemsArray = obj.getString("ITEMS");
                             editor.putString("items", itemsArray);
                             editor.apply();
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                           finish();
+                            dismissDialoge(dialogBuilder);
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            finish();
                         } else {
                             toast(desc);
                         }
@@ -239,7 +240,7 @@ public class Login extends AppCompatActivity {
     }
 
     public void signIn(View view) {
-        startActivity(new Intent(getApplicationContext(),SignUp.class));
+        startActivity(new Intent(getApplicationContext(), SignUp.class));
 
     }
 

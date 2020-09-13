@@ -17,4 +17,6 @@
     <string name="delivery_policy">The agent will call you immediately the order is made and make the delivery from our warehouse. If you chose GPS, We can get your location and come to you wherever you are provided you stay there</string>
     <string name="waranty">All our products come with a one year warranty</string>
     <string name="welcome_text">Enter your details below to start your unique Online shopping delivery experience,</string>
+    <string name="shr_product_title">Item</string>
+    <string name="shr_product_description">KSH 600</string>
 </resources>

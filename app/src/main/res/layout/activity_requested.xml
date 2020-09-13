@@ -49,6 +49,8 @@
                     android:layout_marginRight="5dp">
 
                     <TextView
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@id/state"
                         android:id="@+id/name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -57,6 +59,8 @@
                         android:textSize="17sp" />
 
                     <TextView
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@id/state"
                         android:id="@+id/brand"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -66,6 +70,25 @@
                         android:textColor="@color/material_on_background_emphasis_medium"
                         android:textSize="15sp" />
 
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/state"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="3dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
+                        android:checked="true"
+                        android:padding="5dp"
+                        android:text="BRAND NEW"
+                        android:textColor="@color/design_default_color_on_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:chipIcon="@drawable/ic_baseline_storefront_24"
+                        app:chipIconTint="@color/yellow" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -86,7 +109,23 @@
                         android:textSize="21sp"
                         android:textStyle="bold" />
 
-
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/instock"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="3dp"
+                        android:layout_marginRight="16dp"
+                        android:checked="true"
+                        android:padding="5dp"
+                        android:text="7"
+                        android:textColor="@color/design_default_color_on_secondary"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        app:chipIcon="@drawable/ic_baseline_storefront_24"
+                        app:chipIconTint="@color/colorPrimaryDark" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -537,6 +576,54 @@
                                     android:layout_width="40dp"
                                     android:layout_height="40dp"
                                     android:layout_margin="5dp"
+                                    android:src="@drawable/ic_baseline_3_lines"
+                                    app:tint="@color/colorPrimary" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="1dp"
+                                    android:layout_toRightOf="@id/img2"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginTop="5dp"
+                                        android:drawableRight="@drawable/ic_baseline_help_outline_24"
+                                        android:drawablePadding="5dp"
+                                        android:drawableTint="@color/colorPrimaryDark"
+                                        android:text="DESCRIPTION"
+                                        android:textColor="@color/material_on_background_emphasis_high_type"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/description"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginTop="3dp"
+                                        android:text="@string/delivery_ku"
+                                        android:textColor="@color/material_on_background_emphasis_medium"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:id="@+id/img2"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:layout_margin="5dp"
                                     android:src="@drawable/ic_baseline_color_lens_24"
                                     app:tint="@color/colorPrimary" />
 
@@ -585,7 +672,55 @@
                                     android:layout_width="40dp"
                                     android:layout_height="40dp"
                                     android:layout_margin="5dp"
-                                    android:src="@drawable/ic_baseline_color_lens_24"
+                                    android:src="@drawable/ic_size"
+                                    app:tint="@color/colorPrimary" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="1dp"
+                                    android:layout_toRightOf="@id/img2"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginTop="5dp"
+                                        android:drawableRight="@drawable/ic_baseline_help_outline_24"
+                                        android:drawablePadding="5dp"
+                                        android:drawableTint="@color/colorPrimaryDark"
+                                        android:text="SIZE"
+                                        android:textColor="@color/material_on_background_emphasis_high_type"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/size"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginTop="3dp"
+                                        android:text="@string/delivery_ku"
+                                        android:textColor="@color/material_on_background_emphasis_medium"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:id="@+id/img2"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:layout_margin="5dp"
+                                    android:src="@drawable/ic_weight"
                                     app:tint="@color/colorPrimary" />
 
                                 <LinearLayout
@@ -633,7 +768,55 @@
                                     android:layout_width="40dp"
                                     android:layout_height="40dp"
                                     android:layout_margin="5dp"
-                                    android:src="@drawable/ic_baseline_shopping_basket_24"
+                                    android:src="@drawable/ic_material"
+                                    app:tint="@color/colorPrimary" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="1dp"
+                                    android:layout_toRightOf="@id/img2"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginTop="5dp"
+                                        android:drawableRight="@drawable/ic_baseline_help_outline_24"
+                                        android:drawablePadding="5dp"
+                                        android:drawableTint="@color/colorPrimaryDark"
+                                        android:text="MATERIAL"
+                                        android:textColor="@color/material_on_background_emphasis_high_type"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold" />
+
+                                    <TextView
+                                        android:id="@+id/material"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerVertical="true"
+                                        android:layout_marginTop="3dp"
+                                        android:text="@string/delivery_ku"
+                                        android:textColor="@color/material_on_background_emphasis_medium"
+                                        android:textSize="12sp"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:id="@+id/img2"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:layout_margin="5dp"
+                                    android:src="@drawable/ic_box"
                                     app:tint="@color/colorPrimary" />
 
                                 <LinearLayout

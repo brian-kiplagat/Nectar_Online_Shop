@@ -2,6 +2,8 @@ package com.nectar.nectaronline;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,14 +26,11 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class requested extends AppCompatActivity {
     Toolbar toolbar;
@@ -50,6 +50,12 @@ public class requested extends AppCompatActivity {
     TextView color;
     TextView weight;
     TextView inbox;
+    Chip instock;
+    Chip state;
+
+    TextView material;
+    TextView description;
+    TextView size;
 
 
     @Override
@@ -57,7 +63,9 @@ public class requested extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_requested);
         toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("BUY");
         setSupportActionBar(toolbar);
+
         recyclerView = findViewById(R.id.recycler_view);
         name = findViewById(R.id.name);
         brand = findViewById(R.id.brand);
@@ -72,74 +80,94 @@ public class requested extends AppCompatActivity {
         color = findViewById(R.id.color);
         weight = findViewById(R.id.weight);
         inbox = findViewById(R.id.inbox);
+        instock = findViewById(R.id.instock);
+        material = findViewById(R.id.material);
+        description = findViewById(R.id.description);
+        size = findViewById(R.id.size);
+        state = findViewById(R.id.state);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        fetchImages();
+        Intent intent = getIntent();
+        String ID = intent.getStringExtra("id");
+        String BRAND = intent.getStringExtra("brand");
+        String NAME = intent.getStringExtra("name");
+        String NEWPRICE = intent.getStringExtra("newPrice");
+        String OLD = intent.getStringExtra("old");
+        String DESC = intent.getStringExtra("description");
+        String SPEC = intent.getStringExtra("specification");
+        String KEYFEATURES = intent.getStringExtra("keyfeatures");
+        String SIZE = intent.getStringExtra("size");
+        String COLOR = intent.getStringExtra("color");
+        String INSTOCK = intent.getStringExtra("instock");
+        String WEIGHT = intent.getStringExtra("weight");
+        String MATERIAL = intent.getStringExtra("material");
+        String WHATSINTHEBOX = intent.getStringExtra("inbox");
+        String WARANTY = intent.getStringExtra("waranty");
+        String STATE = intent.getStringExtra("state");
+        String IMAGES = intent.getStringExtra("images");
+        fetchImages(IMAGES);
+
+        name.setText(NAME);
+        brand.setText("Brand " + BRAND);
+        amount.setText("KSH " + NEWPRICE);
+        warranty.setText(WARANTY);
+        specs.setText(SPEC);
+        key_features.setText(KEYFEATURES);
+        color.setText(COLOR);
+        weight.setText(WEIGHT);
+        inbox.setText(WHATSINTHEBOX);
+        instock.setText(INSTOCK);
+        material.setText(MATERIAL);
+        description.setText(DESC);
+        size.setText(SIZE);
+        if (STATE.contentEquals("BRAND")) {
+            state.setText("BRAND NEW");
+            state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_brand_new, null));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                state.setChipIconTint(getResources().getColorStateList(R.color.yellow, null));
+            }
+        }
+        if (STATE.contentEquals("REFURBISHED")) {
+            state.setText("REFURBISHED");
+            state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_refurb, null));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                state.setChipIconTint(getResources().getColorStateList(R.color.green, null));
+            }
+        }
+        if (STATE.contentEquals("SECOND")) {
+            state.setText("SECOND HAND");
+            state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_second_hand, null));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                state.setChipIconTint(getResources().getColorStateList(R.color.orange, null));
+            }
+        }
+
 
     }
 
-    private void fetchImages() {
+    private void fetchImages(String images) {
 
         //use json array containing all the images
+        Log.i("fetchImages: ", images);
         list = new ArrayList<>();
-        //alternatively use a for loop to populate a viewholder containing strings
-        final Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i <= 3; i++) {
-                    try {
-                        if (i == 1) {
-                            toast("Could not connect, trying again");
-                        }
-                        if (i == 2) {
-                            toast("This taking too long check your internet connection");
+        try {
+            JSONObject jObj = new JSONObject(images);
+            JSONArray array=jObj.getJSONArray("image");
+            for (int i=0;i<array.length();i++){
+                JSONObject object = array.getJSONObject(i);
+                String poster=object.getString("poster");
+                Model_Images model = new Model_Images(poster);
+                list.add(model);
+                adapter = new Adapter_Images(list, getApplicationContext());
+                recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
 
-                        }
-                        if (i == 3) {
-                            toast("Check your internet connection, then try again");
-                            break;
-                        }
-                        String url = getString(R.string.website_adress) + "/nectar/poster.php";
-                        Request request = new Request.Builder()
-                                .url(url)
-                                .build();
-                        OkHttpClient client = new OkHttpClient();
-                        Response response = client.newCall(request).execute();
-                        final String res = response.body().string();
-                        Log.i("RE", res);
-                        requested.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    JSONObject jObj = new JSONObject(res);
-                                    String imagesJson = jObj.getString("images");
-                                    JSONObject object2 = new JSONObject(imagesJson);
-                                    String poster1 = object2.getString("poster1");
-                                    String poster2 = object2.getString("poster2");
-                                    String poster3 = object2.getString("poster3");
-                                    String poster4 = object2.getString("poster4");
-                                    Model_Images model = new Model_Images(poster1, poster2, poster3);
-                                    list.add(model);
-                                    adapter = new Adapter_Images(list, getApplicationContext());
-                                    recyclerView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-
-                                } catch (Exception e) {
-                                    Log.i("ERR", e.getLocalizedMessage());
-                                }
-                            }
-                        });
-                        break;
-
-                    } catch (Exception e) {
-                        Log.i("ERROR", e.getLocalizedMessage());
-                    }
-
-                }
             }
-        });
-        thread.start();
 
+
+        } catch (Exception e) {
+            Log.i("ERR", e.getLocalizedMessage());
+        }
 
     }
 
@@ -158,7 +186,7 @@ public class requested extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String searchQuery) {
-                // Log.i("Query", searchQuery);
+                Log.i("Query", searchQuery);
                 boolean search = true;
                 Fragment_Shop shop = new Fragment_Shop();
                 shop.fetch(search, searchQuery);
@@ -167,7 +195,7 @@ public class requested extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //Log.i("Query Text Change", newText);
+                Log.i("Query Text Change", newText);
                 Fragment_Shop shop = new Fragment_Shop();
                 boolean search = true;
                 shop.fetch(search, newText);
@@ -217,7 +245,7 @@ public class requested extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Model_Images model = (Model_Images) list.get(position);
-            Glide.with(getApplicationContext()).load(model.getPoster1()).into(holder.imageView);
+            Glide.with(getApplicationContext()).load(model.getPoster()).into(holder.imageView);
         }
 
         @Override
@@ -235,13 +263,5 @@ public class requested extends AppCompatActivity {
             }
         }
     }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        fetchImages();
-    }
-
 
 }

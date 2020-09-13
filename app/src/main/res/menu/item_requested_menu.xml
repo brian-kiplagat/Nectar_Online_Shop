@@ -11,6 +11,11 @@
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always" />
     <item
+        android:id="@+id/whatsapp"
+        android:icon="@drawable/ic_whatsapp"
+        android:title="Item"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/call"
         android:icon="@drawable/ic_baseline_call_24"
         android:title="Item"

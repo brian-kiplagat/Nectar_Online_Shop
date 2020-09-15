@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 
 import org.json.JSONArray;
@@ -253,6 +254,17 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             final ModeL_Shop_Items model = (ModeL_Shop_Items) list.get(position);
+            try {
+                JSONObject jObj = new JSONObject(model.getImages());
+                JSONArray array=jObj.getJSONArray("image");
+                JSONObject object = array.getJSONObject(1);
+                String poster=object.getString("poster");
+                Glide.with(context).load(poster).into(holder.image);
+
+            } catch (Exception e) {
+                Log.i("ERR", e.getLocalizedMessage());
+            }
+
             holder.brand.setText(model.getBrand());
             holder.price.setText("KSH " + model.getFinalPrice());
             holder.cardView.setOnClickListener(new View.OnClickListener() {

@@ -17,6 +17,6 @@
     <item
         android:id="@+id/logout"
         android:icon="@drawable/ic_baseline_power_settings_new_24"
-        android:title="@string/contact" />
+        android:title="@string/logout" />
 
 </menu>

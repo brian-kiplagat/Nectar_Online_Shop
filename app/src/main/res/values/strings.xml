@@ -19,4 +19,7 @@
     <string name="welcome_text">Enter your details below to start your unique Online shopping delivery experience,</string>
     <string name="shr_product_title">Item</string>
     <string name="shr_product_description">KSH 600</string>
+    <string name="kopokopTill_for_messaging_payment">5258013</string>
+    <string name="phone_adress">254768706343</string>
+    <string name="logout">LOG OUT</string>
 </resources>

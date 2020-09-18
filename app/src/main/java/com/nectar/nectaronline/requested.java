@@ -1,8 +1,13 @@
 package com.nectar.nectaronline;
 
 import android.app.SearchManager;
+import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,11 +30,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +66,23 @@ public class requested extends AppCompatActivity {
     TextView description;
     TextView size;
 
+    String ID;
+    String BRAND;
+    String NAME;
+    String NEWPRICE;
+    String OLD;
+    String DESC;
+    String SPEC;
+    String KEYFEATURES;
+    String SIZE;
+    String COLOR;
+    String INSTOCK;
+    String WEIGHT;
+    String MATERIAL;
+    String WHATSINTHEBOX;
+    String WARANTY;
+    String STATE;
+    String IMAGES;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,23 +114,23 @@ public class requested extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         Intent intent = getIntent();
-        String ID = intent.getStringExtra("id");
-        String BRAND = intent.getStringExtra("brand");
-        String NAME = intent.getStringExtra("name");
-        String NEWPRICE = intent.getStringExtra("newPrice");
-        String OLD = intent.getStringExtra("old");
-        String DESC = intent.getStringExtra("description");
-        String SPEC = intent.getStringExtra("specification");
-        String KEYFEATURES = intent.getStringExtra("keyfeatures");
-        String SIZE = intent.getStringExtra("size");
-        String COLOR = intent.getStringExtra("color");
-        String INSTOCK = intent.getStringExtra("instock");
-        String WEIGHT = intent.getStringExtra("weight");
-        String MATERIAL = intent.getStringExtra("material");
-        String WHATSINTHEBOX = intent.getStringExtra("inbox");
-        String WARANTY = intent.getStringExtra("waranty");
-        String STATE = intent.getStringExtra("state");
-        String IMAGES = intent.getStringExtra("images");
+        ID = intent.getStringExtra("id");
+        BRAND = intent.getStringExtra("brand");
+        NAME = intent.getStringExtra("name");
+        NEWPRICE = intent.getStringExtra("newPrice");
+        OLD = intent.getStringExtra("old");
+        DESC = intent.getStringExtra("description");
+        SPEC = intent.getStringExtra("specification");
+        KEYFEATURES = intent.getStringExtra("keyfeatures");
+        SIZE = intent.getStringExtra("size");
+        COLOR = intent.getStringExtra("color");
+        INSTOCK = intent.getStringExtra("instock");
+        WEIGHT = intent.getStringExtra("weight");
+        MATERIAL = intent.getStringExtra("material");
+        WHATSINTHEBOX = intent.getStringExtra("inbox");
+        WARANTY = intent.getStringExtra("waranty");
+        STATE = intent.getStringExtra("state");
+        IMAGES = intent.getStringExtra("images");
         fetchImages(IMAGES);
 
         name.setText(NAME);
@@ -152,10 +178,10 @@ public class requested extends AppCompatActivity {
         list = new ArrayList<>();
         try {
             JSONObject jObj = new JSONObject(images);
-            JSONArray array=jObj.getJSONArray("image");
-            for (int i=0;i<array.length();i++){
+            JSONArray array = jObj.getJSONArray("image");
+            for (int i = 0; i < array.length(); i++) {
                 JSONObject object = array.getJSONObject(i);
-                String poster=object.getString("poster");
+                String poster = object.getString("poster");
                 Model_Images model = new Model_Images(poster);
                 list.add(model);
                 adapter = new Adapter_Images(list, getApplicationContext());
@@ -211,12 +237,50 @@ public class requested extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
+            case R.id.whatsapp:
+                Log.i("onOptionsItemSelected: ", "WHATSAPP");
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("saved to clip", getString(R.string.kopokopTill_for_messaging_payment));
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getApplicationContext(), "Till number: " + getString(R.string.kopokopTill_for_messaging_payment) + " copied to clipboard", Toast.LENGTH_SHORT).show();
+                String link = getString(R.string.website_adress) + "/nectar/" + IMAGES;
+                String string = "RE: Order for goods" + "\n" + "Im interested in this" + "\n" + "Brand: " + BRAND + "\n" + "Name: "
+                        + NAME + "\n" + "DESCRIPTION: " + DESC + "\n" +
+                        "SPECIFICATION: " + SPEC + "\n" + "KEY FEATURES: " +
+                        KEYFEATURES + "\n" + "SIZE: " + SIZE + "\n" + "COLOR: " + COLOR + "\n" + "INSTOCK: " +
+                        INSTOCK + "\n" + "WEIGHT: " + WEIGHT + "\n" + "MATERIAL: " + MATERIAL + "\n" + "WHATS IN THE BOX: " +
+                        WHATSINTHEBOX + "\n" + "WARANTY: " + WARANTY + "\n" + "STATE: " + STATE + "\n" + "Image link: " + "\n" + link + "\n" + "PRICE: Ksh " + NEWPRICE +
+                        "\n" + "To complete this order, Now go to your Mpesa menu, select lipa na Mpesa, select buy goods and services, enter our till number:" + getString(R.string.kopokopTill_for_messaging_payment) + " " + "we've copied it for you just paste, enter Ksh " + NEWPRICE + " then pay and finish the transaction, well process and deliver to your location ASAP.Note that this is a slower method. We advice you add this item to cart and checkout,  :-)" + "\n" + "****" + "\n";
+                //now convert the string to a whatsapp message
+                try {
+                    String url = "https://api.whatsapp.com/send?phone=" + getString(R.string.phone_adress) + "&text=" + URLEncoder.encode(string, "UTF-8");
+                    Toast.makeText(getApplicationContext(), "Taking you to Whatsapp", Toast.LENGTH_SHORT).show();
+                    Intent intent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(intent2);
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "OPs! An error occurred, try again", Toast.LENGTH_SHORT).show();
+
+                }
+                break;
+
             case R.id.call:
                 Log.i("onOptionsItemSelected: ", "CALL");
+                try {
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                    callIntent.setData(Uri.parse("tel:+" + getString(R.string.phone_adress)));
+                    startActivity(callIntent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(this, "Please install a calling app like a dialler to proceed", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+
+
                 break;
             case R.id.cart:
                 Log.i("onOptionsItemSelected: ", "CART");
-
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 break;
 
         }

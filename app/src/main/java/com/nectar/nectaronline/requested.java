@@ -172,8 +172,14 @@ public class requested extends AppCompatActivity {
     }
 
     private void fetchImages(String images) {
+        list = new ArrayList<>();
+        Model_Images model = new Model_Images(IMAGES);
+        list.add(model);
+        adapter = new Adapter_Images(list, getApplicationContext());
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
-        //use json array containing all the images
+        /*//use json array containing all the images
         Log.i("fetchImages: ", images);
         list = new ArrayList<>();
         try {
@@ -193,7 +199,7 @@ public class requested extends AppCompatActivity {
 
         } catch (Exception e) {
             Log.i("ERR", e.getLocalizedMessage());
-        }
+        }*/
 
     }
 
@@ -309,7 +315,9 @@ public class requested extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Model_Images model = (Model_Images) list.get(position);
-            Glide.with(getApplicationContext()).load(model.getPoster()).into(holder.imageView);
+            String link = getString(R.string.website_adress) + "/nectar/" + model.getPoster();
+            Glide.with(context).load(link).into(holder.imageView);
+
         }
 
         @Override

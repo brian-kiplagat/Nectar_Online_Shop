@@ -97,7 +97,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
         recyclerChips.setHasFixedSize(true);
         recyclerChips.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(context,2));
+        recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
         fetchChips();
         String queryWord = "";
         boolean search = false;
@@ -203,7 +203,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ModeL_Shop_Items model = new ModeL_Shop_Items(name, brand, id, newPrice, old, description, keyfeatures, specification, color, size, weight, material, inbox, waranty, instock, state,images);
+                                    ModeL_Shop_Items model = new ModeL_Shop_Items(name, brand, id, newPrice, old, description, keyfeatures, specification, color, size, weight, material, inbox, waranty, instock, state, images);
                                     list.add(model);
                                     adapter = new Adapter_Shop(context, list);
                                     adapter.notifyDataSetChanged();
@@ -254,17 +254,8 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             final ModeL_Shop_Items model = (ModeL_Shop_Items) list.get(position);
-            try {
-                JSONObject jObj = new JSONObject(model.getImages());
-                JSONArray array=jObj.getJSONArray("image");
-                JSONObject object = array.getJSONObject(1);
-                String poster=object.getString("poster");
-                Glide.with(context).load(poster).into(holder.image);
-
-            } catch (Exception e) {
-                Log.i("ERR", e.getLocalizedMessage());
-            }
-
+            String link = getString(R.string.website_adress) + "/nectar/" + model.getImages();
+            Glide.with(context).load(link).into(holder.image);
             holder.brand.setText(model.getBrand());
             holder.price.setText("KSH " + model.getFinalPrice());
             holder.cardView.setOnClickListener(new View.OnClickListener() {

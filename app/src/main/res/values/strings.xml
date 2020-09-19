@@ -22,4 +22,6 @@
     <string name="kopokopTill_for_messaging_payment">5258013</string>
     <string name="phone_adress">254768706343</string>
     <string name="logout">LOG OUT</string>
+    <string name="sell">SELL</string>
+    <string name="sell_link">https://cashmobil.co.ke/nectar/link/sell.php</string>
 </resources>

@@ -12,20 +12,35 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.SearchManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okio.BufferedSink;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     Toolbar toolbar;
@@ -84,10 +99,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.sell:
+                drawerLayout.closeDrawers();
+                Log.i("SELL", "onNavigationItemSelected: ");
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.sell_link)));
+                    startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(this, "Please install a web browser like opera mini or google chrome to proceed", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+
+
+                break;
             case R.id.developer:
                 drawerLayout.closeDrawers();
                 Log.i("DEV", "onNavigationItemSelected: ");
                 break;
+
             case R.id.about:
                 drawerLayout.closeDrawers();
                 Log.i("ABOUT", "onNavigationItemSelected: ");
@@ -98,6 +127,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.logout:
                 drawerLayout.closeDrawers();
+                SharedPreferences preferences = getSharedPreferences("nectar", MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.remove("email");
+                editor.remove("password");
+                editor.apply();
+
+                Intent intent = new Intent(MainActivity.this, Login.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
                 Log.i("LOGOUT", "onNavigationItemSelected: ");
                 break;
 
@@ -123,17 +162,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String searchQuery) {
-               // Log.i("Query", searchQuery);
-                boolean search=true;
-                shop.fetch(search,searchQuery);
+                // Log.i("Query", searchQuery);
+                boolean search = true;
+                shop.fetch(search, searchQuery);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-               //Log.i("Query Text Change", newText);
-                boolean search=true;
-                shop.fetch(search,newText);
+                //Log.i("Query Text Change", newText);
+                boolean search = true;
+                shop.fetch(search, newText);
                 return false;
             }
         });

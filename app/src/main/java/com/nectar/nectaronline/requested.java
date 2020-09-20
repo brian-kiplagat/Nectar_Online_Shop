@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +41,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class requested extends AppCompatActivity {
     Toolbar toolbar;
@@ -293,6 +300,47 @@ public class requested extends AppCompatActivity {
 
 
         return true;
+
+    }
+
+    public void addToCart(View view) {
+        final Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    SharedPreferences preferences = getSharedPreferences("nectar", MODE_PRIVATE);
+                    String number = preferences.getString("number", "");
+
+                    String url = getString(R.string.website_adress) + "/nectar/addtocart.php";
+                    RequestBody formBody = new FormBody.Builder()
+                            .add("phone", number)
+                            .add("id", ID)
+                            .build();
+
+                    OkHttpClient client = new OkHttpClient();
+                    final Request request = new Request.Builder()
+                            .url(url)
+                            .post(formBody)
+                            .build();
+
+                    Response response = client.newCall(request).execute();
+                    final String res = response.body().string().trim();
+                    Log.i("response", res);
+                    JSONObject obj = new JSONObject(res);
+                    String code = obj.getString("RESPONSE_CODE");
+                    if (code.contentEquals("SUCCESS")) {
+                        toast("Added to cart");
+                    } else {
+                        String desc = obj.getString("RESPONSE_DESC");
+                        Log.i("ERROR: ", desc);
+                    }
+                } catch (Exception e) {
+                    Log.i("ERROR: ", e.getLocalizedMessage());
+                }
+
+            }
+        });
+        thread.start();
 
     }
 

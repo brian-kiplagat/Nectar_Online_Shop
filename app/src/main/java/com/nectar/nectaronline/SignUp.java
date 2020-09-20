@@ -1,5 +1,6 @@
 package com.nectar.nectaronline;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -394,21 +395,21 @@ public class SignUp extends AppCompatActivity {
                         if (code.contentEquals("SUCCESS")) {
                             SharedPreferences preferences = getSharedPreferences("nectar", MODE_PRIVATE);
                             SharedPreferences.Editor editor = preferences.edit();
-                            //editor.putString("email", EMAIL);
-                            //editor.putString("password", PASSWORD);
-                            //editor.putString("number", NUMBER);
-                            //editor.putString("address", ADDRESS);
-                            //editor.putString("desc", DESCRIPTION);
-                            //editor.putString("name", NAME);
+                            editor.putString("email", EMAIL);
+                            editor.putString("password", PASSWORD);
+                            editor.putString("number", NUMBER);
+                            editor.putString("address", ADDRESS);
+                            editor.putString("desc", DESCRIPTION);
+                            editor.putString("name", NAME);
+                            dismissDialoge(dialogBuilder);
+                            toast("Hello " + NAME);
 
                             Log.i("SUCCESS", "run: ");
                             //String itemsArray = obj.getString("RESPONSE_SHOP");
                             // editor.putString("items", itemsArray);
                             editor.apply();
-                            //startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                            dismissDialoge(dialogBuilder);
-                            toast("Hello " + NAME);
-                            //finish();
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            finish();
                             break;
 
 

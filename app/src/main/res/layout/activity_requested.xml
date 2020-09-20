@@ -871,6 +871,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="1dp"
             android:layout_marginRight="8dp"
+            android:onClick="addToCart"
             android:layout_marginBottom="1dp"
             android:drawableLeft="@drawable/ic_baseline_add_shopping_cart_24"
             android:drawablePadding="5dp"

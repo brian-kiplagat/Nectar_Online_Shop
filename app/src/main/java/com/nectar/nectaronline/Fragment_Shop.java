@@ -107,12 +107,12 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
 
     private void fetchChips() {
         ArrayList<String> arrayList = new ArrayList<>();
-        arrayList.add("Trousers");
-        arrayList.add("Shirts");
-        arrayList.add("Shoes");
-        arrayList.add("Sneakers");
         arrayList.add("Liqour");
-        arrayList.add("Vodka");
+        arrayList.add("Fast food");
+        arrayList.add("Energy drinks");
+        arrayList.add("Sodas");
+        arrayList.add("Fashion");
+        arrayList.add("Electronics");
         for (int i = 0; i < arrayList.size(); i++) {
             Model_Chips chips = new Model_Chips(arrayList.get(i));
             listChips.add(chips);

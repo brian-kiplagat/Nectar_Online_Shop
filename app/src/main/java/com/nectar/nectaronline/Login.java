@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import okhttp3.FormBody;
@@ -146,12 +147,29 @@ public class Login extends AppCompatActivity {
                         String desc = obj.getString("RESPONSE_DESC");
                         //
                         if (code.contentEquals("SUCCESS")) {
+                            JSONArray array = obj.getJSONArray("DETAILS");
+                            JSONObject object = array.getJSONObject(0);
+                            String NAME=object.getString("name");
+                            String EMAIL=object.getString("email");
+                            String PASSWORD=object.getString("password");
+                            String NUMBER=object.getString("number");
+                            String ADDRESS=object.getString("address");
+                            String DESCRIPTION=object.getString("description");
+                            Log.i("name",NAME);
+                            Log.i("email",EMAIL);
+                            Log.i("password",PASSWORD);
+                            Log.i("number",NUMBER);
+                            Log.i("address",ADDRESS);
+                            Log.i("desc",DESCRIPTION);
                             SharedPreferences preferences = getSharedPreferences("nectar", MODE_PRIVATE);
                             SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString("email", mail);
-                            editor.putString("password", pass);
-                            String itemsArray = obj.getString("ITEMS");
-                            editor.putString("items", itemsArray);
+                            editor.putString("email", EMAIL);
+                            editor.putString("password", PASSWORD);
+                            editor.putString("number", NUMBER);
+                            editor.putString("address", ADDRESS);
+                            editor.putString("desc", DESCRIPTION);
+                            editor.putString("name", NAME);
+                            toast("Hello " + NAME);
                             editor.apply();
                             dismissDialoge(dialogBuilder);
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));

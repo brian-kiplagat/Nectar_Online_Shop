@@ -39,8 +39,8 @@
                     <com.mikhaellopez.circularimageview.CircularImageView
 
                         android:id="@+id/circularImageView"
-                        android:layout_width="250dp"
-                        android:layout_height="250dp"
+                        android:layout_width="190dp"
+                        android:layout_height="190dp"
                         android:layout_alignParentTop="true"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center"
@@ -281,7 +281,6 @@
                         android:drawableLeft="@drawable/ic_okay"
                         android:drawablePadding="5dp"
                         android:drawableTint="@android:color/white"
-                        android:onClick="complete"
                         android:padding="10dp"
                         android:text="FINISH"
                         android:textSize="20dp" />
@@ -308,7 +307,6 @@
                             android:layout_width="30dp"
                             android:layout_height="30dp"
                             android:layout_margin="10dp"
-                            android:onClick="facebook"
                             android:src="@drawable/ic_logo_facebook" />
 
                         <ImageView
@@ -317,7 +315,6 @@
                             android:layout_margin="10dp"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
-                            android:onClick="twitter"
                             android:src="@drawable/ic_twitter_logo" />
 
                         <ImageView
@@ -326,7 +323,6 @@
                             android:layout_margin="10dp"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
-                            android:onClick="call"
                             android:src="@drawable/ic_baseline_call_24" />
 
                         <ImageView
@@ -336,7 +332,6 @@
                             android:layout_margin="10dp"
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
-                            android:onClick="web"
                             android:src="@drawable/ic_baseline_web_24" />
                     </LinearLayout>
                 </LinearLayout>

@@ -124,8 +124,6 @@
                 app:boxCornerRadiusBottomStart="20dp"
                 app:boxCornerRadiusTopEnd="20dp"
                 app:boxCornerRadiusTopStart="20dp"
-                app:counterEnabled="true"
-                app:counterMaxLength="6"
                 app:endIconMode="password_toggle"
                 app:errorEnabled="true"
                 app:helperText="your password"

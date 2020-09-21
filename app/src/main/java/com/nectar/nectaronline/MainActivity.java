@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.about:
                 drawerLayout.closeDrawers();
+                startActivity(new Intent(getApplicationContext(),metadata.class));
                 Log.i("ABOUT", "onNavigationItemSelected: ");
                 break;
             case R.id.contact:

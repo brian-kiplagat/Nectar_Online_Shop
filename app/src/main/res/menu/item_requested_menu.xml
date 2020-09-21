@@ -17,7 +17,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/call"
-        android:icon="@drawable/ic_baseline_call_24"
+        android:icon="@drawable/ic_baseline_call"
         android:title="Item"
         app:showAsAction="always" />
     <item

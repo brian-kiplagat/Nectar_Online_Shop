@@ -37,7 +37,7 @@ import okhttp3.Response;
  * Use the {@link Fragment_Shop#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfaceListener {
+public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfaceListener, SwipeRefreshLayout.OnRefreshListener {
     private RecyclerView recyclerView;
     private RecyclerView recyclerChips;
     private Context context;
@@ -104,14 +104,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
         final String queryWord = "";
         boolean search = false;
         fetch(search, queryWord);
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                fetch(false, queryWord);
-
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(this);
         return v;
     }
 
@@ -247,6 +240,11 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
     @Override
     public void onClicked(String string) {
         fetch(true, string);
+    }
+
+    @Override
+    public void onRefresh() {
+        fetch(false, "");
     }
 
     public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> {

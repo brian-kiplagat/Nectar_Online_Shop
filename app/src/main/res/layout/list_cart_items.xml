@@ -14,6 +14,22 @@
         android:layout_margin="4dp"
         android:layout_marginTop="20dp">
 
+        <TextView
+            android:id="@+id/INSTOCK"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/text_back_purple"
+            android:drawableLeft="@drawable/ic_baseline_house_24"
+            android:drawablePadding="5dp"
+            android:fontFamily="sans-serif-medium"
+            android:padding="5dp"
+            android:text=""
+            android:textColor="@android:color/white"
+            android:textSize="13sp"
+            android:textStyle="normal" />
+
         <ImageView
             android:id="@+id/drinkimage"
             android:layout_width="100dp"
@@ -36,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="CHROME"
+                android:text="Please wait"
                 android:textColor="@color/material_on_background_emphasis_medium"
                 android:textSize="13sp"
                 android:textStyle="normal" />
@@ -47,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="Clear Vodka"
+                android:text="Loading"
                 android:textColor="@android:color/primary_text_light_nodisable"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -58,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="750ml"
+                android:text=""
                 android:textColor="@color/material_on_surface_emphasis_medium"
                 android:textSize="13sp"
                 android:textStyle="normal" />
@@ -69,7 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="BRAND NEW"/>
+                android:text="Nectar" />
 
 
         </LinearLayout>
@@ -104,7 +120,7 @@
                 android:layout_marginRight="20dp"
                 android:background="@drawable/text_back_purple"
                 android:padding="3dp"
-                android:text="10"
+                android:text=""
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
 

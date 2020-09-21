@@ -28,4 +28,15 @@
     <string name="BRAND_NEW">BRAND NEW</string>
     <string name="REFURBISHED">REFURBISHED</string>
     <string name="SECONDHAND">SECOND HAND</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_description">This app enables users shop easily and conveniently at the cheapest price</string>
+    <string name="order">How to order</string>
+    <string name="order_desc">Go to the main menu and scroll to shop. Click an item to select. On the next page click buy or scroll down to view all item details. When your sure click BUY then click the cart icon to view your cart. You can add, delete or update your cart before clicking FINISH to proceed with your order </string>
+    <string name="why_should_i_use">Why should i use Nectar</string>
+    <string name="why_desc">We deliver fast and for cheap using top grade algorithms to fasten our delivery timelines. For areas around KU we deliver insanty within 10 to 20 minutes to all hostels. Areas around kahawa,Ruiru we deliver in 20 minutes. We deliver fast food in clean heated mobile microwaves so that you enjoy hot food like you never left the kitche, Our liqour is top grade and cheaper than bars. All this within the nectar app</string>
+    <string name="decription">Cheap | Fast | Affordable</string>
+    <string name="developer_mail">admin@cashmobil.co.ke</string>
+    <string name="company_mail">nectar2019@gmail.com</string>
+    <string name="instagram">Instagram</string>
 </resources>

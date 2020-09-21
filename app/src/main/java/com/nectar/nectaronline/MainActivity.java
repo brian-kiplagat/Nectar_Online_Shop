@@ -16,16 +16,24 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import org.jetbrains.annotations.NotNull;
@@ -90,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i("NO SEARCH", "Query");
 
         }
+
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
         }
@@ -114,6 +123,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.developer:
                 drawerLayout.closeDrawers();
+                try {
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                    callIntent.setData(Uri.parse("tel:+" + getString(R.string.developer_phone_adress)));
+                    startActivity(callIntent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(this, "Please install a calling app like a dialler to proceed", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
                 Log.i("DEV", "onNavigationItemSelected: ");
                 break;
 
@@ -123,6 +140,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.contact:
                 drawerLayout.closeDrawers();
+                try {
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                    callIntent.setData(Uri.parse("tel:+" + getString(R.string.phone_adress)));
+                    startActivity(callIntent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(this, "Please install a calling app like a dialler to proceed", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+
                 Log.i("CONTACT", "onNavigationItemSelected: ");
                 break;
             case R.id.logout:
@@ -191,12 +217,57 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.i("APP SEARCH BAR", "onOptionsItemSelected: ");
                 break;
             case R.id.help:
+                try {
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                    callIntent.setData(Uri.parse("tel:+" + getString(R.string.phone_adress)));
+                    startActivity(callIntent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(this, "Please install a calling app like a dialler to proceed", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+
                 Log.i("HELP", "onOptionsItemSelected: ");
                 break;
             case R.id.share:
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Snackbar.make(toolbar, "Please wait", Snackbar.LENGTH_LONG).show();
+                            String url = getString(R.string.website_adress) + "/nectar/link/nectarapp.php";
+                            Request request = new Request.Builder()
+                                    .url(url)
+                                    .build();
+                            OkHttpClient client = new OkHttpClient();
+                            Response response = client.newCall(request).execute();
+                            final String res = response.body().string();
+                            Log.i("link", res);
+                            Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                            /*This will be the actual content you wish you share.*/
+                            /*The type of the content is text, obviously.*/
+                            intent.setType("text/plain");
+                            /*Applying information Subject and Body.*/
+                            intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Download the Nectar app \uD83D\uDE07 and get Fast food, Liqour and other goods delivered to your doorstep");
+                            intent.putExtra(android.content.Intent.EXTRA_TEXT, res);
+                            /*Fire!*/
+                            startActivity(Intent.createChooser(intent, "Share using"));
+
+                        } catch (Exception e) {
+                            //Log.i("ERROR", e.getLocalizedMessage());
+
+                        }
+                    }
+                });
+                thread.start();
+
                 Log.i("SHARE", "onOptionsItemSelected: ");
                 break;
             case R.id.improve:
+                Intent intent = new Intent( Intent.ACTION_VIEW, Uri.parse( "sms:" + getString(R.string.phone_adress)));
+                String message="Help improve this app by sharing your thoughts\n";
+                intent.putExtra( "sms_body", message );
+                startActivity(intent);
+
                 Log.i("IMPROVE", "onOptionsItemSelected: ");
                 break;
 

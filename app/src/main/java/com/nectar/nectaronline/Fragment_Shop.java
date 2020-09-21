@@ -107,6 +107,8 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
 
     private void fetchChips() {
         ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.clear();//clear both before each iteration
+        listChips.clear();//clear before the itaeration so that doent fill up again
         arrayList.add("Liqour");
         arrayList.add("Fast food");
         arrayList.add("Energy drinks");

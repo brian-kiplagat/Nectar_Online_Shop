@@ -39,11 +39,10 @@
                     <com.mikhaellopez.circularimageview.CircularImageView
 
                         android:id="@+id/circularImageView"
-                        android:layout_width="190dp"
-                        android:layout_height="190dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="center"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
                         android:src="@drawable/ic_outline_account_circle_24"
                         app:civ_border="true"
                         app:civ_border_color="@color/colorPrimary"
@@ -52,60 +51,64 @@
                         app:civ_shadow_color="#0090FF"
                         app:civ_shadow_radius="10dp" />
 
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@color/colorPrimary" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/Personlogo"
-                        android:layout_width="62dp"
-                        android:layout_height="62dp"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        android:src="@drawable/ic_baseline_edit_24"
-                        app:tint="@color/colorPrimary" />
-
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/Displayemail"
+                    <RelativeLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="1dp"
-                        android:layout_marginBottom="2dp"
-                        android:layout_toRightOf="@id/Personlogo"
-                        android:text="my name"
-                        android:textColor="#333337"
-                        android:textSize="25sp"
-                        android:textStyle="bold" />
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/circularImageView">
 
-                    <TextView
-                        android:id="@+id/quote"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/Displayemail"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_toRightOf="@id/Personlogo"
-                        android:text="my email"
-                        android:textColor="#333337"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                        <ImageView
+                            android:id="@+id/edit_icon"
+                            android:layout_width="62dp"
+                            android:layout_height="62dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:src="@drawable/ic_baseline_edit_24"
+                            app:tint="@color/colorPrimary" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toRightOf="@id/edit_icon"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/name_person"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="my name"
+                                android:lines="1"
+                                android:textColor="#333337"
+                                android:textSize="25sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/email_person"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="my email"
+                                android:lines="1"
+                                android:textColor="#333337"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                />
+
+                            <View
+                                android:id="@+id/line"
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginTop="5dp"
+                                android:background="@color/colorPrimary" />
+
+
+                        </LinearLayout>
+                    </RelativeLayout>
+
+
                 </RelativeLayout>
 
 
@@ -115,6 +118,7 @@
                     android:layout_marginTop="1dp">
 
                     <Button
+                        android:id="@+id/edit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
@@ -226,7 +230,7 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <Button
-                        android:id="@+id/button"
+                        android:id="@+id/finish"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"

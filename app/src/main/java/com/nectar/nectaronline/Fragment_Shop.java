@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
@@ -42,7 +43,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
     private Context context;
     private RecyclerView.Adapter adapter;
     private RecyclerView.Adapter adapter_chips;
-
+    SwipeRefreshLayout swipeRefreshLayout;
     private List<Object> list = new ArrayList<>();
     private List<Object> listChips = new ArrayList<>();
 
@@ -92,6 +93,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
         // Inflate the layout for this fragment
         context = getActivity().getApplicationContext();
         View v = inflater.inflate(R.layout.fragment__shop, container, false);
+        swipeRefreshLayout = v.findViewById(R.id.swipe);
         recyclerView = v.findViewById(R.id.recycler_view);
         recyclerChips = v.findViewById(R.id.recycler_view_horizontal);
         recyclerChips.setHasFixedSize(true);
@@ -99,9 +101,17 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
         fetchChips();
-        String queryWord = "";
+        final String queryWord = "";
         boolean search = false;
         fetch(search, queryWord);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetch(false, queryWord);
+
+            }
+        });
         return v;
     }
 
@@ -127,6 +137,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
     }
 
     public void fetch(boolean search, final String queryWord) {
+        swipeRefreshLayout.setRefreshing(true);
         Log.i(queryWord, "fetch: ");
         final String QUERY;
         if (search == true) {
@@ -227,6 +238,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
             }
         });
         thread.start();
+        swipeRefreshLayout.setRefreshing(false);
 
 
     }

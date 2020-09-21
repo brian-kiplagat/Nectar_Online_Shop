@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -90,6 +91,7 @@ public class requested extends AppCompatActivity {
     String WARANTY;
     String STATE;
     String IMAGES;
+    Button add;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +100,7 @@ public class requested extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("BUY");
         setSupportActionBar(toolbar);
-
+        add = findViewById(R.id.button);
         recyclerView = findViewById(R.id.recycler_view);
         name = findViewById(R.id.name);
         brand = findViewById(R.id.brand);
@@ -304,17 +306,21 @@ public class requested extends AppCompatActivity {
     }
 
     public void addToCart(View view) {
+        add.setEnabled(false);
+        toast("Adding to cart");
         final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
+
                     SharedPreferences preferences = getSharedPreferences("nectar", MODE_PRIVATE);
                     String number = preferences.getString("number", "");
-
+                    String email = preferences.getString("email", "");
                     String url = getString(R.string.website_adress) + "/nectar/addtocart.php";
                     RequestBody formBody = new FormBody.Builder()
                             .add("phone", number)
                             .add("id", ID)
+                            .add("email", email)
                             .build();
 
                     OkHttpClient client = new OkHttpClient();
@@ -341,7 +347,7 @@ public class requested extends AppCompatActivity {
             }
         });
         thread.start();
-
+        add.setEnabled(true);
     }
 
     public class Adapter_Images extends RecyclerView.Adapter<Adapter_Images.ViewHolder> {

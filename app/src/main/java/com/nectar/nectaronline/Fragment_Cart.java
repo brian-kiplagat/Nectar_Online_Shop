@@ -15,6 +15,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.google.android.material.chip.Chip;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,10 +40,12 @@ import okhttp3.Response;
  */
 public class Fragment_Cart extends Fragment {
     private RecyclerView recyclerView;
-    private RecyclerView recyclerChips;
     private Context context;
     private RecyclerView.Adapter adapter;
-    private List<Object> list = new ArrayList<>();
+    String number;
+    String email;
+
+    private List<Object> list ;
     SwipeRefreshLayout swipeRefreshLayout;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -91,7 +98,9 @@ public class Fragment_Cart extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         SharedPreferences preferences = context.getSharedPreferences("nectar", Context.MODE_PRIVATE);
-        final String number = preferences.getString("number", "");
+        number = preferences.getString("number", "");
+        email = preferences.getString("email", "");
+
         Log.i("NUMBER", number);
         fetch(number);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -105,6 +114,9 @@ public class Fragment_Cart extends Fragment {
     }
 
     private void fetch(final String number) {
+        swipeRefreshLayout.setEnabled(true);
+        list= new ArrayList<>();
+        list.clear();
         final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -112,6 +124,7 @@ public class Fragment_Cart extends Fragment {
                     String url = getString(R.string.website_adress) + "/nectar/getcart.php";
                     RequestBody formBody = new FormBody.Builder()
                             .add("phone", number)//then from server can check if to search or not the return an appropriate respons
+                            .add("email", email)//then from server can check if to search or not the return an appropriate respons
                             .build();
 
                     OkHttpClient client = new OkHttpClient();
@@ -122,7 +135,7 @@ public class Fragment_Cart extends Fragment {
 
                     Response response = client.newCall(request).execute();
                     final String res = response.body().string().trim();
-                    Log.i("response", res);
+                    Log.i("Cart response", res);
                     JSONObject obj = new JSONObject(res);
                     String code = obj.getString("RESPONSE_CODE");
                     if (code.contentEquals("SUCCESS")) {
@@ -130,7 +143,7 @@ public class Fragment_Cart extends Fragment {
                         //Log.i("SHOP ITEMS: ", STUFF);
                         JSONObject object = new JSONObject(STUFF);
                         JSONArray array = object.getJSONArray("items");
-                        list.clear();
+
                         //Log.i("ARRAY TO STRING: ", array.toString());
                         for (int i = 0; i < array.length(); i++) {
                             JSONObject obje = array.getJSONObject(i);
@@ -161,7 +174,7 @@ public class Fragment_Cart extends Fragment {
             }
         });
         thread.start();
-
+        swipeRefreshLayout.setEnabled(false);
 
     }
 
@@ -185,7 +198,7 @@ public class Fragment_Cart extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
             Model_Cart_Id model = (Model_Cart_Id) list_cart_items.get(position);
             final String ID = model.getProduct_id();
             //
@@ -193,9 +206,11 @@ public class Fragment_Cart extends Fragment {
                 @Override
                 public void run() {
                     try {
+
                         String url = getString(R.string.website_adress) + "/nectar/getaparticularproduct.php";
                         RequestBody formBody = new FormBody.Builder()
-                                .add("id", ID)//then from server can check if to search or not the return an appropriate respons
+                                .add("id", ID)
+                                //then from server can check if to search or not the return an appropriate respons
                                 .build();
 
                         OkHttpClient client = new OkHttpClient();
@@ -210,15 +225,63 @@ public class Fragment_Cart extends Fragment {
                         JSONObject obj = new JSONObject(res);
                         String code = obj.getString("RESPONSE_CODE");
                         if (code.contentEquals("SUCCESS")) {
-                            String STUFF = obj.getString("SHOP_ITEMS");
-                            //Log.i("SHOP ITEMS: ", STUFF);
-                            JSONObject object = new JSONObject(STUFF);
-                            JSONArray array = object.getJSONArray("items");
+                            JSONArray array = obj.getJSONArray("DETAILS");
                             //Log.i("ARRAY TO STRING: ", array.toString());
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject obje = array.getJSONObject(i);
-                                final String PRODUCT_ID = obje.getString("productid");
-                            }
+                            JSONObject obje = array.getJSONObject(0);
+                            //final String PRODUCT_ID = obje.getString("productid");
+                            final String id = obje.getString("id");
+                            final String brand = obje.getString("brand");
+                            final String name = obje.getString("name");
+                            final String newPrice = obje.getString("new");
+                            final String old = obje.getString("old");
+                            final String description = obje.getString("description");
+                            final String specification = obje.getString("specification");
+                            final String keyfeatures = obje.getString("keyfeatures");
+                            final String size = obje.getString("size");
+                            final String color = obje.getString("color");
+                            final String instock = obje.getString("instock");
+                            final String weight = obje.getString("weight");
+                            final String material = obje.getString("material");
+                            final String inbox = obje.getString("inbox");
+                            final String waranty = obje.getString("waranty");
+                            final String state = obje.getString("state");
+                            final String images = obje.getString("images");
+                            //   TextView brand;
+                            //            TextView name;
+                            //            TextView size;
+                            //            Chip state;
+                            //            TextView price;
+                            //            TextView number_of_items;
+                            //            ImageView increase;
+                            //            ImageView reduce;
+                            //            ImageView delete;
+                            //            ImageView prod_image;
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    holder.brand.setText(brand);
+                                    holder.name.setText(name);
+                                    holder.price.setText(newPrice);
+                                    holder.number_of_items.setText(instock);
+                                    holder.size.setText(size);
+                                    String link = getString(R.string.website_adress) + "/nectar/" + images;
+                                    Glide.with(context).load(link).into(holder.prod_image);
+
+                                    if (state.contentEquals("BRAND")) {
+                                        holder.state.setText(getString(R.string.BRAND_NEW));
+
+                                    }
+                                    if (state.contentEquals("REFURBISHED")) {
+                                        holder.state.setText(getString(R.string.REFURBISHED));
+
+                                    }
+                                    if (state.contentEquals("SECOND")) {
+                                        holder.state.setText(getString(R.string.SECONDHAND));
+
+                                    }
+
+                                }
+                            });
 
 
                         } else {
@@ -232,16 +295,52 @@ public class Fragment_Cart extends Fragment {
                 }
             });
             thread.start();
+            holder.delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+            holder.increase.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
 
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
+            TextView brand;
+            TextView name;
+            TextView size;
+            Chip state;
+            TextView price;
+            TextView number_of_items;
+            ImageView increase;
+            ImageView reduce;
+            ImageView delete;
+            ImageView prod_image;
+
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
+                brand = itemView.findViewById(R.id.BRAND);
+                name = itemView.findViewById(R.id.NAME);
+                size = itemView.findViewById(R.id.SIZE);
+                state = itemView.findViewById(R.id.STATE);
+                price = itemView.findViewById(R.id.PRICE);
+                number_of_items = itemView.findViewById(R.id.center);
+                increase = itemView.findViewById(R.id.increase);
+                reduce = itemView.findViewById(R.id.reduce);
+                delete = itemView.findViewById(R.id.delete);
+                prod_image = itemView.findViewById(R.id.drinkimage);
+
+
             }
         }
 
     }
+
 
 }

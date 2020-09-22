@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 drawerLayout.closeDrawers();
                 try {
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                    callIntent.setData(Uri.parse("tel:+" + getString(R.string.developer_phone_adress)));
+                    callIntent.setData(Uri.parse("tel:" + getString(R.string.developer_phone_adress)));
                     startActivity(callIntent);
                 } catch (ActivityNotFoundException e) {
                     Toast.makeText(this, "Please install a calling app like a dialler to proceed", Toast.LENGTH_LONG).show();
@@ -141,14 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.contact:
                 drawerLayout.closeDrawers();
-                try {
-                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                    callIntent.setData(Uri.parse("tel:+" + getString(R.string.phone_adress)));
-                    startActivity(callIntent);
-                } catch (ActivityNotFoundException e) {
-                    Toast.makeText(this, "Please install a calling app like a dialler to proceed", Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-                }
+                startActivity(new Intent(getApplicationContext(),metadata.class));
 
                 Log.i("CONTACT", "onNavigationItemSelected: ");
                 break;

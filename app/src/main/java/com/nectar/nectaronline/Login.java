@@ -42,6 +42,14 @@ public class Login extends AppCompatActivity {
             getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
         }
         checkForStoredPassword();
+        Preferences preferences = new Preferences(getApplicationContext());
+        Log.i("name", preferences.getName());
+        Log.i("email", preferences.getEmail());
+        Log.i("password",preferences.getPassword());
+        Log.i("number", preferences.getNumber());
+        Log.i("address", preferences.getAddress());
+        Log.i("desc", preferences.getDescription());
+
     }
 
     private void checkForStoredPassword() {

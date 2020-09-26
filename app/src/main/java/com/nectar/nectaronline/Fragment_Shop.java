@@ -266,7 +266,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             final ModeL_Shop_Items model = (ModeL_Shop_Items) list.get(position);
-            String link = getString(R.string.website_adress) + "/nectar/" + model.getImages();
+            String link = getString(R.string.website_adress) + "/nectar/seller/" + model.getImages();
             Glide.with(context).load(link).into(holder.image);
             holder.brand.setText(model.getBrand());
             holder.price.setText("KSH " + model.getFinalPrice());

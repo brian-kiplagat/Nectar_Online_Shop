@@ -48,7 +48,7 @@ public class Login extends AppCompatActivity {
         Log.i("password",preferences.getPassword());
         Log.i("number", preferences.getNumber());
         Log.i("address", preferences.getAddress());
-        Log.i("desc", preferences.getDescription());
+        Log.i("desc", preferences.getEmail());
 
     }
 

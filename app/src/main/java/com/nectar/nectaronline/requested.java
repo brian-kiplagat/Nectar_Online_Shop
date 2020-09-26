@@ -369,7 +369,7 @@ public class requested extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Model_Images model = (Model_Images) list.get(position);
-            String link = getString(R.string.website_adress) + "/nectar/" + model.getPoster();
+            String link = getString(R.string.website_adress) + "/nectar/seller/" + model.getPoster();
             Glide.with(context).load(link).into(holder.imageView);
 
         }

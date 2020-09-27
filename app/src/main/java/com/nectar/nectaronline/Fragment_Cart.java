@@ -129,10 +129,11 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             @Override
             public void run() {
                 try {
-                    String url = getString(R.string.website_adress) + "/nectar/getcart.php";
+                    Preferences preferences = new Preferences(context);
+                    String url = getString(R.string.website_adress) + "/nectar/getcart.php";//can get to cart and filer all the IDs from the product ID can send back all the data as a json volley
                     RequestBody formBody = new FormBody.Builder()
-                            .add("phone", number)//then from server can check if to search or not the return an appropriate respons
-                            .add("email", email)//then from server can check if to search or not the return an appropriate respons
+                            .add("phone", preferences.getNumber())//then from server can check if to search or not the return an appropriate respons
+                            .add("email", preferences.getEmail())//then from server can check if to search or not the return an appropriate respons
                             .build();
 
                     OkHttpClient client = new OkHttpClient();
@@ -153,12 +154,19 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                         //Log.i("SHOP ITEMS: ", STUFF);
                         JSONObject object = new JSONObject(STUFF);
                         JSONArray array = object.getJSONArray("items");
+                        int priceCount = 0;
+
+
 
                         //Log.i("ARRAY TO STRING: ", array.toString());
                         for (int i = 0; i < array.length(); i++) {
                             JSONObject obje = array.getJSONObject(i);
                             final String PRODUCT_ID = obje.getString("productid");
                             Log.i("Product id in Cart", PRODUCT_ID);
+                            //try to send all the cart info as clear text and avoid unecessary interaction
+                            //priceCount = Integer.parseInt(newPrice) + priceCount;
+                            //Log.i("PRICE AT THIS INSTANCE",String.valueOf(priceCount));
+
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -198,7 +206,10 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onClick(View v) {
-
+        if (v.getId() == R.id.button) {
+            Log.i("FINISH", "onClick: ");
+            //Use a for loop to circle through the cart legnth
+        }
     }
 
     public class Adapter_Cart extends RecyclerView.Adapter<Adapter_Cart.ViewHolder> {
@@ -250,7 +261,6 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                         JSONObject obj = new JSONObject(res);
                         String code = obj.getString("RESPONSE_CODE");
                         String desc = obj.getString("RESPONSE_DESC");
-
                         if (code.contentEquals("SUCCESS")) {
                             JSONArray array = obj.getJSONArray("DETAILS");
                             //Log.i("ARRAY TO STRING: ", array.toString());
@@ -273,7 +283,6 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                             final String waranty = obje.getString("waranty");
                             final String state = obje.getString("state");
                             final String images = obje.getString("images");
-
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

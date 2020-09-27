@@ -32,6 +32,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -55,7 +56,7 @@ public class requested extends AppCompatActivity {
     TextView amount;
     Chip stars;
     Chip previos;
-
+    com.mikhaellopez.circularimageview.CircularImageView circularImageView;
     TextView delivery_info;
     TextView return_policy;
     TextView warranty;
@@ -98,6 +99,7 @@ public class requested extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("BUY");
         setSupportActionBar(toolbar);
+        circularImageView = findViewById(R.id.circularImageView);
         add = findViewById(R.id.button);
         recyclerView = findViewById(R.id.recycler_view);
         name = findViewById(R.id.name);
@@ -123,7 +125,7 @@ public class requested extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         Intent intent = getIntent();
-        ID = intent.getStringExtra("id");
+        ID = intent.getStringExtra("id");//Each is unique to the product
         BRAND = intent.getStringExtra("brand");
         NAME = intent.getStringExtra("name");
         NEWPRICE = intent.getStringExtra("newPrice");
@@ -176,7 +178,72 @@ public class requested extends AppCompatActivity {
                 state.setChipIconTint(getResources().getColorStateList(R.color.orange, null));
             }
         }
+        getSellerInformation(ID);
 
+    }
+
+    private void getSellerInformation(final String id) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i <= 3; i++) {
+                    try {
+                        if (i == 1) {
+                            toast("Could not connect, trying again");
+                        }
+                        if (i == 2) {
+                            toast("This taking too long check your internet connection");
+                        }
+                        if (i == 3) {
+                            toast("Check your internet connection, then try again");
+                            break;
+                        }
+                        String url = getString(R.string.website_adress) + "/nectar/seller/getsellerinfo.php";
+                        RequestBody formBody = new FormBody.Builder()
+                                .add("id", id)
+                                .build();
+
+                        OkHttpClient client = new OkHttpClient();
+                        final Request request = new Request.Builder()
+                                .url(url)
+                                .post(formBody)
+                                .build();
+
+                        Response response = client.newCall(request).execute();
+                        final String res = response.body().string().trim();
+                        Log.i("response", res);
+                        JSONObject obj = new JSONObject(res);
+                        String code = obj.getString("RESPONSE_CODE");
+                        String desc = obj.getString("RESPONSE_DESC");
+                        //
+                        if (code.contentEquals("SUCCESS")) {
+                            JSONArray array = obj.getJSONArray("DETAILS");
+                            JSONObject object = array.getJSONObject(0);
+                            final String SELLER_NAME = object.getString("name");
+                            String EMAIL = object.getString("email");
+                            String NUMBER = object.getString("phone");
+                            final String IMAGE = object.getString("image");
+                            requested.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Glide.with(getApplicationContext()).load(getString(R.string.website_adress) + "/nectar/seller/" + IMAGE).into(circularImageView);
+                                    seller.setText(SELLER_NAME);
+                                }
+                            });
+
+                        } else {
+                            toast(desc);
+                        }
+                        break;
+
+                    } catch (Exception e) {
+                        Log.i("ERROR", e.getLocalizedMessage());
+                    }
+
+                }
+            }
+        });
+        thread.start();
 
     }
 

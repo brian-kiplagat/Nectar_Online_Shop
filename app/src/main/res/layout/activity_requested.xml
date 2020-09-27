@@ -462,6 +462,21 @@
                             <RelativeLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
+                                <com.mikhaellopez.circularimageview.CircularImageView
+                                    android:id="@+id/circularImageView"
+                                    android:layout_width="100dp"
+                                    android:layout_height="100dp"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_centerVertical="true"
+                                    android:src="@drawable/ic_outline_account_circle_24"
+                                    app:civ_border="true"
+                                    app:civ_border_color="@color/colorPrimary"
+                                    app:civ_border_width="2dp"
+                                    app:civ_shadow="true"
+                                    app:civ_shadow_color="#0090FF"
+                                    app:civ_shadow_radius="10dp"
+                                    android:layout_alignParentEnd="true" />
+
 
                                 <ImageView
                                     android:id="@+id/img1"
@@ -472,6 +487,7 @@
                                     app:tint="@color/colorPrimary" />
 
                                 <LinearLayout
+                                    android:layout_toLeftOf="@id/circularImageView"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="5dp"

@@ -182,17 +182,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String searchQuery) {
-                // Log.i("Query", searchQuery);
-                boolean search = true;
-                shop.fetch(search, searchQuery);
+                Log.i("Query", searchQuery);
+               shop.fetch(true,false, searchQuery);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //Log.i("Query Text Change", newText);
-                boolean search = true;
-                shop.fetch(search, newText);
+                Log.i("Query Text Change", newText);
+                shop.fetch(true, false,newText);
                 return false;
             }
         });

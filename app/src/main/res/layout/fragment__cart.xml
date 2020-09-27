@@ -6,7 +6,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragment_Cart">
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/logo_gradient" />
+
+        </RelativeLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe"
         android:layout_width="match_parent"

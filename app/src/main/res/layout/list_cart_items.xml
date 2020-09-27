@@ -7,8 +7,12 @@
     app:cardElevation="2dp"
     app:strokeColor="@color/colorPrimary"
     app:strokeWidth="1dp">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/cartStuff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
@@ -132,15 +136,33 @@
                 android:src="@drawable/ic_baseline_chevron_right_24" />
         </RelativeLayout>
 
-        <ImageView
-            android:id="@+id/delete"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_below="@id/view"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="5dp"
-            android:src="@drawable/ic_baseline_delete_outline_24"
-            app:tint="@color/colorPrimary" />
+            android:layout_alignParentRight="true">
+            <TextView
+                android:id="@+id/Explanation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Ops"
+                android:visibility="invisible"
+                android:textColor="@color/material_on_surface_emphasis_medium"
+                android:textSize="13sp"
+                android:textStyle="normal" />
+            <ImageView
+                android:id="@+id/delete"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/ic_baseline_delete_outline_24"
+                app:tint="@color/colorPrimary" />
+
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -195,5 +217,19 @@
         </RelativeLayout>
     </RelativeLayout>
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/cartStuff"
+        android:layout_alignBottom="@id/cartStuff">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/placeholder" />
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+</RelativeLayout>
 
 </com.google.android.material.card.MaterialCardView>

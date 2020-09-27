@@ -5,9 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,10 +30,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -58,6 +54,8 @@ public class requested extends AppCompatActivity {
     TextView brand;
     TextView amount;
     Chip stars;
+    Chip previos;
+
     TextView delivery_info;
     TextView return_policy;
     TextView warranty;
@@ -106,6 +104,8 @@ public class requested extends AppCompatActivity {
         brand = findViewById(R.id.brand);
         amount = findViewById(R.id.money);
         stars = findViewById(R.id.stars);
+        previos = findViewById(R.id.previos);
+
         delivery_info = findViewById(R.id.deliverInfo);
         return_policy = findViewById(R.id.return_policy);
         warranty = findViewById(R.id.waranty);
@@ -141,9 +141,9 @@ public class requested extends AppCompatActivity {
         STATE = intent.getStringExtra("state");
         IMAGES = intent.getStringExtra("images");
         fetchImages(IMAGES);
-
+        previos.setText("KSH " + OLD);
         name.setText(NAME);
-        brand.setText("Brand " + BRAND);
+        brand.setText("Brand: " + BRAND);
         amount.setText("KSH " + NEWPRICE);
         warranty.setText(WARANTY);
         specs.setText(SPEC);
@@ -228,9 +228,9 @@ public class requested extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String searchQuery) {
                 Log.i("Query", searchQuery);
-                boolean search = true;
+
                 Fragment_Shop shop = new Fragment_Shop();
-                shop.fetch(search, searchQuery);
+                shop.fetch(true, true, searchQuery);
                 return true;
             }
 
@@ -239,7 +239,7 @@ public class requested extends AppCompatActivity {
                 Log.i("Query Text Change", newText);
                 Fragment_Shop shop = new Fragment_Shop();
                 boolean search = true;
-                shop.fetch(search, newText);
+                shop.fetch(true, true, newText);
                 return false;
             }
         });
@@ -313,14 +313,12 @@ public class requested extends AppCompatActivity {
             public void run() {
                 try {
 
-                    SharedPreferences preferences = getSharedPreferences("nectar", MODE_PRIVATE);
-                    String number = preferences.getString("number", "");
-                    String email = preferences.getString("email", "");
+                    Preferences preferences = new Preferences(getApplicationContext());
                     String url = getString(R.string.website_adress) + "/nectar/addtocart.php";
                     RequestBody formBody = new FormBody.Builder()
-                            .add("phone", number)
+                            .add("phone", preferences.getNumber())
                             .add("id", ID)
-                            .add("email", email)
+                            .add("email", preferences.getEmail())
                             .build();
 
                     OkHttpClient client = new OkHttpClient();

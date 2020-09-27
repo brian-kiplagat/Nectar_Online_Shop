@@ -18,7 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,14 +39,15 @@ import okhttp3.Response;
  * Use the {@link Fragment_Shop#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfaceListener, SwipeRefreshLayout.OnRefreshListener {
+public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedListener, SwipeRefreshLayout.OnRefreshListener {
     private RecyclerView recyclerView;
     private RecyclerView recyclerChips;
     private Context context;
     private RecyclerView.Adapter adapter;
     private RecyclerView.Adapter adapter_chips;
     SwipeRefreshLayout swipeRefreshLayout;
-    private List<Object> list = new ArrayList<>();
+    ShimmerFrameLayout shimmerFrameLayout;
+    private List<Object> list;
     private List<Object> listChips = new ArrayList<>();
 
     // TODO: Rename parameter arguments, choose names that match
@@ -94,6 +97,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
         context = getActivity().getApplicationContext();
         View v = inflater.inflate(R.layout.fragment__shop, container, false);
         swipeRefreshLayout = v.findViewById(R.id.swipe);
+        shimmerFrameLayout = v.findViewById(R.id.shimmer);
         recyclerView = v.findViewById(R.id.recycler_view);
         recyclerChips = v.findViewById(R.id.recycler_view_horizontal);
         recyclerChips.setHasFixedSize(true);
@@ -103,10 +107,11 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
         fetchChips();
         final String queryWord = "";
         boolean search = false;
-        fetch(search, queryWord);
+        fetch(search, false, queryWord);
         swipeRefreshLayout.setOnRefreshListener(this);
         return v;
     }
+
 
     private void fetchChips() {
         ArrayList<String> arrayList = new ArrayList<>();
@@ -129,19 +134,31 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
         }
     }
 
-    public void fetch(boolean search, final String queryWord) {
+    public void fetch(boolean isToolbar, boolean ischip, final String queryWord) {
         swipeRefreshLayout.setRefreshing(true);
-        Log.i(queryWord, "fetch: ");
+        shimmerFrameLayout.startShimmer();
+        // Log.i("fetch THIS: ",queryWord);
         final String QUERY;
-        if (search == true) {
-            //Make the code to search the database for matching keywords
-            QUERY = "true";
+        final String MAINQUERY;
 
+        if (isToolbar == true) {
+            //Make the code to search the database for matching keywords
+            QUERY = "toolbar";
+            Log.i("CHIP Search", QUERY);
+            Log.i("Querrword", queryWord);
+
+
+        } else if (ischip == true) {
+
+            //Make the code to search the database for matching keywords
+            QUERY = "chip";
+            Log.i("Querrword", queryWord);
         } else {
             //Make the code to pull everything in database indiscriminately
-            QUERY = "false";
-
+            QUERY = "normal";
+            Log.i("Search", QUERY);
         }
+
         final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -159,15 +176,17 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
                             .build();
 
                     Response response = client.newCall(request).execute();
-                    final String res = response.body().string().trim();
-                    Log.i("response", res);
+                    String res = response.body().string().trim();
+                    Log.i("SERVER RESPONSE", res);
                     JSONObject obj = new JSONObject(res);
                     String code = obj.getString("RESPONSE_CODE");
+                    String desc = obj.getString("RESPONSE_DESC");
                     if (code.contentEquals("SUCCESS")) {
                         String STUFF = obj.getString("SHOP_ITEMS");
                         //Log.i("SHOP ITEMS: ", STUFF);
                         JSONObject object = new JSONObject(STUFF);
                         JSONArray array = object.getJSONArray("items");
+                        list = new ArrayList<>();
                         list.clear();
                         //Log.i("ARRAY TO STRING: ", array.toString());
                         for (int i = 0; i < array.length(); i++) {
@@ -189,7 +208,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
                             final String waranty = obje.getString("waranty");
                             final String state = obje.getString("state");
                             final String images = obje.getString("images");
-                            Log.i("BRAND", brand);
+                            /*Log.i("BRAND", brand);
                             Log.i("NAME", name);
                             Log.i("NEW_PRICE", newPrice);
                             Log.i("OLD_PRICE", old);
@@ -205,14 +224,17 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
                             Log.i("BRAND", brand);
                             Log.i("WARRANTY", waranty);
                             Log.i("STATE", state);
-                            Log.i("IMAGES", images);
+                            Log.i("IMAGES", images);*/
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     ModeL_Shop_Items model = new ModeL_Shop_Items(name, brand, id, newPrice, old, description, keyfeatures, specification, color, size, weight, material, inbox, waranty, instock, state, images);
                                     list.add(model);
+                                    shimmerFrameLayout.stopShimmer();
+                                    shimmerFrameLayout.setVisibility(View.GONE);
                                     adapter = new Adapter_Shop(context, list);
                                     adapter.notifyDataSetChanged();
+                                    swipeRefreshLayout.setRefreshing(false);
                                     recyclerView.setAdapter(adapter);
 
                                 }
@@ -220,31 +242,60 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ChipInterfa
                         }
 
 
-                    } else {
-                        String desc = obj.getString("RESPONSE_DESC");
-                        Log.i("ERROR: ", desc);
+                    } else if (desc.contentEquals("ERROR: ZERO ITEMS FROM NAME SEARCH")) {
+                        Snackbar.make(recyclerView, "Ops! We could'nt find that", Snackbar.LENGTH_SHORT).show();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                shimmerFrameLayout.stopShimmer();
+                                shimmerFrameLayout.setVisibility(View.GONE);
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
+                    } else if (desc.contentEquals("ERROR: ZERO ITEMS FROM CHIP SEARCH")) {
+                        Snackbar.make(recyclerView, "Ops! We could'nt find that", Snackbar.LENGTH_SHORT).show();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                shimmerFrameLayout.stopShimmer();
+                                shimmerFrameLayout.setVisibility(View.GONE);
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
+                    }
+
+                    else {
+                        Log.i("DESC ERROR: ", desc);
                     }
                 } catch (Exception e) {
-                    Log.i("ERROR: ", e.getLocalizedMessage());
+                    Log.i("EXCEPTION ERROR: ", e.getLocalizedMessage());
+                    Snackbar.make(recyclerView, "Ops ! Network connection seem to be poor, trying to connect again", Snackbar.LENGTH_LONG).show();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            fetch(false, false, "");
+
+                        }
+                    });
                 }
 
             }
         });
         thread.start();
-        swipeRefreshLayout.setRefreshing(false);
-
 
     }
 
-
-    @Override
-    public void onClicked(String string) {
-        fetch(true, string);
-    }
 
     @Override
     public void onRefresh() {
-        fetch(false, "");
+        fetch(false, false, "");
+    }
+
+    @Override
+    public void onClicked(String filter) {
+        // Toast.makeText(context, filter, Toast.LENGTH_SHORT).show();
+        fetch(false, true, filter);
+        Log.i("SEARCHING", filter);
     }
 
     public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> {

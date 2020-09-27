@@ -49,23 +49,23 @@
                     android:layout_marginRight="5dp">
 
                     <TextView
-                        android:layout_alignParentLeft="true"
-                        android:layout_toLeftOf="@id/state"
                         android:id="@+id/name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toLeftOf="@id/state"
                         android:text="EXTREME TV BLACK"
                         android:textColor="@color/material_on_background_emphasis_high_type"
                         android:textSize="17sp" />
 
                     <TextView
-                        android:layout_alignParentLeft="true"
-                        android:layout_toLeftOf="@id/state"
                         android:id="@+id/brand"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/name"
+                        android:layout_alignParentLeft="true"
                         android:layout_marginTop="5dp"
+                        android:layout_toLeftOf="@id/state"
                         android:text="Brand: Hisense"
                         android:textColor="@color/material_on_background_emphasis_medium"
                         android:textSize="15sp" />
@@ -98,16 +98,52 @@
                     android:layout_marginTop="5dp"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/money"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginTop="5dp"
-                        android:text="KSH 5000"
-                        android:textColor="@color/design_default_color_on_secondary"
-                        android:textSize="21sp"
-                        android:textStyle="bold" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/money"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="KSH 5000"
+                            android:textColor="@color/design_default_color_on_secondary"
+                            android:textSize="21sp"
+                            android:textStyle="bold" />
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/previos"
+                                style="@style/Widget.MaterialComponents.Chip.Action"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="3dp"
+                                android:layout_marginRight="16dp"
+                                android:checked="true"
+                                android:text="7"
+                                android:textColor="@color/design_default_color_on_secondary"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                app:chipIcon="@drawable/ic_baseline_storefront_24"
+                                app:chipIconTint="@color/colorPrimaryDark" />
+
+                            <View
+
+                                android:layout_width="match_parent"
+                                android:layout_height="2.1dp"
+                                android:layout_alignLeft="@id/previos"
+                                android:layout_alignRight="@id/previos"
+                                android:layout_centerHorizontal="true"
+                                android:layout_centerVertical="true"
+                                android:background="@drawable/ic_blue_gradient" />
+                        </RelativeLayout>
+
+                    </LinearLayout>
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/instock"
@@ -871,11 +907,11 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="1dp"
             android:layout_marginRight="8dp"
-            android:onClick="addToCart"
             android:layout_marginBottom="1dp"
             android:drawableLeft="@drawable/ic_baseline_add_shopping_cart_24"
             android:drawablePadding="5dp"
             android:drawableTint="@android:color/white"
+            android:onClick="addToCart"
             android:padding="10dp"
             android:text="ADD TO CART"
             android:textSize="20dp" />

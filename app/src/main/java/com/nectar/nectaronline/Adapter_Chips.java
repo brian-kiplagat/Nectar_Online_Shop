@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,16 +17,15 @@ import java.util.List;
 public class Adapter_Chips extends RecyclerView.Adapter<Adapter_Chips.ViewHolder> {
     List<Object> list;
     Context context;
-    ChipInterfaceListener chipInterfaceListener;
-
-    public Adapter_Chips(List<Object> list, Context context, ChipInterfaceListener chipInterfaceListener) {
-        this.list = list;
-        this.context = context;
-        this.chipInterfaceListener = chipInterfaceListener;
+    private ClickedListener clickedListener;
+    public interface ClickedListener{
+        void onClicked(String filter);
     }
 
-    public interface ChipInterfaceListener {
-        void onClicked(String string);
+    public Adapter_Chips(List<Object> list, Context context, ClickedListener listener) {
+        this.list = list;
+        this.context = context;
+        this.clickedListener = listener;
     }
 
     @NonNull
@@ -39,10 +39,11 @@ public class Adapter_Chips extends RecyclerView.Adapter<Adapter_Chips.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Model_Chips model = (Model_Chips) list.get(position);
         holder.chip.setText(model.getText());
-        holder.chip.setOnCloseIconClickListener(new View.OnClickListener() {
+        holder.chip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chipInterfaceListener.onClicked(model.getText());
+                //Toast.makeText(context, model.getText(), Toast.LENGTH_SHORT).show();
+                clickedListener.onClicked(model.getText());
             }
         });
 

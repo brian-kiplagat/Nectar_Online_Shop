@@ -4,25 +4,25 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -50,6 +50,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
     String number;
     String email;
     Button button;
+    ShimmerFrameLayout shimmerFrameLayout;
     int count = 1;
 
     private List<Object> list;
@@ -101,14 +102,16 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
         View v = inflater.inflate(R.layout.fragment__cart, container, false);
         context = getActivity().getApplicationContext();
         recyclerView = v.findViewById(R.id.recycler_view);
-        button=v.findViewById(R.id.button);
+        button = v.findViewById(R.id.button);
         swipeRefreshLayout = v.findViewById(R.id.swipe);
+        shimmerFrameLayout = v.findViewById(R.id.shimmer);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         SharedPreferences preferences = context.getSharedPreferences("nectar", Context.MODE_PRIVATE);
         number = preferences.getString("number", "");
         email = preferences.getString("email", "");
-
+        button.setOnClickListener(this);
+        button.setVisibility(View.GONE);
         Log.i("NUMBER", number);
         fetch(number);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -117,8 +120,9 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
 
     }
 
-    private void fetch(final String number) {
+    private void fetch(final String email) {
         swipeRefreshLayout.setRefreshing(true);
+        shimmerFrameLayout.startShimmer();
         list = new ArrayList<>();
         list.clear();
         final Thread thread = new Thread(new Runnable() {
@@ -154,12 +158,15 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                         for (int i = 0; i < array.length(); i++) {
                             JSONObject obje = array.getJSONObject(i);
                             final String PRODUCT_ID = obje.getString("productid");
-                            Log.i("id", PRODUCT_ID);
+                            Log.i("Product id in Cart", PRODUCT_ID);
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Model_Cart_Id model = new Model_Cart_Id(PRODUCT_ID);
                                     list.add(model);
+                                    shimmerFrameLayout.stopShimmer();
+                                    shimmerFrameLayout.setVisibility(View.GONE);
+                                    button.setVisibility(View.VISIBLE);
                                     adapter = new Adapter_Cart(list);
                                     adapter.notifyDataSetChanged();
                                     recyclerView.setAdapter(adapter);
@@ -172,10 +179,10 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
 
                     } else if (desc.contentEquals("ZERO ITEMS")) {
                         toast("Add items to your cart");
-                        Log.i("ERROR: ", desc);
+                        Log.i("ERROR CART DESC: ", desc);
                     }
                 } catch (Exception e) {
-                    Log.i("ERROR: ", e.getLocalizedMessage());
+                    Log.i("ERROR EXC: ", e.getLocalizedMessage());
                 }
 
             }
@@ -218,6 +225,8 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             final Model_Cart_Id model = (Model_Cart_Id) list_cart_items.get(position);
             final String ID = model.getProduct_id();
             //
+            //holder.shimm.startShimmer();
+            holder.cartStuff.setVisibility(View.INVISIBLE);
             final Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -237,9 +246,11 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
 
                         Response response = client.newCall(request).execute();
                         final String res = response.body().string().trim();
-                        Log.i("response", res);
+                        Log.i("HY response", res);
                         JSONObject obj = new JSONObject(res);
                         String code = obj.getString("RESPONSE_CODE");
+                        String desc = obj.getString("RESPONSE_DESC");
+
                         if (code.contentEquals("SUCCESS")) {
                             JSONArray array = obj.getJSONArray("DETAILS");
                             //Log.i("ARRAY TO STRING: ", array.toString());
@@ -266,13 +277,18 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+
+                                    holder.shimm.stopShimmer();
+                                    holder.shimm.setVisibility(View.GONE);
+                                    holder.cartStuff.setVisibility(View.VISIBLE);
+
                                     holder.brand.setText(brand);
                                     holder.name.setText(name);
                                     holder.price.setText(newPrice);
                                     holder.number_of_items.setText("1");
                                     holder.size.setText(size);
                                     holder.instock.setText(instock);
-                                    String link = getString(R.string.website_adress) + "/nectar/" + images;
+                                    String link = getString(R.string.website_adress) + "/nectar/seller/" + images;
                                     Glide.with(context).load(link).into(holder.prod_image);
 
                                     if (state.contentEquals("BRAND")) {
@@ -321,8 +337,20 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                             });
 
 
+                        } else if (desc.contentEquals("NOT FOUND")) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(context, "An item could not be found because it was removed,delete it", Toast.LENGTH_LONG).show();
+                                    holder.explanation.setVisibility(View.VISIBLE);
+                                    holder.explanation.setText("Ops! Not found");
+                                    holder.shimm.stopShimmer();
+                                    holder.shimm.setVisibility(View.GONE);
+                                    holder.cartStuff.setVisibility(View.VISIBLE);
+                                }
+                            });
                         } else {
-                            String desc = obj.getString("RESPONSE_DESC");
+
                             Log.i("ERROR: ", desc);
                         }
                     } catch (Exception e) {
@@ -358,10 +386,13 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             ImageView reduce;
             ImageView delete;
             ImageView prod_image;
-
+            RelativeLayout cartStuff;
+            TextView explanation;
+            com.facebook.shimmer.ShimmerFrameLayout shimm;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
+                cartStuff = itemView.findViewById(R.id.cartStuff);
                 instock = itemView.findViewById(R.id.INSTOCK);
                 brand = itemView.findViewById(R.id.BRAND);
                 name = itemView.findViewById(R.id.NAME);
@@ -373,8 +404,8 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                 reduce = itemView.findViewById(R.id.reduce);
                 delete = itemView.findViewById(R.id.delete);
                 prod_image = itemView.findViewById(R.id.drinkimage);
-
-
+                shimm = itemView.findViewById(R.id.shimmer);
+                explanation = itemView.findViewById(R.id.Explanation);
             }
         }
 

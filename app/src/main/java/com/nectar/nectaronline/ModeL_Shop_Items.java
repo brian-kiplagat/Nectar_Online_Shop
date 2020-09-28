@@ -19,8 +19,9 @@ public class ModeL_Shop_Items {
     public String instock;
     public String state;
     public String images;
+    public String sellerID;
 
-    public ModeL_Shop_Items(String name, String brand, String id, String finalPrice, String initialPrice, String description, String keyFeatures, String specification, String colour, String size, String weight, String material, String insideBox, String warranty, String instock, String state, String images) {
+    public ModeL_Shop_Items(String name, String brand, String id, String finalPrice, String initialPrice, String description, String keyFeatures, String specification, String colour, String size, String weight, String material, String insideBox, String warranty, String instock, String state, String images, String sellerID) {
         this.name = name;
         this.brand = brand;
         this.id = id;
@@ -38,6 +39,7 @@ public class ModeL_Shop_Items {
         this.instock = instock;
         this.state = state;
         this.images = images;
+        this.sellerID = sellerID;
     }
 
     public String getName() {
@@ -106,5 +108,9 @@ public class ModeL_Shop_Items {
 
     public String getImages() {
         return images;
+    }
+
+    public String getSellerID() {
+        return sellerID;
     }
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -208,6 +209,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
                             final String waranty = obje.getString("waranty");
                             final String state = obje.getString("state");
                             final String images = obje.getString("images");
+                            final String sellerID = obje.getString("sellerID");
                             /*Log.i("BRAND", brand);
                             Log.i("NAME", name);
                             Log.i("NEW_PRICE", newPrice);
@@ -228,7 +230,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ModeL_Shop_Items model = new ModeL_Shop_Items(name, brand, id, newPrice, old, description, keyfeatures, specification, color, size, weight, material, inbox, waranty, instock, state, images);
+                                    ModeL_Shop_Items model = new ModeL_Shop_Items(name, brand, id, newPrice, old, description, keyfeatures, specification, color, size, weight, material, inbox, waranty, instock, state, images, sellerID);
                                     list.add(model);
                                     shimmerFrameLayout.stopShimmer();
                                     shimmerFrameLayout.setVisibility(View.GONE);
@@ -317,8 +319,12 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             final ModeL_Shop_Items model = (ModeL_Shop_Items) list.get(position);
+            holder.content.setVisibility(View.INVISIBLE);
             String link = getString(R.string.website_adress) + "/nectar/seller/" + model.getImages();
             Glide.with(context).load(link).into(holder.image);
+            holder.shimm.stopShimmer();
+            holder.shimm.setVisibility(View.GONE);
+            holder.content.setVisibility(View.VISIBLE);
             holder.brand.setText(model.getBrand());
             holder.price.setText("KSH " + model.getFinalPrice());
             holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -341,6 +347,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
                     final String waranty = model.getWarranty();
                     final String state = model.getState();
                     final String images = model.getImages();
+                    final String sellerID = model.getSellerID();
                     Intent intent = new Intent(context, requested.class);
                     intent.putExtra("id", id);
                     intent.putExtra("brand", brand);
@@ -359,6 +366,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
                     intent.putExtra("waranty", waranty);
                     intent.putExtra("state", state);
                     intent.putExtra("images", images);
+                    intent.putExtra("sellerID",sellerID);
                     startActivity(intent);
 
                 }
@@ -376,10 +384,13 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
             TextView price;
             ImageView image;
             MaterialCardView cardView;
-
+            com.facebook.shimmer.ShimmerFrameLayout shimm;
+            RelativeLayout content;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
+                content = itemView.findViewById(R.id.content);
+                shimm = itemView.findViewById(R.id.shimmer);
                 brand = itemView.findViewById(R.id.brand);
                 price = itemView.findViewById(R.id.price);
                 image = itemView.findViewById(R.id.image);

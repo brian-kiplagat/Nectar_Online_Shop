@@ -225,6 +225,8 @@
         android:layout_alignBottom="@id/cartStuff">
 
         <ImageView
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/placeholder" />

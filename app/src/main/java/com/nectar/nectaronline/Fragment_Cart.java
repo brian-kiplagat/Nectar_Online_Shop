@@ -128,7 +128,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
         final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
+                try {//AM HERE
                     Preferences preferences = new Preferences(context);
                     String url = getString(R.string.website_adress) + "/nectar/getcart.php";//can get to cart and filer all the IDs from the product ID can send back all the data as a json volley
                     RequestBody formBody = new FormBody.Builder()

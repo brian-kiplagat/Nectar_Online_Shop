@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,31 +33,44 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class requested extends AppCompatActivity {
+public class requested extends AppCompatActivity implements Adapter_Items.Clicked, View.OnClickListener {
+
     Toolbar toolbar;
     RecyclerView recyclerView;
+    RecyclerView sellersRecyclerView;
     RecyclerView.Adapter adapter;
+    RecyclerView.Adapter sellersAdapter;
+
     List<Object> list;
+    List<Object> sellerList = new ArrayList<>();
     TextView name;
     TextView brand;
     TextView amount;
     Chip stars;
     Chip previos;
     com.mikhaellopez.circularimageview.CircularImageView circularImageView;
+    com.mikhaellopez.circularimageview.CircularImageView circularImageView2;
+    TextView sellerName2;
+    TextView sellerDescription;
+
     TextView delivery_info;
     TextView return_policy;
     TextView warranty;
@@ -73,6 +87,7 @@ public class requested extends AppCompatActivity {
     TextView description;
     TextView size;
 
+    String SELLERID;
     String ID;
     String BRAND;
     String NAME;
@@ -91,6 +106,9 @@ public class requested extends AppCompatActivity {
     String STATE;
     String IMAGES;
     Button add;
+    ImageView share;
+    ImageView favourites;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,9 +117,14 @@ public class requested extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("BUY");
         setSupportActionBar(toolbar);
+
         circularImageView = findViewById(R.id.circularImageView);
+        circularImageView2 = findViewById(R.id.circularImageViewseller);
+        sellerName2 = findViewById(R.id.seller_name);
+        sellerDescription = findViewById(R.id.seller_desc);
         add = findViewById(R.id.button);
-        recyclerView = findViewById(R.id.recycler_view);
+        favourites = findViewById(R.id.fav);
+        share = findViewById(R.id.share);
         name = findViewById(R.id.name);
         brand = findViewById(R.id.brand);
         amount = findViewById(R.id.money);
@@ -122,10 +145,19 @@ public class requested extends AppCompatActivity {
         description = findViewById(R.id.description);
         size = findViewById(R.id.size);
         state = findViewById(R.id.state);
+        recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        sellersRecyclerView = findViewById(R.id.recycler_view_sellers);
+        sellersRecyclerView.setHasFixedSize(true);
+        sellersRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        share.setOnClickListener(this);
+        favourites.setOnClickListener(this);
+        add.setOnClickListener(this);
+
         Intent intent = getIntent();
         ID = intent.getStringExtra("id");//Each is unique to the product
+        SELLERID = intent.getStringExtra("sellerID");//Each is unique to the product
         BRAND = intent.getStringExtra("brand");
         NAME = intent.getStringExtra("name");
         NEWPRICE = intent.getStringExtra("newPrice");
@@ -178,74 +210,98 @@ public class requested extends AppCompatActivity {
                 state.setChipIconTint(getResources().getColorStateList(R.color.orange, null));
             }
         }
-        getSellerInformation(ID);
+        // new Seller().execute();
+        getSellerInfo(SELLERID);
 
     }
 
-    private void getSellerInformation(final String id) {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i <= 3; i++) {
+    private void getSellerInfo(String sellerid) {
+        String url = getString(R.string.website_adress) + "/nectar/seller/getsellerinfo.php";
+        RequestBody formBody = new FormBody.Builder()
+                .add("id", sellerid)//then from server can check if to search or not the return an appropriate respons
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        //Response response = client.newCall(request).execute();
+        try {
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    String res = response.body().string();
+                    Log.i("RESPONSE", res);
                     try {
-                        if (i == 1) {
-                            toast("Could not connect, trying again");
-                        }
-                        if (i == 2) {
-                            toast("This taking too long check your internet connection");
-                        }
-                        if (i == 3) {
-                            toast("Check your internet connection, then try again");
-                            break;
-                        }
-                        String url = getString(R.string.website_adress) + "/nectar/seller/getsellerinfo.php";
-                        RequestBody formBody = new FormBody.Builder()
-                                .add("id", id)
-                                .build();
-
-                        OkHttpClient client = new OkHttpClient();
-                        final Request request = new Request.Builder()
-                                .url(url)
-                                .post(formBody)
-                                .build();
-
-                        Response response = client.newCall(request).execute();
-                        final String res = response.body().string().trim();
-                        Log.i("response", res);
                         JSONObject obj = new JSONObject(res);
                         String code = obj.getString("RESPONSE_CODE");
                         String desc = obj.getString("RESPONSE_DESC");
-                        //
+                        updateContacts(obj);
+                        sellerList.clear();
                         if (code.contentEquals("SUCCESS")) {
-                            JSONArray array = obj.getJSONArray("DETAILS");
-                            JSONObject object = array.getJSONObject(0);
-                            final String SELLER_NAME = object.getString("name");
-                            String EMAIL = object.getString("email");
-                            String NUMBER = object.getString("phone");
-                            final String IMAGE = object.getString("image");
-                            requested.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Glide.with(getApplicationContext()).load(getString(R.string.website_adress) + "/nectar/seller/" + IMAGE).into(circularImageView);
-                                    seller.setText(SELLER_NAME);
-                                }
-                            });
+                            String STUFF = obj.getString("SHOP_ITEMS");
+                            JSONObject object = new JSONObject(STUFF);
+                            JSONArray array = object.getJSONArray("items");
+
+                            for (int h = 0; h < array.length(); h++) {
+                                JSONObject obje = array.getJSONObject(h);
+                                final String id = obje.getString("id");
+                                final String brand = obje.getString("brand");
+                                final String name = obje.getString("name");
+                                final String newPrice = obje.getString("new");
+                                final String old = obje.getString("old");
+                                final String description = obje.getString("description");
+                                final String specification = obje.getString("specification");
+                                final String keyfeatures = obje.getString("keyfeatures");
+                                final String size = obje.getString("size");
+                                final String color = obje.getString("color");
+                                final String instock = obje.getString("instock");
+                                final String weight = obje.getString("weight");
+                                final String material = obje.getString("material");
+                                final String inbox = obje.getString("inbox");
+                                final String waranty = obje.getString("waranty");
+                                final String state = obje.getString("state");
+                                final String images = obje.getString("images");
+                                final String sellerID = obje.getString("sellerID");
+                                ModeL_Shop_Items model = new ModeL_Shop_Items(name, brand, id, newPrice, old, description, keyfeatures, specification, color, size, weight, material, inbox, waranty, instock, state, images, sellerID);
+                                sellerList.add(model);
+
+                                requested.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        sellersAdapter = new Adapter_Items(getApplicationContext(), sellerList, requested.this);
+                                        sellersAdapter.notifyDataSetChanged();
+                                        sellersRecyclerView.setAdapter(sellersAdapter);
+                                    }
+                                });
+
+
+                            }
+
 
                         } else {
-                            toast(desc);
+                            Log.i("DESC ERROR: ", desc);
                         }
-                        break;
-
                     } catch (Exception e) {
-                        Log.i("ERROR", e.getLocalizedMessage());
+                        Log.i("EXCEPTION", e.getLocalizedMessage());
+
                     }
 
-                }
-            }
-        });
-        thread.start();
 
+                }
+            });
+        } catch (Exception e) {
+            Log.i("eeee EXCEPTION", e.getLocalizedMessage());
+        }
     }
+
 
     private void fetchImages(String images) {
         list = new ArrayList<>();
@@ -325,7 +381,7 @@ public class requested extends AppCompatActivity {
                 ClipData clip = ClipData.newPlainText("saved to clip", getString(R.string.kopokopTill_for_messaging_payment));
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(getApplicationContext(), "Till number: " + getString(R.string.kopokopTill_for_messaging_payment) + " copied to clipboard", Toast.LENGTH_SHORT).show();
-                String link = getString(R.string.website_adress) + "/nectar/" + IMAGES;
+                String link = getString(R.string.website_adress) + "/nectar/seller/" + IMAGES;
                 String string = "RE: Order for goods" + "\n" + "Im interested in this" + "\n" + "Brand: " + BRAND + "\n" + "Name: "
                         + NAME + "\n" + "DESCRIPTION: " + DESC + "\n" +
                         "SPECIFICATION: " + SPEC + "\n" + "KEY FEATURES: " +
@@ -372,7 +428,7 @@ public class requested extends AppCompatActivity {
 
     }
 
-    public void addToCart(View view) {
+    private void addToCart() {
         add.setEnabled(false);
         toast("Adding to cart");
         final Thread thread = new Thread(new Runnable() {
@@ -415,6 +471,75 @@ public class requested extends AppCompatActivity {
         add.setEnabled(true);
     }
 
+    @Override
+    public void onClick() {
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.share:
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("saved to clip", getString(R.string.kopokopTill_for_messaging_payment));
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(getApplicationContext(), "Till number: " + getString(R.string.kopokopTill_for_messaging_payment) + " copied to clipboard", Toast.LENGTH_SHORT).show();
+                String link = getString(R.string.website_adress) + "/nectar/seller/" + IMAGES;
+                String string = "Hey there check this out \uD83E\uDD13 \uD83D\uDE0E" + "\n" + "Brand: " + BRAND + "\n" + "Name: "
+                        + NAME + "\n" + "DESCRIPTION: " + DESC + "\n" +
+                        "SPECIFICATION: " + SPEC + "\n" + "KEY FEATURES: " +
+                        KEYFEATURES + "\n" + "SIZE: " + SIZE + "\n" + "COLOR: " + COLOR + "\n" + "INSTOCK: " +
+                        INSTOCK + "\n" + "WEIGHT: " + WEIGHT + "\n" + "MATERIAL: " + MATERIAL + "\n" + "WHATS IN THE BOX: " +
+                        WHATSINTHEBOX + "\n" + "WARANTY: " + WARANTY + "\n" + "STATE: " + STATE + "\n" + "Image link: " + "\n" + link + "\n" + "PRICE: Ksh " + NEWPRICE +
+                        "\n" + "You can buy this now by going to your Mpesa menu, select lipa na Mpesa, select buy goods and services, enter our till number:" + getString(R.string.kopokopTill_for_messaging_payment) + " " + "enter Ksh " + NEWPRICE + " then pay and finish the transaction, well process and deliver to your location ASAP. For this and other refined products click this link to download our android app,  :-) " + getString(R.string.playstore_link);
+                //now convert the string to a whatsapp message
+
+                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                /*This will be the actual content you wish you share.*/
+                /*The type of the content is text, obviously.*/
+                intent.setType("text/plain");
+                /*Applying information Subject and Body.*/
+                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Download the Nectar app \uD83D\uDE07 and get Fast food, Liqour and other goods delivered to your doorstep");
+                intent.putExtra(android.content.Intent.EXTRA_TEXT, string);
+                /*Fire!*/
+                startActivity(Intent.createChooser(intent, "Share using"));
+
+                Log.i("REQUESTED", "SHARE");
+                break;
+
+            case R.id.fav:
+                Preferences preferences = new Preferences(getApplicationContext());
+                String url = getString(R.string.website_adress) + "/nectar/client/addtofav.php";
+                RequestBody formBody = new FormBody.Builder()
+                        .add("email", preferences.getEmail())
+                        .build();
+
+                OkHttpClient client = new OkHttpClient();
+                final Request request = new Request.Builder()
+                        .url(url)
+                        .post(formBody)
+                        .build();
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        String res = response.body().string();
+                        Log.i("FAV-RESPONSE", res);
+                    }
+                });
+                Log.i("REQUESTED", "ADD TO CART");
+                break;
+            case R.id.button:
+                addToCart();
+                break;
+
+        }
+    }
+
     public class Adapter_Images extends RecyclerView.Adapter<Adapter_Images.ViewHolder> {
         List<Object> objectList;
         Context context;
@@ -455,4 +580,29 @@ public class requested extends AppCompatActivity {
         }
     }
 
+
+    private void updateContacts(JSONObject obj) {
+        try {
+            JSONArray array = obj.getJSONArray("CONTACT");
+            JSONObject object = array.getJSONObject(0);
+            final String SELLER_NAME = object.getString("name");
+            String EMAIL = object.getString("email");
+            String NUMBER = object.getString("phone");
+            final String IMAGE = object.getString("image");
+            requested.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Glide.with(getApplicationContext()).load(getString(R.string.website_adress) + "/nectar/seller/" + IMAGE).into(circularImageView);
+                    Glide.with(getApplicationContext()).load(getString(R.string.website_adress) + "/nectar/seller/" + IMAGE).into(circularImageView2);
+                    sellerDescription.setText("SELLER DESC");
+                    seller.setText(SELLER_NAME);
+                    sellerName2.setText(SELLER_NAME);
+
+                }
+            });
+        } catch (Exception e) {
+            Log.i("E", e.getLocalizedMessage());
+        }
+
+    }
 }

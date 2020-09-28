@@ -11,9 +11,9 @@
     app:rippleColor="@color/colorPrimary">
 
     <RelativeLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
         android:background="#FFFFFF"
         android:orientation="vertical">
 
@@ -53,4 +53,17 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer"
+        android:layout_alignTop="@id/content"
+        android:layout_alignBottom="@id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            android:src="@drawable/ic_small_box" />
+    </com.facebook.shimmer.ShimmerFrameLayout>
 </com.google.android.material.card.MaterialCardView>

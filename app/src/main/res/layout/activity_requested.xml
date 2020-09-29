@@ -123,12 +123,10 @@
                             android:layout_margin="3dp"
                             android:layout_marginRight="16dp"
                             android:checked="true"
-                            android:text="7"
+                            android:text="kes 500"
                             android:textColor="@color/design_default_color_on_secondary"
                             android:textSize="13sp"
-                            android:textStyle="bold"
-                            app:chipIcon="@drawable/ic_baseline_storefront_24"
-                            app:chipIconTint="@color/colorPrimaryDark" />
+                            android:textStyle="bold" />
 
                         <View
 
@@ -154,7 +152,7 @@
                     android:layout_marginRight="16dp"
                     android:checked="true"
                     android:padding="5dp"
-                    android:text="7"
+                    android:text="instock 7"
                     android:textColor="@color/design_default_color_on_secondary"
                     android:textSize="13sp"
                     android:textStyle="bold"

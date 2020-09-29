@@ -2,7 +2,6 @@ package com.nectar.nectaronline;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,10 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -130,9 +127,9 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             public void run() {
                 try {//AM HERE
                     Preferences preferences = new Preferences(context);
-                    String url = getString(R.string.website_adress) + "/nectar/getcart.php";//can get to cart and filer all the IDs from the product ID can send back all the data as a json volley
+                    String url = getString(R.string.website_adress) + "/nectar/buy/getclientcart.php";//can get to cart and filer all the IDs from the product ID can send back all the data as a json volley
                     RequestBody formBody = new FormBody.Builder()
-                            .add("phone", preferences.getNumber())//then from server can check if to search or not the return an appropriate respons
+                            //then from server can check if to search or not the return an appropriate respons
                             .add("email", preferences.getEmail())//then from server can check if to search or not the return an appropriate respons
                             .build();
 
@@ -154,40 +151,88 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                         //Log.i("SHOP ITEMS: ", STUFF);
                         JSONObject object = new JSONObject(STUFF);
                         JSONArray array = object.getJSONArray("items");
-                        int priceCount = 0;
-
-
-
+                        list = new ArrayList<>();
+                        list.clear();
                         //Log.i("ARRAY TO STRING: ", array.toString());
                         for (int i = 0; i < array.length(); i++) {
                             JSONObject obje = array.getJSONObject(i);
-                            final String PRODUCT_ID = obje.getString("productid");
-                            Log.i("Product id in Cart", PRODUCT_ID);
-                            //try to send all the cart info as clear text and avoid unecessary interaction
-                            //priceCount = Integer.parseInt(newPrice) + priceCount;
-                            //Log.i("PRICE AT THIS INSTANCE",String.valueOf(priceCount));
+                            final String id = obje.getString("id");
+                            final String brand = obje.getString("brand");
+                            final String name = obje.getString("name");
+                            final String newPrice = obje.getString("new");
+                            final String old = obje.getString("old");
+                            final String description = obje.getString("description");
+                            final String specification = obje.getString("specification");
+                            final String keyfeatures = obje.getString("keyfeatures");
+                            final String size = obje.getString("size");
+                            final String color = obje.getString("color");
+                            final String instock = obje.getString("instock");
+                            final String weight = obje.getString("weight");
+                            final String material = obje.getString("material");
+                            final String inbox = obje.getString("inbox");
+                            final String waranty = obje.getString("waranty");
+                            final String state = obje.getString("state");
+                            final String images = obje.getString("images");
+                            final String sellerID = obje.getString("sellerID");
+                            final String productID = obje.getString("productID");
+                            final String quantity = obje.getString("quantity");
 
+                            /*Log.i("BRAND", brand);
+                            Log.i("NAME", name);
+                            Log.i("NEW_PRICE", newPrice);
+                            Log.i("OLD_PRICE", old);
+                            Log.i("DESC", description);
+                            Log.i("SPEC", specification);
+                            Log.i("KEY", keyfeatures);
+                            Log.i("SIZE", size);
+                            Log.i("COLOR", color);
+                            Log.i("INSTOCK", instock);
+                            Log.i("WEIGHT", weight);
+                            Log.i("MATERIAL", material);
+                            Log.i("INBOX", inbox);
+                            Log.i("BRAND", brand);
+                            Log.i("WARRANTY", waranty);
+                            Log.i("STATE", state);
+                            Log.i("IMAGES", images);*/
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Model_Cart_Id model = new Model_Cart_Id(PRODUCT_ID);
+                                    ModeL_Cart_Items model = new ModeL_Cart_Items(name, brand, id, newPrice, old, description, keyfeatures, specification, color, size, weight, material, inbox, waranty, instock, state, images, sellerID, productID, quantity);
                                     list.add(model);
                                     shimmerFrameLayout.stopShimmer();
                                     shimmerFrameLayout.setVisibility(View.GONE);
-                                    button.setVisibility(View.VISIBLE);
                                     adapter = new Adapter_Cart(list);
                                     adapter.notifyDataSetChanged();
+                                    swipeRefreshLayout.setRefreshing(false);
                                     recyclerView.setAdapter(adapter);
-
 
                                 }
                             });
                         }
 
 
-                    } else if (desc.contentEquals("ZERO ITEMS")) {
-                        toast("Add items to your cart");
-                        Log.i("ERROR CART DESC: ", desc);
+                    } else if (desc.contentEquals("ERROR: ZERO ITEMS FROM NAME SEARCH")) {
+                        Snackbar.make(recyclerView, "Ops! We could'nt find that", Snackbar.LENGTH_SHORT).show();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                shimmerFrameLayout.stopShimmer();
+                                shimmerFrameLayout.setVisibility(View.GONE);
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
+                    } else if (desc.contentEquals("ERROR: ZERO ITEMS FROM CHIP SEARCH")) {
+                        Snackbar.make(recyclerView, "Ops! We could'nt find that", Snackbar.LENGTH_SHORT).show();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                shimmerFrameLayout.stopShimmer();
+                                shimmerFrameLayout.setVisibility(View.GONE);
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
+                    } else {
+                        Log.i("DESC ERROR: ", desc);
                     }
                 } catch (Exception e) {
                     Log.i("ERROR EXC: ", e.getLocalizedMessage());
@@ -233,149 +278,52 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
 
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-            final Model_Cart_Id model = (Model_Cart_Id) list_cart_items.get(position);
-            final String ID = model.getProduct_id();
-            //
-            //holder.shimm.startShimmer();
-            holder.cartStuff.setVisibility(View.INVISIBLE);
-            final Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
+            final ModeL_Cart_Items model = (ModeL_Cart_Items) list_cart_items.get(position);
+            holder.shimm.stopShimmer();
+            holder.shimm.setVisibility(View.GONE);
+            final String id = model.getId();
+            final String brand = model.getBrand();
+            final String name = model.getName();
+            final String newPrice = model.getFinalPrice();
+            final String old = model.getInitialPrice();
+            final String description = model.getDescription();
+            final String specification = model.getSpecification();
+            final String keyfeatures = model.getKeyFeatures();
+            final String size = model.getSize();
+            final String color = model.getColour();
+            final String instock = model.getInstock();
+            final String weight = model.getWeight();
+            final String material = model.getMaterial();
+            final String inbox = model.getInsideBox();
+            final String waranty = model.getWarranty();
+            final String state = model.getState();
+            final String images = model.getImages();
+            final String sellerID = model.getSellerID();
+            final String productID = model.getProductID();
+            final String cartID = model.getId();
+            String link = getString(R.string.website_adress) + "/nectar/seller/" + images;
+            Glide.with(context).load(link).into(holder.prod_image);
+            holder.brand.setText(model.getBrand());
+            holder.name.setText(model.getName());
+            holder.instock.setText("Stock " + model.getInstock());
+            holder.state.setText(model.getState());
+            holder.brand.setText(model.getBrand());
 
-                        String url = getString(R.string.website_adress) + "/nectar/getaparticularproduct.php";
-                        RequestBody formBody = new FormBody.Builder()
-                                .add("id", ID)
-                                //then from server can check if to search or not the return an appropriate respons
-                                .build();
-
-                        OkHttpClient client = new OkHttpClient();
-                        final Request request = new Request.Builder()
-                                .url(url)
-                                .post(formBody)
-                                .build();
-
-                        Response response = client.newCall(request).execute();
-                        final String res = response.body().string().trim();
-                        Log.i("HY response", res);
-                        JSONObject obj = new JSONObject(res);
-                        String code = obj.getString("RESPONSE_CODE");
-                        String desc = obj.getString("RESPONSE_DESC");
-                        if (code.contentEquals("SUCCESS")) {
-                            JSONArray array = obj.getJSONArray("DETAILS");
-                            //Log.i("ARRAY TO STRING: ", array.toString());
-                            JSONObject obje = array.getJSONObject(0);
-                            //final String PRODUCT_ID = obje.getString("productid");
-                            final String id = obje.getString("id");
-                            final String brand = obje.getString("brand");
-                            final String name = obje.getString("name");
-                            final String newPrice = obje.getString("new");
-                            final String old = obje.getString("old");
-                            final String description = obje.getString("description");
-                            final String specification = obje.getString("specification");
-                            final String keyfeatures = obje.getString("keyfeatures");
-                            final String size = obje.getString("size");
-                            final String color = obje.getString("color");
-                            final String instock = obje.getString("instock");
-                            final String weight = obje.getString("weight");
-                            final String material = obje.getString("material");
-                            final String inbox = obje.getString("inbox");
-                            final String waranty = obje.getString("waranty");
-                            final String state = obje.getString("state");
-                            final String images = obje.getString("images");
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                    holder.shimm.stopShimmer();
-                                    holder.shimm.setVisibility(View.GONE);
-                                    holder.cartStuff.setVisibility(View.VISIBLE);
-
-                                    holder.brand.setText(brand);
-                                    holder.name.setText(name);
-                                    holder.price.setText(newPrice);
-                                    holder.number_of_items.setText("1");
-                                    holder.size.setText(size);
-                                    holder.instock.setText(instock);
-                                    String link = getString(R.string.website_adress) + "/nectar/seller/" + images;
-                                    Glide.with(context).load(link).into(holder.prod_image);
-
-                                    if (state.contentEquals("BRAND")) {
-                                        holder.state.setText(getString(R.string.BRAND_NEW));
-
-                                    }
-                                    if (state.contentEquals("REFURBISHED")) {
-                                        holder.state.setText(getString(R.string.REFURBISHED));
-
-                                    }
-                                    if (state.contentEquals("SECOND")) {
-                                        holder.state.setText(getString(R.string.SECONDHAND));
-
-                                    }
-                                    holder.increase.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            if (count >= Integer.parseInt(instock)) {
-                                                holder.reduce.setColorFilter(ContextCompat.getColor(context, R.color.red), PorterDuff.Mode.SRC_IN);
-                                                toast("Ops! Only " + instock + " are available");
-
-                                            } else {
-                                                count++;
-                                                holder.number_of_items.setText(String.valueOf(count));
-
-                                            }
-
-                                        }
-                                    });
-                                    holder.reduce.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            if (count <= 1) {
-                                                holder.reduce.setColorFilter(ContextCompat.getColor(context, R.color.red), PorterDuff.Mode.SRC_IN);
-                                                toast("Ops!");
-
-                                            } else {
-                                                count--;
-                                                holder.number_of_items.setText(String.valueOf(count));
-
-                                            }
-
-                                        }
-                                    });
-                                }
-                            });
-
-
-                        } else if (desc.contentEquals("NOT FOUND")) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(context, "An item could not be found because it was removed,delete it", Toast.LENGTH_LONG).show();
-                                    holder.explanation.setVisibility(View.VISIBLE);
-                                    holder.explanation.setText("Ops! Not found");
-                                    holder.shimm.stopShimmer();
-                                    holder.shimm.setVisibility(View.GONE);
-                                    holder.cartStuff.setVisibility(View.VISIBLE);
-                                }
-                            });
-                        } else {
-
-                            Log.i("ERROR: ", desc);
-                        }
-                    } catch (Exception e) {
-                        Log.i("ERROR: ", e.getLocalizedMessage());
-                    }
-
-                }
-            });
-            thread.start();
             holder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     toast("Removing");
-                    removeItem(ID);
+                    removeItem(id);
                     list.remove(position);
                     adapter.notifyDataSetChanged();
+
+                }
+            });
+            final int priceCount = 0;
+            holder.increase.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int newPrice = priceCount + 1;
 
                 }
             });

@@ -185,7 +185,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
         color.setText(COLOR);
         weight.setText(WEIGHT);
         inbox.setText(WHATSINTHEBOX);
-        instock.setText(INSTOCK);
+        instock.setText("Instock " + INSTOCK);
         material.setText(MATERIAL);
         description.setText(DESC);
         size.setText(SIZE);
@@ -361,7 +361,6 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
             public boolean onQueryTextChange(String newText) {
                 Log.i("Query Text Change", newText);
                 Fragment_Shop shop = new Fragment_Shop();
-                boolean search = true;
                 shop.fetch(true, true, newText);
                 return false;
             }
@@ -437,11 +436,30 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
                 try {
 
                     Preferences preferences = new Preferences(getApplicationContext());
-                    String url = getString(R.string.website_adress) + "/nectar/addtocart.php";
+                    String url = getString(R.string.website_adress) + "/nectar/buy/addtocart.php";
                     RequestBody formBody = new FormBody.Builder()
-                            .add("phone", preferences.getNumber())
-                            .add("id", ID)
+
+                            .add("productID", ID)
+                            .add("sellerID", SELLERID)
+                            .add("brand", BRAND)
+                            .add("name", NAME)
+                            .add("newPrice", NEWPRICE)
+                            .add("old", OLD)
+                            .add("color", COLOR)
+                            .add("description", DESC)
+                            .add("specification", SPEC)
+                            .add("keyfeatures", KEYFEATURES)
+                            .add("size", SIZE)
+                            .add("color", COLOR)
+                            .add("instock", INSTOCK)
+                            .add("weight", WEIGHT)
+                            .add("material", MATERIAL)
+                            .add("inbox", WHATSINTHEBOX)
+                            .add("waranty", WARANTY)
+                            .add("state", STATE)
+                            .add("images", IMAGES)
                             .add("email", preferences.getEmail())
+                            .add("quantity", "1")
                             .build();
 
                     OkHttpClient client = new OkHttpClient();
@@ -586,15 +604,17 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
             JSONArray array = obj.getJSONArray("CONTACT");
             JSONObject object = array.getJSONObject(0);
             final String SELLER_NAME = object.getString("name");
+            final String SELLER_DESC = object.getString("desc");
             String EMAIL = object.getString("email");
             String NUMBER = object.getString("phone");
+
             final String IMAGE = object.getString("image");
             requested.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     Glide.with(getApplicationContext()).load(getString(R.string.website_adress) + "/nectar/seller/" + IMAGE).into(circularImageView);
                     Glide.with(getApplicationContext()).load(getString(R.string.website_adress) + "/nectar/seller/" + IMAGE).into(circularImageView2);
-                    sellerDescription.setText("SELLER DESC");
+                    sellerDescription.setText(SELLER_DESC);
                     seller.setText(SELLER_NAME);
                     sellerName2.setText(SELLER_NAME);
 

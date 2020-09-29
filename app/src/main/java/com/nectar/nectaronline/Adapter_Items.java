@@ -71,6 +71,8 @@ public class Adapter_Items extends RecyclerView.Adapter<Adapter_Items.ViewHolder
                 final String waranty = model.getWarranty();
                 final String state = model.getState();
                 final String images = model.getImages();
+                final String sellerID = model.getSellerID();
+
                 Intent intent = new Intent(context, requested.class);
                 intent.putExtra("id", id);
                 intent.putExtra("brand", brand);
@@ -89,6 +91,8 @@ public class Adapter_Items extends RecyclerView.Adapter<Adapter_Items.ViewHolder
                 intent.putExtra("waranty", waranty);
                 intent.putExtra("state", state);
                 intent.putExtra("images", images);
+                intent.putExtra("sellerID", sellerID);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
                 context.startActivity(intent);
 
             }

@@ -347,7 +347,7 @@ public class SignUp extends AppCompatActivity {
 
         final AlertDialog dialogBuilder = new AlertDialog.Builder(SignUp.this).create();
         LayoutInflater layoutInflater = SignUp.this.getLayoutInflater();
-        View dialogView = layoutInflater.inflate(R.layout.dialog_login, null);
+        View dialogView = layoutInflater.inflate(R.layout.dialog_shimmer_with_logo, null);
         dialogBuilder.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogBuilder.setView(dialogView);
         dialogBuilder.setCancelable(false);

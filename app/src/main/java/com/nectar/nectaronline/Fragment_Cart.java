@@ -305,10 +305,11 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             Glide.with(context).load(link).into(holder.prod_image);
             holder.brand.setText(model.getBrand());
             holder.name.setText(model.getName());
-            holder.instock.setText("Stock " + model.getInstock());
+            holder.instock.setText("Stock: " + model.getInstock());
             holder.state.setText(model.getState());
             holder.brand.setText(model.getBrand());
-
+            holder.number_of_items.setText("1");
+            holder.size.setText("Size: "+model.getSize());
             holder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

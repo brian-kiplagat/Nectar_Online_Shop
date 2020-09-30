@@ -113,7 +113,7 @@ public class Login extends AppCompatActivity {
         //2.FAILURE---------The login was unsucessfull.....REASON...USER IS IN NOT DATABASE
         final AlertDialog dialogBuilder = new AlertDialog.Builder(Login.this).create();
         LayoutInflater layoutInflater = Login.this.getLayoutInflater();
-        View dialogView = layoutInflater.inflate(R.layout.dialog_login, null);
+        View dialogView = layoutInflater.inflate(R.layout.dialog_shimmer_with_logo, null);
         dialogBuilder.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogBuilder.setView(dialogView);
         dialogBuilder.setCancelable(false);

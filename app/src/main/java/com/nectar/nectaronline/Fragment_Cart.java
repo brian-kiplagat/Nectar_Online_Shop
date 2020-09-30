@@ -2,6 +2,8 @@ package com.nectar.nectaronline;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,15 +25,20 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -114,16 +122,15 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
         Log.i("NUMBER", number);
         fetch(number);
         swipeRefreshLayout.setOnRefreshListener(this);
-        deletedListener.onDelete();
+
         return v;
 
     }
 
     public void fetch(final String email) {
+        //deletedListener.onDelete();
         swipeRefreshLayout.setRefreshing(true);
         shimmerFrameLayout.startShimmer();
-        list = new ArrayList<>();
-        list.clear();
         final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -203,9 +210,9 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                                     list.add(model);
                                     shimmerFrameLayout.stopShimmer();
                                     shimmerFrameLayout.setVisibility(View.GONE);
+                                    swipeRefreshLayout.setRefreshing(false);
                                     adapter = new Adapter_Cart(list);
                                     adapter.notifyDataSetChanged();
-                                    swipeRefreshLayout.setRefreshing(false);
                                     recyclerView.setAdapter(adapter);
 
                                 }
@@ -213,28 +220,34 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                         }
 
 
-                    } else if (desc.contentEquals("ERROR: ZERO ITEMS FROM NAME SEARCH")) {
-                        Snackbar.make(recyclerView, "Ops! We could'nt find that", Snackbar.LENGTH_SHORT).show();
+                    } else if (desc.contentEquals("ZERO ITEMS")&&Fragment_Cart.this.isResumed()) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
+                                LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+                                View dialogView = layoutInflater.inflate(R.layout.dialog_empty_cart, null);
+                                MaterialButton button = dialogView.findViewById(R.id.continueAdding);
+                                button.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialogBuilder.dismiss();
+                                        getShopFragment.moveToTheShopFragment();
+                                    }
+                                });
+                                dialogBuilder.setView(dialogView);
+                                dialogBuilder.setCancelable(false);
+                                dialogBuilder.show();
                                 shimmerFrameLayout.stopShimmer();
                                 shimmerFrameLayout.setVisibility(View.GONE);
                                 swipeRefreshLayout.setRefreshing(false);
-                            }
-                        });
-                    } else if (desc.contentEquals("ERROR: ZERO ITEMS FROM CHIP SEARCH")) {
-                        Snackbar.make(recyclerView, "Ops! We could'nt find that", Snackbar.LENGTH_SHORT).show();
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                shimmerFrameLayout.stopShimmer();
-                                shimmerFrameLayout.setVisibility(View.GONE);
-                                swipeRefreshLayout.setRefreshing(false);
+
                             }
                         });
                     } else {
-                        Log.i("DESC ERROR: ", desc);
+                        shimmerFrameLayout.stopShimmer();
+                        shimmerFrameLayout.setVisibility(View.GONE);
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 } catch (Exception e) {
                     Log.i("ERROR EXC: ", e.getLocalizedMessage());
@@ -243,7 +256,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             }
         });
         thread.start();
-        swipeRefreshLayout.setRefreshing(false);
+
     }
 
     @Override
@@ -337,9 +350,8 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                 @Override
                 public void onClick(View v) {
                     toast("Removing");
-                    removeItem(id);
-                    list.remove(position);
-                    adapter.notifyDataSetChanged();
+                    removeItem(id, position);
+
 
                 }
             });
@@ -348,7 +360,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                 @Override
                 public void onClick(View v) {
                     int newPrice = priceCount + 1;
-
+            //HERE
                 }
             });
 
@@ -392,25 +404,28 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
 
     }
 
-    private void removeItem(final String id) {
-        final Thread thread = new Thread(new Runnable() {
+    private void removeItem(final String id, final int position) {
+        String url = getString(R.string.website_adress) + "/nectar/buy/removefromcart.php";
+        RequestBody formBody = new FormBody.Builder()
+                .add("id", id)
+                .add("email", email)
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void run() {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
-                    //remove from cart where id=id and email=user email...........
-                    String url = getString(R.string.website_adress) + "/nectar/buy/removefromcart.php";
-                    RequestBody formBody = new FormBody.Builder()
-                            .add("id", id)
-                            .add("email", email)
-                            .build();
-
-                    OkHttpClient client = new OkHttpClient();
-                    final Request request = new Request.Builder()
-                            .url(url)
-                            .post(formBody)
-                            .build();
-
-                    Response response = client.newCall(request).execute();
                     final String res = response.body().string().trim();
                     Log.i("response", res);
                     JSONObject obj = new JSONObject(res);
@@ -420,8 +435,14 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                fetch(number);
+                                //fetch(number);
+                                list.remove(position);
+                                //recyclerView.removeViewAt(position);
+                                adapter.notifyItemRemoved(position);
+                                adapter.notifyItemRangeChanged(position, list.size());
+                                //adapter.notifyDataSetChanged();
                                 deletedListener.onDelete();
+                                Log.i("Removed: ", "Yeah");
                             }
                         });
 
@@ -431,12 +452,11 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                         Log.i("ERROR: ", desc);
                     }
                 } catch (Exception e) {
-                    Log.i("ERROR: ", e.getLocalizedMessage());
-                }
 
+                }
             }
         });
-        thread.start();
+
     }
 
     private void toast(String s) {
@@ -453,9 +473,20 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
         void onDelete();
     }
 
+    GetShopFragment getShopFragment;
+
+    public interface GetShopFragment {
+        void moveToTheShopFragment();
+    }
+
+    public void setGetShopFragment(GetShopFragment getShopFragment) {
+        this.getShopFragment = getShopFragment;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
-        deletedListener.onDelete();
+        //fetch(new Preferences(context).getEmail());
     }
+
 }

@@ -46,7 +46,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Fragment_Cart.DeletedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Fragment_Cart.DeletedListener , Fragment_Cart.GetShopFragment {
     Toolbar toolbar;
     private Fragment_Cart cart;
     private Fragment_Profile profile;
@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         cart = new Fragment_Cart();
         profile = new Fragment_Profile();
         cart.setDeletedListener(this);
+        cart.setGetShopFragment(this);
         tabLayout.setupWithViewPager(viewPager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), 0);
         adapter.addFragment(shop, "SHOP");
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
         }
-        getCount();
+
 
     }
 
@@ -324,6 +325,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    @Override
+    public void moveToTheShopFragment() {
+        tabLayout.setScrollX(tabLayout.getWidth());
+        tabLayout.getTabAt(0).select();
+    }
+
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {
         private List<Fragment> fragmentsList = new ArrayList<>();
@@ -370,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.i("SEE CART", "YES");
                 tabLayout.setScrollX(tabLayout.getWidth());
                 tabLayout.getTabAt(1).select();
-
+                //no code here that updates fragment UI
             } else {
                 Log.i("SEE CART", "NO");
             }

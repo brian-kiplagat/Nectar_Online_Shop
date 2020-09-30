@@ -336,7 +336,9 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
     }
 
     private void toast(String s) {
-        Snackbar.make(recyclerView, s, Snackbar.LENGTH_LONG).show();
+        Snackbar snackbar=   Snackbar.make(recyclerView, s, Snackbar.LENGTH_SHORT);
+        snackbar.setDuration(1500);
+        snackbar.show();
     }
 
     @Override
@@ -431,62 +433,64 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
     private void addToCart() {
         add.setEnabled(false);
         toast("Adding to cart");
-        final Thread thread = new Thread(new Runnable() {
+        Preferences preferences = new Preferences(getApplicationContext());
+        String url = getString(R.string.website_adress) + "/nectar/buy/addtocart.php";
+        RequestBody formBody = new FormBody.Builder()
+
+                .add("productID", ID)
+                .add("sellerID", SELLERID)
+                .add("brand", BRAND)
+                .add("name", NAME)
+                .add("newPrice", NEWPRICE)
+                .add("old", OLD)
+                .add("color", COLOR)
+                .add("description", DESC)
+                .add("specification", SPEC)
+                .add("keyfeatures", KEYFEATURES)
+                .add("size", SIZE)
+                .add("color", COLOR)
+                .add("instock", INSTOCK)
+                .add("weight", WEIGHT)
+                .add("material", MATERIAL)
+                .add("inbox", WHATSINTHEBOX)
+                .add("waranty", WARANTY)
+                .add("state", STATE)
+                .add("images", IMAGES)
+                .add("email", preferences.getEmail())
+                .add("quantity", "1")
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void run() {
-                try {
-
-                    Preferences preferences = new Preferences(getApplicationContext());
-                    String url = getString(R.string.website_adress) + "/nectar/buy/addtocart.php";
-                    RequestBody formBody = new FormBody.Builder()
-
-                            .add("productID", ID)
-                            .add("sellerID", SELLERID)
-                            .add("brand", BRAND)
-                            .add("name", NAME)
-                            .add("newPrice", NEWPRICE)
-                            .add("old", OLD)
-                            .add("color", COLOR)
-                            .add("description", DESC)
-                            .add("specification", SPEC)
-                            .add("keyfeatures", KEYFEATURES)
-                            .add("size", SIZE)
-                            .add("color", COLOR)
-                            .add("instock", INSTOCK)
-                            .add("weight", WEIGHT)
-                            .add("material", MATERIAL)
-                            .add("inbox", WHATSINTHEBOX)
-                            .add("waranty", WARANTY)
-                            .add("state", STATE)
-                            .add("images", IMAGES)
-                            .add("email", preferences.getEmail())
-                            .add("quantity", "1")
-                            .build();
-
-                    OkHttpClient client = new OkHttpClient();
-                    final Request request = new Request.Builder()
-                            .url(url)
-                            .post(formBody)
-                            .build();
-
-                    Response response = client.newCall(request).execute();
-                    final String res = response.body().string().trim();
-                    Log.i("response", res);
-                    JSONObject obj = new JSONObject(res);
-                    String code = obj.getString("RESPONSE_CODE");
-                    if (code.contentEquals("SUCCESS")) {
-                        toast("Added to cart");
-                    } else {
-                        String desc = obj.getString("RESPONSE_DESC");
-                        Log.i("ERROR: ", desc);
-                    }
-                } catch (Exception e) {
-                    Log.i("ERROR: ", e.getLocalizedMessage());
-                }
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
 
             }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            try {
+                final String res = response.body().string().trim();
+                Log.i("response", res);
+                JSONObject obj = new JSONObject(res);
+                String code = obj.getString("RESPONSE_CODE");
+                if (code.contentEquals("SUCCESS")) {
+                    toast("Added to cart");
+                } else {
+                    toast("Ops ! Lets try that again");
+                    String desc = obj.getString("RESPONSE_DESC");
+                    Log.i("ERROR: ", desc);
+                }
+            }catch (Exception e){
+                Log.i("ERROR: ", e.getLocalizedMessage());
+            }
+            }
         });
-        thread.start();
+
         add.setEnabled(true);
     }
 

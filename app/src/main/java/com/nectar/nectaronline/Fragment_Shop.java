@@ -118,6 +118,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.clear();//clear both before each iteration
         listChips.clear();//clear before the itaeration so that doent fill up again
+        arrayList.add("Latest in");
         arrayList.add("Liqour");
         arrayList.add("Fast food");
         arrayList.add("Energy drinks");
@@ -164,6 +165,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
             @Override
             public void run() {
                 try {
+
                     String url = getString(R.string.website_adress) + "/nectar/getitems.php";
                     RequestBody formBody = new FormBody.Builder()
                             .add("search", QUERY)//then from server can check if to search or not the return an appropriate respons

@@ -88,7 +88,11 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
+                app:chipIcon="@drawable/ic_logo_cart_empty_straight_lines_bold_svg"
+                app:chipIconEnabled="true"
+                android:checkable="false"
+                app:chipIconSize="15dp"
+                android:textSize="15sp"
                 android:text="Nectar" />
 
 

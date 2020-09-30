@@ -2,6 +2,7 @@ package com.nectar.nectaronline;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -112,7 +114,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
         Log.i("NUMBER", number);
         fetch(number);
         swipeRefreshLayout.setOnRefreshListener(this);
-
+        deletedListener.onDelete();
         return v;
 
     }
@@ -309,7 +311,28 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             holder.state.setText(model.getState());
             holder.brand.setText(model.getBrand());
             holder.number_of_items.setText("1");
-            holder.size.setText("Size: "+model.getSize());
+            if (model.getState().contentEquals("BRAND")) {
+                holder.state.setText("BRAND NEW");
+                holder.state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_brand_new, null));
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                    holder.state.setChipIconTint(getResources().getColorStateList(R.color.yellow, null));
+                }
+            }
+            if (model.getState().contentEquals("REFURBISHED")) {
+                holder.state.setText("REFURBISHED");
+                holder.state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_refurb, null));
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                    holder.state.setChipIconTint(getResources().getColorStateList(R.color.green, null));
+                }
+            }
+            if (model.getState().contentEquals("SECOND")) {
+                holder.state.setText("SECOND HAND");
+                holder.state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_second_hand, null));
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                    holder.state.setChipIconTint(getResources().getColorStateList(R.color.orange, null));
+                }
+            }
+            holder.size.setText("Size: " + model.getSize());
             holder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -375,7 +398,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             public void run() {
                 try {
                     //remove from cart where id=id and email=user email...........
-                    String url = getString(R.string.website_adress) + "/nectar/removefromcart.php";
+                    String url = getString(R.string.website_adress) + "/nectar/buy/removefromcart.php";
                     RequestBody formBody = new FormBody.Builder()
                             .add("id", id)
                             .add("email", email)
@@ -398,6 +421,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                             @Override
                             public void run() {
                                 fetch(number);
+                                deletedListener.onDelete();
                             }
                         });
 
@@ -419,5 +443,19 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
         Snackbar.make(recyclerView, s, Snackbar.LENGTH_SHORT).show();
     }
 
+    DeletedListener deletedListener;
 
+    public void setDeletedListener(DeletedListener deletedListener) {
+        this.deletedListener = deletedListener;
+    }
+
+    public interface DeletedListener {
+        void onDelete();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        deletedListener.onDelete();
+    }
 }

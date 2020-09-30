@@ -1,5 +1,19 @@
 package com.nectar.nectaronline;
 
+import android.app.SearchManager;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.SearchView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -11,46 +25,28 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import android.app.SearchManager;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.RelativeLayout;
-import android.widget.SearchView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okio.BufferedSink;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Fragment_Cart.DeletedListener {
     Toolbar toolbar;
     private Fragment_Cart cart;
     private Fragment_Profile profile;
@@ -74,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         shop = new Fragment_Shop();
         cart = new Fragment_Cart();
         profile = new Fragment_Profile();
-
+        cart.setDeletedListener(this);
         tabLayout.setupWithViewPager(viewPager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), 0);
         adapter.addFragment(shop, "SHOP");
@@ -102,7 +98,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setNavigationBarColor(getResources().getColor(R.color.colorPrimary));
         }
+        getCount();
 
+    }
+
+    private void getCount() {
+        String url = getString(R.string.website_adress) + "/nectar/buy/getcount.php";
+        RequestBody formBody = new FormBody.Builder()
+                .add("email", new Preferences(getApplicationContext()).getEmail())//then from server can check if to search or not the return an appropriate respons
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String res = response.body().string();
+                Log.i("CART", res);
+                Log.i("SERVER RESPONSE", res);
+                try {
+                    JSONObject obj = new JSONObject(res);
+                    String code = obj.getString("RESPONSE_CODE");
+                    String desc = obj.getString("RESPONSE_DESC");
+                    if (code.contentEquals("SUCCESS")) {
+                        String STUFF = obj.getString("COUNT");
+                        JSONObject object = new JSONObject(STUFF);
+                        JSONArray array = object.getJSONArray("items");
+                        JSONObject obje = array.getJSONObject(0);
+                        final String count = obje.getString("COUNT(*)");
+                        Log.i("---COUNT--", count);
+                        BadgeDrawable badgeDrawable = tabLayout.getTabAt(1).getOrCreateBadge();
+                        badgeDrawable.setVisible(true);
+                        badgeDrawable.setNumber(Integer.parseInt(count));
+
+
+                    } else if (desc.contentEquals("ZERO ITEMS")) {
+                        Log.i("---ZERO ITEMS--", "NO ITEMS FOUND");
+                        BadgeDrawable badgeDrawable = tabLayout.getTabAt(1).getOrCreateBadge();
+                        badgeDrawable.setVisible(true);
+                        badgeDrawable.setNumber(0);
+                    }
+                } catch (Exception e) {
+
+                }
+
+            }
+        });
     }
 
     @Override
@@ -257,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.improve:
                 Intent intent = new Intent( Intent.ACTION_VIEW, Uri.parse( "sms:" + getString(R.string.phone_adress)));
                 String message="Help improve this app by sharing your thoughts\n";
-                intent.putExtra( "sms_body", message );
+                intent.putExtra("sms_body", message);
                 startActivity(intent);
 
                 Log.i("IMPROVE", "onOptionsItemSelected: ");
@@ -266,6 +315,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return true;
 
+    }
+
+    @Override
+    public void onDelete() {
+        getCount();
     }
 
 

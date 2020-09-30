@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -365,7 +366,6 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
                 return false;
             }
         });
-
 
         return true;
     }

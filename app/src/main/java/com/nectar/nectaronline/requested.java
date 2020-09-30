@@ -30,7 +30,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -417,7 +416,9 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
                 break;
             case R.id.cart:
                 Log.i("onOptionsItemSelected: ", "CART");
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("seeCart", true);
+                startActivity(intent);
                 break;
 
         }

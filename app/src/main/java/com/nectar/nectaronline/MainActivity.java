@@ -320,6 +320,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onDelete() {
         getCount();
+        cart.fetch(new Preferences(getApplicationContext()).getEmail());
+
     }
 
 
@@ -356,5 +358,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getCount();
+        Intent intent = getIntent();
+        if (intent.hasExtra("seeCart")) {
+            Log.i("Has extra", "POSITIVE");
+            boolean seeCart = intent.getBooleanExtra("seeCart", false);
+            if (seeCart) {
+                Log.i("SEE CART", "YES");
+                tabLayout.setScrollX(tabLayout.getWidth());
+                tabLayout.getTabAt(1).select();
 
+            } else {
+                Log.i("SEE CART", "NO");
+            }
+        }else{
+            Log.i("Has extra","NO");
+        }
+
+    }
 }

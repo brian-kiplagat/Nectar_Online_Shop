@@ -5,7 +5,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,7 +45,16 @@ public class Adapter_Chips extends RecyclerView.Adapter<Adapter_Chips.ViewHolder
                 clickedListener.onClicked(model.getText());
             }
         });
+        boolean pressed = false;
+        if (pressed){
+            holder.chip.setCheckable(true);
+            pressed=true;
 
+        }else{
+            holder.chip.setCheckable(false);
+            pressed=false;
+
+        }
 
     }
 

@@ -119,7 +119,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
 
     }
 
-    private void fetch(final String email) {
+    public void fetch(final String email) {
         swipeRefreshLayout.setRefreshing(true);
         shimmerFrameLayout.startShimmer();
         list = new ArrayList<>();

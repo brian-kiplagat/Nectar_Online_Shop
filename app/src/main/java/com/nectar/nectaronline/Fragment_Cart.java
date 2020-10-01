@@ -66,7 +66,8 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
     ShimmerFrameLayout shimmerFrameLayout;
     int count = 1;
     MaterialCardView subtotal;
-
+    TextView totalCash;
+    String PRICE;
 
     private List<Object> list;
     SwipeRefreshLayout swipeRefreshLayout;
@@ -78,6 +79,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private int milliseconds;
 
     public Fragment_Cart() {
         // Required empty public constructor
@@ -120,6 +122,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
         button = v.findViewById(R.id.button);
         swipeRefreshLayout = v.findViewById(R.id.swipe);
         shimmerFrameLayout = v.findViewById(R.id.shimmer);
+        totalCash = v.findViewById(R.id.PRICE);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         SharedPreferences preferences = context.getSharedPreferences("nectar", Context.MODE_PRIVATE);
@@ -140,6 +143,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
         //deletedListener.onDelete();
         swipeRefreshLayout.setRefreshing(true);
         shimmerFrameLayout.startShimmer();
+        final List<Integer> totalPriceList = new ArrayList<>();
         final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -195,23 +199,9 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                             final String productID = obje.getString("productID");
                             final String quantity = obje.getString("quantity");
 
-                            /*Log.i("BRAND", brand);
-                            Log.i("NAME", name);
-                            Log.i("NEW_PRICE", newPrice);
-                            Log.i("OLD_PRICE", old);
-                            Log.i("DESC", description);
-                            Log.i("SPEC", specification);
-                            Log.i("KEY", keyfeatures);
-                            Log.i("SIZE", size);
-                            Log.i("COLOR", color);
-                            Log.i("INSTOCK", instock);
-                            Log.i("WEIGHT", weight);
-                            Log.i("MATERIAL", material);
-                            Log.i("INBOX", inbox);
-                            Log.i("BRAND", brand);
-                            Log.i("WARRANTY", waranty);
-                            Log.i("STATE", state);
-                            Log.i("IMAGES", images);*/
+                            //Here within this for loop i could add the prices
+                            int subTotal = Integer.parseInt(newPrice) * Integer.parseInt(quantity);
+                            totalPriceList.add(subTotal);
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -228,8 +218,23 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                                 }
                             });
                         }
+                        int total = 0;
+                        for (int i = 0; i < totalPriceList.size(); i++) {
+                            int newTotal = totalPriceList.get(i) + total;
+                            Log.i("Total at this instance", String.valueOf(newTotal));
+                            total = newTotal;
 
-
+                        }
+                        Log.i("Final instance", String.valueOf(total));
+                        final int finalTotal = total;
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                totalCash.setText(String.valueOf(finalTotal));
+                                PRICE = String.valueOf(String.valueOf(finalTotal));
+                                Log.i("TOTAL NOW", PRICE);
+                            }
+                        });
                     } else if (desc.contentEquals("ZERO ITEMS")&&Fragment_Cart.this.isResumed()) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
@@ -305,6 +310,9 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
 
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+            holder.number_of_items.setText("1");
+            final int[] priceCount = {Integer.parseInt(holder.number_of_items.getText().toString().trim())};
+
             final ModeL_Cart_Items model = (ModeL_Cart_Items) list_cart_items.get(position);
             holder.shimm.stopShimmer();
             holder.shimm.setVisibility(View.GONE);
@@ -336,6 +344,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             holder.state.setText(model.getState());
             holder.brand.setText(model.getBrand());
             holder.number_of_items.setText("1");
+            holder.price.setText(String.valueOf(priceCount[0] * Integer.parseInt(model.getFinalPrice())));
             holder.number_of_items.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -351,27 +360,19 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                 public void afterTextChanged(Editable s) {
                     String count = holder.number_of_items.getText().toString().trim();
                     if (!count.isEmpty()) {
-                        int newNumber = Integer.parseInt(count);
-                        if (newNumber > Integer.parseInt(model.getInstock())) {
-                            Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                                toast("Ops, only " + model.getInstock() + " " + model.getName() + " are instock");
-                            } else {
-                                v.vibrate(500);
-                            }
+                        if (!(Integer.parseInt(count) >= Integer.parseInt(model.getInstock()))) {
+                            priceCount[0] = Integer.parseInt(count);
+                            holder.price.setText(String.valueOf(priceCount[0] * Integer.parseInt(model.getFinalPrice())));
+                            //update the quantity here
+                            updateQuantity(id, email);
                         } else {
-                            //Edit quantity here
+                            vibrate();
+                            toast("Ops, only " + model.getInstock() + " are in stock");
+
                         }
                     } else {
                         toast("Ops, a field is empty");
-                        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-
-                        } else {
-                            v.vibrate(500);
-                        }
+                        vibrate();
                     }
 
 
@@ -422,23 +423,67 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
 
                 }
             });
-            final int priceCount = 0;
             holder.increase.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int newPrice = priceCount + 1;
-                    //HERE
+                    String count = holder.number_of_items.getText().toString().trim();
+                    if (!count.isEmpty()) {//confirm its not empty
+                        if (!(Integer.parseInt(count) >= Integer.parseInt(model.getInstock()))) {
+                            if (priceCount[0] >= 1) {//only increment when the value is greater or equal to one
+                                int newPrice = priceCount[0] + 1;
+                                //HERE
+                                priceCount[0] = newPrice;
+                                Log.i(String.valueOf(priceCount[0]), "onClick: ");
+                                holder.number_of_items.setText(String.valueOf(priceCount[0]));
+                            } else {
+                                toast("Ops, you cannot order less than one");
+                                vibrate();
+                            }
+                        } else {
+                            toast("Ops, only " + model.getInstock() + " are in stock");
+                            vibrate();
+                        }
+
+
+                    } else {
+                        Log.i(String.valueOf(priceCount[0]), "onClick: ");
+                        toast("Ops, a field is empty");
+                        vibrate();
+                    }
+                }
+            });
+            holder.reduce.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String count = holder.number_of_items.getText().toString().trim();
+                    if (!count.isEmpty()) {
+                        if (priceCount[0] > 1) {//only decrement when value is greater than 1
+                            int newPrice = priceCount[0] - 1;
+                            //HERE
+                            priceCount[0] = newPrice;
+                            Log.i(String.valueOf(priceCount[0]), "onClick: ");
+                            holder.number_of_items.setText(String.valueOf(priceCount[0]));
+                        } else {
+                            Log.i(String.valueOf(priceCount[0]), "onClick: ");
+                            toast("Ops, you cannot order less than one");
+                            vibrate();
+                        }
+
+                    } else {
+                        toast("Ops, a field is empty");
+                        vibrate();
+                    }
                 }
             });
             holder.fav.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(getActivity());
-                    materialAlertDialogBuilder.setTitle("Save for later").setMessage("We will remove " + name +" from yor cart and transfer to your favourites").setPositiveButton("HELL YEAH", new DialogInterface.OnClickListener() {
+                    materialAlertDialogBuilder.setTitle("Save for later").setMessage("We will remove " + name + " from yor cart and transfer to your favourites").setPositiveButton("HELL YEAH", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             toast("Removing");
-                            removeItemAndAddToFavourites(id,productID, position);
+                            removeItemAndAddToFavourites(id, productID, position);
 
                         }
                     }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -492,7 +537,67 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
 
     }
 
-    private void removeItemAndAddToFavourites(String id,String productID, final int position) {
+    private void updateQuantity(String id, String email) {
+        String url = getString(R.string.website_adress) + "/nectar/buy/editquantity.php";
+        RequestBody formBody = new FormBody.Builder()//Try to UPDATE `quantity` WHERE `email`=$email AND `id`=$id
+                .add("id", id)
+                .add("email", email)
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String res = response.body().string().trim();
+                Log.i("EDIT RESPONSE", res);
+                adapter.notifyDataSetChanged();
+                try {
+                    JSONObject obj = new JSONObject(res);
+                    String code = obj.getString("RESPONSE_CODE");
+                    if (code.contentEquals("SUCCESS")) {
+                        toast("Removed");
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                deletedListener.onDelete();
+                                Log.i("Removed: ", "Yeah");
+                            }
+                        });
+
+                    } else {
+                        toast("Ops. An error happened");
+                        String desc = obj.getString("RESPONSE_DESC");
+                        Log.i("ERROR: ", desc);
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        });
+    }
+
+    private void vibrate() {
+        milliseconds = 500;
+        final Vibrator vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vib.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
+
+        } else {
+            vib.vibrate(milliseconds);
+        }
+    }
+
+    private void removeItemAndAddToFavourites(String id, String productID, final int position) {
         String url = getString(R.string.website_adress) + "/nectar/buy/removefromcartandaddtofavourites.php";
         RequestBody formBody = new FormBody.Builder()
                 .add("id", id)
@@ -524,12 +629,12 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                //fetch(number);
+
                                 list.remove(position);
-                                //recyclerView.removeViewAt(position);
+
                                 adapter.notifyItemRemoved(position);
                                 adapter.notifyItemRangeChanged(position, list.size());
-                                //adapter.notifyDataSetChanged();
+
                                 deletedListener.onDelete();
                                 Log.i("Removed: ", "Yeah");
                             }

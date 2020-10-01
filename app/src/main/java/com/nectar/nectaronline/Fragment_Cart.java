@@ -384,21 +384,32 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                     holder.state.setChipIconTint(getResources().getColorStateList(R.color.yellow, null));
                 }
-            }
-            if (model.getState().contentEquals("REFURBISHED")) {
+            } else if (model.getState().contentEquals("REFURBISHED")) {
                 holder.state.setText("REFURBISHED");
                 holder.state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_refurb, null));
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                    holder.state.setChipIconTint(getResources().getColorStateList(R.color.green, null));
+                    holder.state.setChipIconTint(getResources().getColorStateList(R.color.blue_azure, null));
                 }
-            }
-            if (model.getState().contentEquals("SECOND")) {
+            } else if (model.getState().contentEquals("SECOND")) {
                 holder.state.setText("SECOND HAND");
                 holder.state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_second_hand, null));
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                     holder.state.setChipIconTint(getResources().getColorStateList(R.color.orange, null));
                 }
+            } else if (model.getState().contentEquals("FRESH")) {
+                holder.state.setText("FRESH");
+                holder.state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_vegetables, null));
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                    holder.state.setChipIconTint(getResources().getColorStateList(R.color.blue_azure, null));
+                }
+            } else if (model.getState().contentEquals("FRESHLY COOKED")) {
+                holder.state.setText("FRESHLY COOKED");
+                holder.state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_fastfood_24, null));
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                    holder.state.setChipIconTint(getResources().getColorStateList(R.color.purple_light, null));
+                }
             }
+
             holder.size.setText("Size: " + model.getSize());
             holder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -85,6 +85,7 @@
                     android:textColor="@color/design_default_color_on_secondary"
                     android:textSize="12sp"
                     android:textStyle="bold"
+                    app:iconStartPadding="5dp"
                     app:chipIcon="@drawable/ic_baseline_storefront_24"
                     app:chipIconTint="@color/yellow" />
             </RelativeLayout>

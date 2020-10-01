@@ -196,20 +196,36 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
                 state.setChipIconTint(getResources().getColorStateList(R.color.yellow, null));
             }
         }
-        if (STATE.contentEquals("REFURBISHED")) {
+       else if (STATE.contentEquals("REFURBISHED")) {
             state.setText("REFURBISHED");
             state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_refurb, null));
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                state.setChipIconTint(getResources().getColorStateList(R.color.green, null));
+                state.setChipIconTint(getResources().getColorStateList(R.color.blue_azure, null));
             }
         }
-        if (STATE.contentEquals("SECOND")) {
+        else  if (STATE.contentEquals("SECOND")) {
             state.setText("SECOND HAND");
             state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_second_hand, null));
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                state.setChipIconTint(getResources().getColorStateList(R.color.orange, null));
+                state.setChipIconTint(getResources().getColorStateList(R.color.red, null));
             }
         }
+        else  if (STATE.contentEquals("FRESH")) {
+            state.setText("FRESH");
+            state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_vegetables, null));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                state.setChipIconTint(getResources().getColorStateList(R.color.blue_azure, null));
+            }
+        }
+        else  if (STATE.contentEquals("FRESHLY COOKED")) {
+            state.setText("FRESHLY COOKED");
+            state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_fastfood_24, null));
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                state.setChipIconTint(getResources().getColorStateList(R.color.purple_light, null));
+            }
+        }
+
+
         // new Seller().execute();
         getSellerInfo(SELLERID);
 

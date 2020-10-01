@@ -310,10 +310,9 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
 
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-            holder.number_of_items.setText("1");
-            final int[] priceCount = {Integer.parseInt(holder.number_of_items.getText().toString().trim())};
-
             final ModeL_Cart_Items model = (ModeL_Cart_Items) list_cart_items.get(position);
+            holder.number_of_items.setText(model.getQuantity());
+            final int[] priceCount = {Integer.parseInt(holder.number_of_items.getText().toString().trim())};
             holder.shimm.stopShimmer();
             holder.shimm.setVisibility(View.GONE);
             final String id = model.getId();
@@ -338,12 +337,12 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             final String cartID = model.getId();
             String link = getString(R.string.website_adress) + "/nectar/seller/" + images;
             Glide.with(context).load(link).into(holder.prod_image);
+            holder.cash.setText("Ksh " + model.getFinalPrice());
             holder.brand.setText(model.getBrand());
             holder.name.setText(model.getName());
             holder.instock.setText("Stock: " + model.getInstock());
             holder.state.setText(model.getState());
             holder.brand.setText(model.getBrand());
-            holder.number_of_items.setText("1");
             holder.price.setText(String.valueOf(priceCount[0] * Integer.parseInt(model.getFinalPrice())));
             holder.number_of_items.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -364,7 +363,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                             priceCount[0] = Integer.parseInt(count);
                             holder.price.setText(String.valueOf(priceCount[0] * Integer.parseInt(model.getFinalPrice())));
                             //update the quantity here
-                            updateQuantity(id, email);
+                            updateQuantity(id, email, priceCount[0]);
                         } else {
                             vibrate();
                             toast("Ops, only " + model.getInstock() + " are in stock");
@@ -499,6 +498,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
+            TextView cash;
             TextView instock;
             TextView brand;
             TextView name;
@@ -517,6 +517,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
+                cash = itemView.findViewById(R.id.CASH);
                 fav = itemView.findViewById(R.id.favourite);
                 cartStuff = itemView.findViewById(R.id.cartStuff);
                 instock = itemView.findViewById(R.id.INSTOCK);
@@ -537,11 +538,13 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
 
     }
 
-    private void updateQuantity(String id, String email) {
+    private void updateQuantity(String id, String email, int quantity) {
         String url = getString(R.string.website_adress) + "/nectar/buy/editquantity.php";
         RequestBody formBody = new FormBody.Builder()//Try to UPDATE `quantity` WHERE `email`=$email AND `id`=$id
                 .add("id", id)
                 .add("email", email)
+                .add("quantity", String.valueOf(quantity))
+
                 .build();
 
         OkHttpClient client = new OkHttpClient();
@@ -560,22 +563,23 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 final String res = response.body().string().trim();
                 Log.i("EDIT RESPONSE", res);
-                adapter.notifyDataSetChanged();
+
                 try {
                     JSONObject obj = new JSONObject(res);
                     String code = obj.getString("RESPONSE_CODE");
                     if (code.contentEquals("SUCCESS")) {
-                        toast("Removed");
+                        toast("Edited");
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+
                                 deletedListener.onDelete();
-                                Log.i("Removed: ", "Yeah");
+                                Log.i("Removed to fav: ", "Yeah");
                             }
                         });
 
                     } else {
-                        toast("Ops. An error happened");
+                        toast("Ops. An error happened, try again");
                         String desc = obj.getString("RESPONSE_DESC");
                         Log.i("ERROR: ", desc);
                     }
@@ -587,7 +591,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void vibrate() {
-        milliseconds = 500;
+        milliseconds = 300;
         final Vibrator vib = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vib.vibrate(VibrationEffect.createOneShot(milliseconds, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -629,9 +633,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-
                                 list.remove(position);
-
                                 adapter.notifyItemRemoved(position);
                                 adapter.notifyItemRangeChanged(position, list.size());
 

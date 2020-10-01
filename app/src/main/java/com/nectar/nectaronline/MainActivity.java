@@ -162,8 +162,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 drawerLayout.closeDrawers();
                 Log.i("SELL", "onNavigationItemSelected: ");
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.sell_link)));
-                    startActivity(intent);
+                    Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.sell_link)));
+                    startActivity(intent1);
                 } catch (ActivityNotFoundException e) {
                     Toast.makeText(this, "Please install a web browser like opera mini or google chrome to proceed", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
@@ -173,25 +173,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.developer:
                 drawerLayout.closeDrawers();
-                try {
-                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                    callIntent.setData(Uri.parse("tel:" + getString(R.string.developer_phone_adress)));
-                    startActivity(callIntent);
-                } catch (ActivityNotFoundException e) {
-                    Toast.makeText(this, "Please install a calling app like a dialler to proceed", Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-                }
+                Intent intent = new Intent(getApplicationContext(), metadata.class);
+                intent.putExtra("payload", "developer");
+                startActivity(intent);
                 Log.i("DEV", "onNavigationItemSelected: ");
                 break;
 
             case R.id.about:
                 drawerLayout.closeDrawers();
-                startActivity(new Intent(getApplicationContext(),metadata.class));
-                Log.i("ABOUT", "onNavigationItemSelected: ");
+                Intent intent2 = new Intent(getApplicationContext(), metadata.class);
+                intent2.putExtra("payload", "about");
+                startActivity(intent2);
+               Log.i("ABOUT", "onNavigationItemSelected: ");
                 break;
             case R.id.contact:
                 drawerLayout.closeDrawers();
-                startActivity(new Intent(getApplicationContext(),metadata.class));
+                Intent intent3= new Intent(getApplicationContext(), metadata.class);
+                intent3.putExtra("payload", "contact");
+                startActivity(intent3);
 
                 Log.i("CONTACT", "onNavigationItemSelected: ");
                 break;
@@ -202,10 +201,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 editor.remove("email");
                 editor.remove("password");
                 editor.apply();
-
-                Intent intent = new Intent(MainActivity.this, Login.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
+                Intent intent4 = new Intent(MainActivity.this, Login.class);
+                intent4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent4);
                 finish();
                 Log.i("LOGOUT", "onNavigationItemSelected: ");
                 break;

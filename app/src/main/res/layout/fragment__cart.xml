@@ -116,7 +116,7 @@
                 android:drawablePadding="5dp"
                 android:drawableTint="@android:color/white"
                 android:padding="10dp"
-                android:text="COMPLETE YOUR ORDER"
+                android:text="COMPLETE ORDER"
                 android:textSize="20dp" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

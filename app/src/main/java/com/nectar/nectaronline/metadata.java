@@ -1,5 +1,8 @@
 package com.nectar.nectaronline;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,8 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
-import android.os.Bundle;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -74,6 +75,25 @@ public class metadata extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             return fragentTitle.get(position);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = getIntent();
+        if (intent.hasExtra("payload")) {
+            String x = intent.getStringExtra("payload");
+            if (x.contentEquals("developer")) {
+                tabLayout.setScrollX(tabLayout.getWidth());
+                tabLayout.getTabAt(2).select();
+            } else if (x.contentEquals("about")) {
+                tabLayout.setScrollX(tabLayout.getWidth());
+                tabLayout.getTabAt(1).select();
+            } else if (x.contentEquals("contact")) {
+                tabLayout.setScrollX(tabLayout.getWidth());
+                tabLayout.getTabAt(0).select();
+            }
         }
     }
 }

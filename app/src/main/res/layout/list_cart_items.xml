@@ -47,6 +47,7 @@
             android:id="@+id/linear1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/linera"
             android:layout_toRightOf="@+id/drinkimage"
             android:orientation="vertical">
 
@@ -81,6 +82,16 @@
                 android:text="Size"
                 android:textColor="@color/material_on_surface_emphasis_medium"
                 android:textSize="13sp"
+                android:textStyle="normal" />
+            <TextView
+                android:id="@+id/CASH"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Ksh"
+                android:textColor="@color/material_on_surface_emphasis_medium"
+                android:textSize="17sp"
                 android:textStyle="normal" />
 
             <com.google.android.material.chip.Chip
@@ -189,59 +200,40 @@
 
         </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/linera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="3dp">
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
 
-
-            <LinearLayout
-                android:id="@+id/linera"
+            <TextView
+                android:id="@+id/cash_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:orientation="horizontal">
+                android:text="Ksh"
+                android:textColor="@color/material_on_background_emphasis_medium"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/cash_unit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ksh"
-                    android:textColor="@color/material_on_background_emphasis_medium"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/PRICE"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
-                    android:clickable="true"
-                    android:text="0"
-                    android:textColor="@color/design_default_color_on_secondary"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/PRICE"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/linera"
-                android:layout_alignParentRight="true"
-                android:orientation="horizontal">
+                android:layout_marginLeft="3dp"
+                android:clickable="true"
+                android:text="0"
+                android:textColor="@color/design_default_color_on_secondary"
+                android:textSize="25sp"
+                android:textStyle="bold" />
 
 
-            </LinearLayout>
-
-        </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
 
     <com.facebook.shimmer.ShimmerFrameLayout
+
         android:id="@+id/shimmer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

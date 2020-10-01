@@ -1,16 +1,20 @@
 package com.nectar.nectaronline;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,7 +30,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +56,7 @@ import okhttp3.Response;
  * Use the {@link Fragment_Cart#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefreshListener , View.OnClickListener {
+public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefreshListener, View.OnClickListener {
     private RecyclerView recyclerView;
     private Context context;
     private RecyclerView.Adapter adapter;
@@ -59,6 +65,8 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
     Button button;
     ShimmerFrameLayout shimmerFrameLayout;
     int count = 1;
+    MaterialCardView subtotal;
+
 
     private List<Object> list;
     SwipeRefreshLayout swipeRefreshLayout;
@@ -118,9 +126,10 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
         number = preferences.getString("number", "");
         email = preferences.getString("email", "");
         button.setOnClickListener(this);
-        button.setVisibility(View.GONE);
+        subtotal = v.findViewById(R.id.subtotal);
+        subtotal.setVisibility(View.GONE);
         Log.i("NUMBER", number);
-        fetch(number);
+        //fetch(number);
         swipeRefreshLayout.setOnRefreshListener(this);
 
         return v;
@@ -214,6 +223,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                                     adapter = new Adapter_Cart(list);
                                     adapter.notifyDataSetChanged();
                                     recyclerView.setAdapter(adapter);
+                                    subtotal.setVisibility(View.VISIBLE);
 
                                 }
                             });
@@ -231,6 +241,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                                 button.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+                                        subtotal.setVisibility(View.GONE);
                                         dialogBuilder.dismiss();
                                         getShopFragment.moveToTheShopFragment();
                                     }
@@ -245,6 +256,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                             }
                         });
                     } else {
+                        subtotal.setVisibility(View.GONE);
                         shimmerFrameLayout.stopShimmer();
                         shimmerFrameLayout.setVisibility(View.GONE);
                         swipeRefreshLayout.setRefreshing(false);
@@ -324,6 +336,48 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             holder.state.setText(model.getState());
             holder.brand.setText(model.getBrand());
             holder.number_of_items.setText("1");
+            holder.number_of_items.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String count = holder.number_of_items.getText().toString().trim();
+                    if (!count.isEmpty()) {
+                        int newNumber = Integer.parseInt(count);
+                        if (newNumber > Integer.parseInt(model.getInstock())) {
+                            Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                                toast("Ops, only " + model.getInstock() + " " + model.getName() + " are instock");
+                            } else {
+                                v.vibrate(500);
+                            }
+                        } else {
+                            //Edit quantity here
+                        }
+                    } else {
+                        toast("Ops, a field is empty");
+                        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            v.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+
+                        } else {
+                            v.vibrate(500);
+                        }
+                    }
+
+
+                }
+            });
+
             if (model.getState().contentEquals("BRAND")) {
                 holder.state.setText("BRAND NEW");
                 holder.state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_brand_new, null));
@@ -349,8 +403,21 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             holder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    toast("Removing");
-                    removeItem(id, position);
+                    String longString = brand + " " + name + " " + description + " " + specification + " " + keyfeatures + " " + weight + " " + material;
+                    MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(getActivity());
+                    materialAlertDialogBuilder.setTitle("Remove from cart").setMessage("Are you sure you want to remove " + longString).setPositiveButton("REMOVE", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            toast("Removing");
+                            removeItem(id, position);
+
+                        }
+                    }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).setCancelable(true).show();
 
 
                 }
@@ -360,7 +427,26 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                 @Override
                 public void onClick(View v) {
                     int newPrice = priceCount + 1;
-            //HERE
+                    //HERE
+                }
+            });
+            holder.fav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MaterialAlertDialogBuilder materialAlertDialogBuilder = new MaterialAlertDialogBuilder(getActivity());
+                    materialAlertDialogBuilder.setTitle("Save for later").setMessage("We will remove " + name +" from yor cart and transfer to your favourites").setPositiveButton("HELL YEAH", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            toast("Removing");
+                            removeItemAndAddToFavourites(id,productID, position);
+
+                        }
+                    }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).setCancelable(true).show();
                 }
             });
 
@@ -374,17 +460,19 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             TextView size;
             Chip state;
             TextView price;
-            TextView number_of_items;
+            EditText number_of_items;
             ImageView increase;
             ImageView reduce;
             ImageView delete;
             ImageView prod_image;
+            ImageView fav;
             RelativeLayout cartStuff;
             TextView explanation;
             com.facebook.shimmer.ShimmerFrameLayout shimm;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
+                fav = itemView.findViewById(R.id.favourite);
                 cartStuff = itemView.findViewById(R.id.cartStuff);
                 instock = itemView.findViewById(R.id.INSTOCK);
                 brand = itemView.findViewById(R.id.BRAND);
@@ -402,6 +490,61 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             }
         }
 
+    }
+
+    private void removeItemAndAddToFavourites(String id,String productID, final int position) {
+        String url = getString(R.string.website_adress) + "/nectar/buy/removefromcartandaddtofavourites.php";
+        RequestBody formBody = new FormBody.Builder()
+                .add("id", id)
+                .add("email", email)
+                .add("productID", productID)
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    final String res = response.body().string().trim();
+                    Log.i("response", res);
+                    JSONObject obj = new JSONObject(res);
+                    String code = obj.getString("RESPONSE_CODE");
+                    if (code.contentEquals("SUCCESS")) {
+                        toast("Removed");
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //fetch(number);
+                                list.remove(position);
+                                //recyclerView.removeViewAt(position);
+                                adapter.notifyItemRemoved(position);
+                                adapter.notifyItemRangeChanged(position, list.size());
+                                //adapter.notifyDataSetChanged();
+                                deletedListener.onDelete();
+                                Log.i("Removed: ", "Yeah");
+                            }
+                        });
+
+                    } else {
+                        toast("Ops. An error happened");
+                        String desc = obj.getString("RESPONSE_DESC");
+                        Log.i("ERROR: ", desc);
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        });
     }
 
     private void removeItem(final String id, final int position) {
@@ -486,7 +629,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onResume() {
         super.onResume();
-        //fetch(new Preferences(context).getEmail());
+        fetch(new Preferences(context).getEmail());
     }
 
 }

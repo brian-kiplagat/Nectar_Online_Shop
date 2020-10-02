@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragment_Delivery">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="7dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="3dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="ADDRESS DETAILS"
+                        android:textColor="@color/material_on_background_emphasis_medium"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/continueAdding"
+                        style="?attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:text="EDIT"
+                        app:icon="@drawable/ic_baseline_edit_24" />
+
+                </RelativeLayout>
+
+                <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="7dp"
+                    android:elevation="8dp"
+                    app:cardCornerRadius="9dp"
+                    app:cardElevation="8dp"
+
+                    >
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:id="@+id/cartStuff"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:layout_marginTop="20dp">
+
+
+                            <ImageView
+                                android:id="@+id/courier"
+                                android:layout_width="130dp"
+                                android:layout_height="130dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_shipping"
+                                app:tint="@color/blue_azure" />
+
+                            <LinearLayout
+                                android:id="@+id/linear1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_marginLeft="5dp"
+                                android:layout_toLeftOf="@id/courier"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/NAME"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="John Doe"
+                                    android:textColor="@android:color/primary_text_light_nodisable"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/BRAND"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="Kiambu"
+                                    android:textColor="@color/material_on_background_emphasis_medium"
+                                    android:textSize="13sp"
+                                    android:textStyle="normal" />
+
+
+                                <TextView
+                                    android:id="@+id/SIZE"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="Aside home town"
+                                    android:textColor="@color/material_on_surface_emphasis_medium"
+                                    android:textSize="13sp"
+                                    android:textStyle="normal" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/STATE"
+                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:checkable="false"
+                                    android:text="+254792517691"
+                                    android:textSize="15sp"
+                                    app:chipIcon="@drawable/ic_logo_cart_empty_straight_lines_bold_svg"
+                                    app:chipIconEnabled="true"
+                                    app:chipIconSize="15dp"
+                                    app:iconStartPadding="5dp" />
+
+
+                            </LinearLayout>
+
+                            <View
+                                android:id="@+id/view"
+                                android:layout_width="match_parent"
+                                android:layout_height="0.9dp"
+                                android:layout_below="@+id/courier"
+                                android:layout_margin="3dp"
+                                android:background="@color/colorPrimary" />
+
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/view"
+                                android:layout_alignParentRight="true"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/Explanation"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="Ops"
+                                    android:textColor="@color/material_on_surface_emphasis_medium"
+                                    android:textSize="13sp"
+                                    android:textStyle="normal"
+                                    android:visibility="invisible" />
+                            </LinearLayout>
+
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="7dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="3dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="DELIVERY METHOD"
+                        android:textColor="@color/material_on_background_emphasis_medium"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
+
+
+                    <com.google.android.material.radiobutton.MaterialRadioButton
+                        android:id="@+id/radioButton"
+                        style="?attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:checked="true"
+                        android:text="MY ADRESS" />
+
+                </RelativeLayout>
+
+                <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="7dp"
+                    android:elevation="8dp"
+                    app:cardCornerRadius="9dp"
+                    app:cardElevation="8dp"
+                    tools:ignore="DuplicateIds">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                            android:id="@+id/cartStuff"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:layout_marginTop="20dp">
+
+
+                            <ImageView
+                                android:id="@+id/courier"
+                                android:layout_width="130dp"
+                                android:layout_height="130dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="10dp"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_courier"
+                                app:tint="@color/blue_azure" />
+
+                            <LinearLayout
+                                android:id="@+id/linear1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_marginLeft="5dp"
+                                android:layout_toLeftOf="@id/courier"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/NAME"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="NOTE"
+                                    android:textColor="@android:color/primary_text_light_nodisable"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/BRAND"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="@string/delivery_ku"
+                                    android:textColor="@color/material_on_background_emphasis_medium"
+                                    android:textSize="13sp"
+                                    android:textStyle="normal" />
+
+
+
+                            </LinearLayout>
+
+                            <View
+                                android:id="@+id/view"
+                                android:layout_width="match_parent"
+                                android:layout_height="0.9dp"
+                                android:layout_below="@+id/courier"
+                                android:layout_margin="3dp"
+                                android:background="@color/colorPrimary" />
+
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/view"
+                                android:layout_alignParentRight="true"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/Explanation"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="Ops"
+                                    android:textColor="@color/material_on_surface_emphasis_medium"
+                                    android:textSize="13sp"
+                                    android:textStyle="normal"
+                                    android:visibility="invisible" />
+                            </LinearLayout>
+
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="7dp"
+                android:elevation="8dp"
+                app:cardCornerRadius="9dp"
+                app:cardElevation="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="7dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="3dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="SUBTOTAL"
+                            android:textColor="@color/material_on_background_emphasis_medium"
+                            android:textSize="14sp"
+                            android:textStyle="normal" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/subtotal"
+                            style="?attr/borderlessButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:text="KSH 500" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="7dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="3dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="SHIPPING"
+                            android:textColor="@color/material_on_background_emphasis_medium"
+                            android:textSize="14sp"
+                            android:textStyle="normal" />
+
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/shipping"
+                            style="?attr/borderlessButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:text="KSH 300" />
+
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1.9dp"
+                        android:layout_below="@+id/linear1"
+                        android:layout_margin="3dp"
+                        android:background="@color/colorPrimary" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="7dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="3dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="TOTAL"
+                            android:textColor="@color/material_on_background_emphasis_medium"
+                            android:textSize="14sp"
+                            android:textStyle="normal" />
+
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/total"
+                            style="?attr/borderlessButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:text="KSH 900"
+                            app:icon="@drawable/ic_payment_method_small" />
+
+                    </RelativeLayout>
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/finish"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:text="FINISH"
+                app:icon="@drawable/ic_baseline_delete_outline_24"
+                app:strokeColor="@color/colorPrimary"
+                app:strokeWidth="1dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+</FrameLayout>

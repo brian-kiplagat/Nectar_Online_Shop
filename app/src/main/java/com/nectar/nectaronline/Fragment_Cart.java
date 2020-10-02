@@ -2,6 +2,7 @@ package com.nectar.nectaronline;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -286,6 +287,11 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
         if (v.getId() == R.id.button) {
             Log.i("FINISH", "onClick: ");
             //Use a for loop to circle through the cart legnth
+            Intent intent=new Intent(context,Checkout.class);
+            intent.putExtra("price",PRICE);
+            startActivity(intent);
+
+
         }
     }
 

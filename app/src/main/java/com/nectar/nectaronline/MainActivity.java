@@ -379,6 +379,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 Log.i("SEE CART", "NO");
             }
+        } if (intent.hasExtra("payload")) {
+            Log.i("Has extra", "POSITIVE");
+           String payload = intent.getStringExtra("payload" );
+            if (payload.contentEquals("edit")) {
+                Log.i("SEE CONTACT", "YES");
+                tabLayout.setScrollX(tabLayout.getWidth());
+                tabLayout.getTabAt(2).select();
+                //no code here that updates fragment UI
+            } else {
+                Log.i("SEE CONTACT", "NO");
+            }
         }else{
             Log.i("Has extra","NO");
         }

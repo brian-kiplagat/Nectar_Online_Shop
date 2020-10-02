@@ -42,7 +42,7 @@
 
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/continueAdding"
+                        android:id="@+id/edit"
                         style="?attr/borderlessButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -462,7 +462,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp"
-                android:text="FINISH"
+                android:text="NEXT STEP"
                 app:icon="@drawable/ic_baseline_delete_outline_24"
                 app:strokeColor="@color/colorPrimary"
                 app:strokeWidth="1dp" />

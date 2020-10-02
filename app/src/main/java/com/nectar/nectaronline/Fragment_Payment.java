@@ -3,17 +3,35 @@ package com.nectar.nectaronline;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,13 +39,14 @@ import com.google.android.material.snackbar.Snackbar;
  * create an instance of this fragment.
  */
 public class Fragment_Payment extends Fragment implements View.OnClickListener {
-    MaterialCheckBox popup;
-    MaterialCheckBox till;
-    MaterialCheckBox payondelivery;
+    MaterialRadioButton popup;
+    MaterialRadioButton till;
+    MaterialRadioButton payondelivery;
     Chip chip_till;
     Chip chip_pod;
-    MaterialButton finish;
+    Button finish;
     Context context;
+    String price;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -74,7 +93,6 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_payment, container, false);
         context = getActivity().getApplicationContext();
-        updateDetails("");
         popup = v.findViewById(R.id.popup);
         till = v.findViewById(R.id.till);
         payondelivery = v.findViewById(R.id.payondelivery);
@@ -84,19 +102,39 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         finish.setOnClickListener(this);
         chip_till.setOnClickListener(this);
         chip_pod.setOnClickListener(this);
+        updateDetails();
+
         return v;
 
     }
 
-    private void updateDetails(String price) {
+    private void updateDetails() {
+        Intent intent = getActivity().getIntent();
+        if (intent.hasExtra("price")) {
+            price = intent.getStringExtra("price");
+            Log.i("Price", price);
 
+        } else {
+            toast("Ops, an error happened, please cancel this page and try again");
+        }
     }
+
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.finish:
+                if (popup.isChecked()) {
+                    payNow(price);
 
+                    toastLong("Standby to enter pin");
+                } else if (till.isChecked()) {
+
+                } else if (payondelivery.isChecked()) {
+
+                } else {
+                    toast("please select a payment method");
+                }
                 break;
             case R.id.till_copy:
             case R.id.till_copy_mpesa_on_delivery:
@@ -105,6 +143,89 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
 
 
         }
+    }
+
+    private void payNow(final String price) {
+        String url = getString(R.string.website_adress) + "/nectar/payment/stk.php";
+        Log.i("PHONE", new Preferences(context).getNumber().substring(1));
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("email", new Preferences(context).getEmail())//then from server can check if to search or not the return an appropriate respons
+                .add("amount", price)
+                .add("phone", new Preferences(context).getNumber().substring(1))
+
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()){
+                    String res = response.body().string();
+                    Log.i("PAYMENT RESPONSE", res);
+                    try {
+                        JSONObject obj = new JSONObject(res);
+                        String code = obj.getString("RESPONSE_CODE");
+                        String requestID = obj.getString("REQUEST_ID");
+                        //
+                        if (code.contentEquals("SUCCESS")) {
+                            toast("We are processing your payment");
+                            //Show alert
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
+                                    LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+                                    View dialogView = layoutInflater.inflate(R.layout.dialog_empty_cart, null);
+                                    TextView main=dialogView.findViewById(R.id.shop);
+                                    TextView primary=dialogView.findViewById(R.id.exp);
+                                    TextView secondary=dialogView.findViewById(R.id.secondary);
+                                    main.setText("PROCESSING");
+                                    primary.setText("Checking your payment");
+                                    secondary.setText(R.string.checking_payment);
+                                    MaterialButton button = dialogView.findViewById(R.id.continueAdding);
+                                    button.setText("CONTINUE SHOPPING");
+                                    button.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            dialogBuilder.dismiss();
+                                            Intent intent = new Intent(context, MainActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                            startActivity(intent);
+                                            getActivity().finish();
+
+                                        }
+                                    });
+                                    dialogBuilder.setView(dialogView);
+                                    dialogBuilder.setCancelable(false);
+                                    dialogBuilder.show();
+
+                                }
+                            });
+
+                        } else {
+                            toast("Ops, we could not process your payment try again later");
+                        }
+                    } catch (Exception e) {
+
+                    }
+                }else {
+                    toast("An error happened please try again");
+                }
+
+
+            }
+        });
     }
 
     private void copyTill() {
@@ -116,5 +237,9 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
 
     private void toast(String s) {
         Snackbar.make(finish, s, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private void toastLong(String s) {
+        Snackbar.make(finish, s, Snackbar.LENGTH_LONG).show();
     }
 }

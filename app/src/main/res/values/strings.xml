@@ -46,4 +46,6 @@
     <string name="info">INFO</string>
     <string name="orders">MY ORDERS</string>
     <string name="fav">FAVOURITES</string>
+    <string name="cashUnit">KSH</string>
+    <string name="checking_payment">We are now processing your payment, we will send you an SMS receipt confirming your order. Standby as our delivery agent will call you shortly to fulfill your purchase, meanwhile you can continue shopping</string>
 </resources>

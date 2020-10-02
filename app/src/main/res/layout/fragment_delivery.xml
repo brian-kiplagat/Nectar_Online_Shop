@@ -256,7 +256,7 @@
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_courier"
+                                android:src="@drawable/ic_delivery"
                                 app:tint="@color/blue_azure" />
 
                             <LinearLayout

@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,6 +48,7 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
     Button finish;
     Context context;
     String price;
+    MaterialButton totalPrice;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -95,6 +97,7 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         context = getActivity().getApplicationContext();
         popup = v.findViewById(R.id.popup);
         till = v.findViewById(R.id.till);
+        totalPrice = v.findViewById(R.id.total);
         payondelivery = v.findViewById(R.id.payondelivery);
         chip_pod = v.findViewById(R.id.till_copy);
         chip_till = v.findViewById(R.id.till_copy_mpesa_on_delivery);
@@ -102,18 +105,17 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         finish.setOnClickListener(this);
         chip_till.setOnClickListener(this);
         chip_pod.setOnClickListener(this);
-        updateDetails();
+
 
         return v;
 
     }
 
-    private void updateDetails() {
-        Intent intent = getActivity().getIntent();
-        if (intent.hasExtra("price")) {
-            price = intent.getStringExtra("price");
-            Log.i("Price", price);
-
+    public void updateDetails() {
+        SharedPreferences preferences = context.getSharedPreferences("nectar", Context.MODE_PRIVATE);
+        if (preferences.contains("total")) {
+            price = preferences.getString("total", "");
+            totalPrice.setText(getString(R.string.cashUnit) + " " + price);
         } else {
             toast("Ops, an error happened, please cancel this page and try again");
         }
@@ -126,7 +128,6 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
             case R.id.finish:
                 if (popup.isChecked()) {
                     payNow(price);
-
                     toastLong("Standby to enter pin");
                 } else if (till.isChecked()) {
 
@@ -241,5 +242,11 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
 
     private void toastLong(String s) {
         Snackbar.make(finish, s, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateDetails();
     }
 }

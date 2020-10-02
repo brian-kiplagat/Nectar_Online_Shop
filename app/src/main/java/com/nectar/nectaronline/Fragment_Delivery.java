@@ -2,6 +2,7 @@ package com.nectar.nectaronline;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -78,24 +79,46 @@ public class Fragment_Delivery extends Fragment implements View.OnClickListener 
         edit = v.findViewById(R.id.edit);
         edit.setOnClickListener(this);
         finish.setOnClickListener(this);
-        Intent intent = getActivity().getIntent();
-        if (intent.hasExtra("price")) {
-            String price = intent.getStringExtra("price");
-            Log.i("PRICE", price);
-            updateDeliveryDetails(getString(R.string.cashUnit) + " " + price);
 
-        }
         return v;
     }
 
     public void updateDeliveryDetails(String price) {
-        subtotal.setText(price);
+
+        String location = new Preferences(context).getAddress();
+        int shippingFee = getShipping(location);
+        if (shippingFee == 0) {
+            shipping.setText("FREE");
+        } else {
+            shipping.setText(getString(R.string.cashUnit) + " " + String.valueOf(shippingFee));
+        }
+        int totalPrice = Integer.parseInt(price) + shippingFee;
+        subtotal.setText(getString(R.string.cashUnit) + " " + price);
+        total.setText(getString(R.string.cashUnit) + " " + String.valueOf(totalPrice));
+        SharedPreferences preferences = context.getSharedPreferences("nectar", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("total", String.valueOf(totalPrice));
+        editor.apply();
+    }
+
+    private int getShipping(String location) {
+        if (location.contentEquals("Nairobi")) {
+            return 0;
+        } else {
+            return 100;
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Intent intent = getActivity().getIntent();
+        if (intent.hasExtra("price")) {
+            String price = intent.getStringExtra("price");
+            Log.i("PRICE", price);
+            updateDeliveryDetails(price);
 
+        }
     }
 
     ToPayment toPayment;
@@ -112,7 +135,7 @@ public class Fragment_Delivery extends Fragment implements View.OnClickListener 
                 break;
             case R.id.edit:
                 Intent intent=new Intent(context,MainActivity.class);
-                intent.putExtra("payload","edit");
+                intent.putExtra("payload", "edit");
                 startActivity(intent);
                 toPayment.onclick("price");
                 break;
@@ -122,4 +145,6 @@ public class Fragment_Delivery extends Fragment implements View.OnClickListener 
     public interface ToPayment {
         void onclick(String finalPrice);
     }
+
+
 }

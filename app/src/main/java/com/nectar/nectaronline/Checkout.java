@@ -1,6 +1,5 @@
 package com.nectar.nectaronline;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -76,4 +75,6 @@ public class Checkout extends AppCompatActivity implements Fragment_Delivery.ToP
         tabLayout.setScrollX(tabLayout.getWidth());
         tabLayout.getTabAt(1).select();
     }
+
+
 }

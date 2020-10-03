@@ -21,7 +21,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,7 +29,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -71,6 +69,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
     String PRICE;
 
     private List<Object> list;
+    private List<Object> emptylist;
     SwipeRefreshLayout swipeRefreshLayout;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -240,24 +239,17 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
-                                LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-                                View dialogView = layoutInflater.inflate(R.layout.dialog_empty_cart, null);
-                                MaterialButton button = dialogView.findViewById(R.id.continueAdding);
-                                button.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        subtotal.setVisibility(View.GONE);
-                                        dialogBuilder.dismiss();
-                                        getShopFragment.moveToTheShopFragment();
-                                    }
-                                });
-                                dialogBuilder.setView(dialogView);
-                                dialogBuilder.setCancelable(false);
-                                dialogBuilder.show();
+                                Model_PlaceHolder model = new Model_PlaceHolder("");
+                                emptylist = new ArrayList<>();
+                                emptylist.add(model);
                                 shimmerFrameLayout.stopShimmer();
                                 shimmerFrameLayout.setVisibility(View.GONE);
                                 swipeRefreshLayout.setRefreshing(false);
+                                subtotal.setVisibility(View.GONE);
+                                adapter = new Adapter_PlaceHolder(context, emptylist);
+                                adapter.notifyDataSetChanged();
+                                recyclerView.setAdapter(adapter);
+
 
                             }
                         });

@@ -80,8 +80,8 @@
 
                             <ImageView
                                 android:id="@+id/courier"
-                                android:layout_width="130dp"
-                                android:layout_height="130dp"
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentRight="true"
                                 android:layout_marginTop="10dp"
@@ -99,6 +99,7 @@
                                 android:layout_toLeftOf="@id/courier"
                                 android:orientation="vertical">
 
+
                                 <TextView
                                     android:id="@+id/NAME"
                                     android:layout_width="wrap_content"
@@ -111,7 +112,18 @@
                                     android:textStyle="bold" />
 
                                 <TextView
-                                    android:id="@+id/BRAND"
+                                    android:id="@+id/EMAIL"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="admin@example.com"
+                                    android:textColor="@color/material_on_surface_emphasis_medium"
+                                    android:textSize="13sp"
+                                    android:textStyle="normal" />
+
+                                <TextView
+                                    android:id="@+id/ADDRESS"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="3dp"
@@ -123,7 +135,7 @@
 
 
                                 <TextView
-                                    android:id="@+id/SIZE"
+                                    android:id="@+id/DESC"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="3dp"
@@ -134,7 +146,7 @@
                                     android:textStyle="normal" />
 
                                 <com.google.android.material.chip.Chip
-                                    android:id="@+id/STATE"
+                                    android:id="@+id/NUMBER"
                                     style="@style/Widget.MaterialComponents.Chip.Choice"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -148,36 +160,6 @@
 
 
                             </LinearLayout>
-
-                            <View
-                                android:id="@+id/view"
-                                android:layout_width="match_parent"
-                                android:layout_height="0.9dp"
-                                android:layout_below="@+id/courier"
-                                android:layout_margin="3dp"
-                                android:background="@color/colorPrimary" />
-
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/view"
-                                android:layout_alignParentRight="true"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/Explanation"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="Ops"
-                                    android:textColor="@color/material_on_surface_emphasis_medium"
-                                    android:textSize="13sp"
-                                    android:textStyle="normal"
-                                    android:visibility="invisible" />
-                            </LinearLayout>
-
                         </RelativeLayout>
                     </RelativeLayout>
 
@@ -249,8 +231,8 @@
 
                             <ImageView
                                 android:id="@+id/courier"
-                                android:layout_width="130dp"
-                                android:layout_height="130dp"
+                                android:layout_width="70dp"
+                                android:layout_height="70dp"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentRight="true"
                                 android:layout_marginTop="10dp"
@@ -294,34 +276,6 @@
 
                             </LinearLayout>
 
-                            <View
-                                android:id="@+id/view"
-                                android:layout_width="match_parent"
-                                android:layout_height="0.9dp"
-                                android:layout_below="@+id/courier"
-                                android:layout_margin="3dp"
-                                android:background="@color/colorPrimary" />
-
-
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@id/view"
-                                android:layout_alignParentRight="true"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/Explanation"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="Ops"
-                                    android:textColor="@color/material_on_surface_emphasis_medium"
-                                    android:textSize="13sp"
-                                    android:textStyle="normal"
-                                    android:visibility="invisible" />
-                            </LinearLayout>
 
                         </RelativeLayout>
                     </RelativeLayout>
@@ -463,7 +417,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="5dp"
                 android:text="NEXT STEP"
-                app:icon="@drawable/ic_baseline_delete_outline_24"
+                app:icon="@drawable/ic_baseline_done_all_24"
                 app:strokeColor="@color/colorPrimary"
                 app:strokeWidth="1dp" />
 

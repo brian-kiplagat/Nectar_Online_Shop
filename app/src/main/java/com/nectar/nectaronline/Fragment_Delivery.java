@@ -8,10 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +27,11 @@ public class Fragment_Delivery extends Fragment implements View.OnClickListener 
     Context context;
     MaterialButton finish;
     MaterialButton edit;
+    TextView name;
+    TextView email;
+    TextView address;
+    TextView desc;
+    Chip number;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -77,6 +84,12 @@ public class Fragment_Delivery extends Fragment implements View.OnClickListener 
         shipping = v.findViewById(R.id.shipping);
         finish = v.findViewById(R.id.finish);
         edit = v.findViewById(R.id.edit);
+        name = v.findViewById(R.id.NAME);
+        email = v.findViewById(R.id.EMAIL);
+        address = v.findViewById(R.id.ADDRESS);
+        desc = v.findViewById(R.id.DESC);
+        number = v.findViewById(R.id.NUMBER);
+
         edit.setOnClickListener(this);
         finish.setOnClickListener(this);
 
@@ -84,7 +97,12 @@ public class Fragment_Delivery extends Fragment implements View.OnClickListener 
     }
 
     public void updateDeliveryDetails(String price) {
-
+        Preferences preferences = new Preferences(context);
+        name.setText(preferences.getName());
+        email.setText(preferences.getEmail());
+        address.setText(preferences.getAddress());
+        desc.setText(preferences.getDescription());
+        number.setText(preferences.getNumber());
         String location = new Preferences(context).getAddress();
         int shippingFee = getShipping(location);
         if (shippingFee == 0) {
@@ -95,8 +113,8 @@ public class Fragment_Delivery extends Fragment implements View.OnClickListener 
         int totalPrice = Integer.parseInt(price) + shippingFee;
         subtotal.setText(getString(R.string.cashUnit) + " " + price);
         total.setText(getString(R.string.cashUnit) + " " + String.valueOf(totalPrice));
-        SharedPreferences preferences = context.getSharedPreferences("nectar", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
+        SharedPreferences pref = context.getSharedPreferences("nectar", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
         editor.putString("total", String.valueOf(totalPrice));
         editor.apply();
     }
@@ -105,7 +123,7 @@ public class Fragment_Delivery extends Fragment implements View.OnClickListener 
         if (location.contentEquals("Nairobi")) {
             return 0;
         } else {
-            return 100;
+            return 0;
         }
     }
 

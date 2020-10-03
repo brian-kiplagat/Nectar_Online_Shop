@@ -58,6 +58,7 @@ public class Checkout extends AppCompatActivity implements Fragment_Delivery.ToP
         switch (item.getItemId()) {
             case R.id.close:
                 Log.i("CLOSE", "onOptionsItemSelected: ");
+                finish();
                 break;
         }
         return true;

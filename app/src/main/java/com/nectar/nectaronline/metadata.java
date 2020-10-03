@@ -47,36 +47,7 @@ public class metadata extends AppCompatActivity {
 
     }
 
-    private class ViewPagerAdapter extends FragmentPagerAdapter {
-        private List<Fragment> fragments = new ArrayList<>();
-        private List<String> fragentTitle = new ArrayList<>();
 
-        public ViewPagerAdapter(@NonNull FragmentManager fm, int behavior) {
-            super(fm, behavior);
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            fragments.add(fragment);
-            fragentTitle.add(title);
-        }
-
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
-            return fragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return fragments.size();
-        }
-
-        @Nullable
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return fragentTitle.get(position);
-        }
-    }
 
     @Override
     protected void onResume() {

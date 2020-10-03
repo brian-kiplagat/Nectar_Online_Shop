@@ -130,8 +130,11 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
                     payNow(price);
                     toastLong("Standby to enter pin");
                 } else if (till.isChecked()) {
-
+                    orderWithTill();
+                   copyTill();
                 } else if (payondelivery.isChecked()) {
+                    orderWithPOD();
+                    copyTill();
 
                 } else {
                     toast("please select a payment method");
@@ -144,6 +147,168 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
 
 
         }
+    }
+
+    private void orderWithPOD() {
+        String url = getString(R.string.website_adress) + "/nectar/buy/orderviapod.php";
+        Log.i("PHONE", new Preferences(context).getNumber().substring(1));
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("email", new Preferences(context).getEmail())//then from server can check if to search or not the return an appropriate response
+                .add("amount", price)
+                .add("phone", new Preferences(context).getNumber())
+
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String res = response.body().string();
+                    Log.i("POD RES", res);
+                    try {
+                        JSONObject obj = new JSONObject(res);
+                        String code = obj.getString("RESPONSE_CODE");
+                        if (code.contentEquals("SUCCESS")) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    showPayOnDeliveryDialog();
+
+                                }
+                            });
+                        } else {
+                            toast("Ops, we could not process your payment try again later");
+                        }
+                    } catch (Exception e) {
+                        Log.i("ERROR", e.getLocalizedMessage());
+                    }
+                } else {
+                    toast("Ops! Try again");
+                }
+            }
+        });
+
+
+    }
+
+    private void orderWithTill() {
+        String url = getString(R.string.website_adress) + "/nectar/buy/orderviatill.php";
+        Log.i("PHONE", new Preferences(context).getNumber().substring(1));
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("email", new Preferences(context).getEmail())//then from server can check if to search or not the return an appropriate respons
+                .add("amount", price)
+                .add("phone", new Preferences(context).getNumber())
+
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String res = response.body().string();
+                    Log.i("TILL RES", res);
+                    try {
+                        JSONObject obj = new JSONObject(res);
+                        String code = obj.getString("RESPONSE_CODE");
+                        if (code.contentEquals("SUCCESS")) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showTillDialog();
+
+                                }
+                            });
+                        } else {
+                            toast("Ops, we could not process your payment try again later");
+                        }
+                    } catch (Exception e) {
+                        Log.i("ERROR", e.getLocalizedMessage());
+                    }
+                } else {
+                    toast("Ops! Try again");
+                }
+            }
+        });
+
+
+    }
+
+    private void showTillDialog() {
+
+        final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        View dialogView = layoutInflater.inflate(R.layout.dialog_till_dark, null);
+        TextView main = dialogView.findViewById(R.id.shop);
+        TextView primary = dialogView.findViewById(R.id.exp);
+        TextView secondary = dialogView.findViewById(R.id.secondary);
+        TextView pay = dialogView.findViewById(R.id.payExact);
+        pay.setText("Pay exacty Ksh "+price);
+        MaterialButton button = dialogView.findViewById(R.id.continueAdding);
+        button.setText("CONTINUE SHOPPING");
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogBuilder.dismiss();
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                getActivity().finish();
+
+            }
+        });
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.show();
+    }
+
+    private void showPayOnDeliveryDialog() {
+        final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        View dialogView = layoutInflater.inflate(R.layout.dialog_pay_on_delivery, null);
+        TextView main = dialogView.findViewById(R.id.shop);
+        TextView primary = dialogView.findViewById(R.id.exp);
+        TextView secondary = dialogView.findViewById(R.id.secondary);
+        TextView pay = dialogView.findViewById(R.id.payExact);
+        pay.setText("Pay exacty Ksh "+price);
+        MaterialButton button = dialogView.findViewById(R.id.continueAdding);
+        button.setText("CONTINUE SHOPPING");
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogBuilder.dismiss();
+                Intent intent = new Intent(context, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                getActivity().finish();
+
+            }
+        });
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.show();
     }
 
     private void payNow(final String price) {

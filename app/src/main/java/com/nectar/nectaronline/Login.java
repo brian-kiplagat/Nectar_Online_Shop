@@ -1,8 +1,10 @@
 package com.nectar.nectaronline;
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -29,6 +32,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Login extends AppCompatActivity {
+
     TextInputLayout email;
     TextInputLayout password;
 
@@ -273,4 +277,12 @@ public class Login extends AppCompatActivity {
     public void forgotPassword(View view) {
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+
 }

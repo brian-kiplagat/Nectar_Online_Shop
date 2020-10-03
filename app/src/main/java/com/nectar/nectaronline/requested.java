@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,7 +54,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class requested extends AppCompatActivity implements Adapter_Items.Clicked, View.OnClickListener {
-
+    TextView counter;
     Toolbar toolbar;
     RecyclerView recyclerView;
     RecyclerView sellersRecyclerView;
@@ -361,7 +363,11 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.item_requested_menu, menu);
-
+        MenuItem item = menu.findItem(R.id.cart);
+        MenuItemCompat.setActionView(item, R.layout.g);
+        RelativeLayout notification = (RelativeLayout) MenuItemCompat.getActionView(item);
+        counter = (TextView) notification.findViewById(R.id.counter);
+        counter.setVisibility(View.INVISIBLE);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -646,5 +652,63 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
             Log.i("E", e.getLocalizedMessage());
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //counter.setText("2");
+        getCount();
+
+
+    }
+
+    private void getCount() {
+        String url = getString(R.string.website_adress) + "/nectar/buy/getcount.php";
+        RequestBody formBody = new FormBody.Builder()
+                .add("email", new Preferences(getApplicationContext()).getEmail())//then from server can check if to search or not the return an appropriate respons
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String res = response.body().string();
+                Log.i("CART", res);
+                Log.i("SERVER RESPONSE", res);
+                try {
+                    JSONObject obj = new JSONObject(res);
+                    String code = obj.getString("RESPONSE_CODE");
+                    String desc = obj.getString("RESPONSE_DESC");
+                    if (code.contentEquals("SUCCESS")) {
+                        String STUFF = obj.getString("COUNT");
+                        JSONObject object = new JSONObject(STUFF);
+                        JSONArray array = object.getJSONArray("items");
+                        JSONObject obje = array.getJSONObject(0);
+                        final String count = obje.getString("COUNT(*)");
+                        Log.i("---COUNT--", count);
+                        counter.setVisibility(View.VISIBLE);
+                        counter.setText(count);
+
+
+                    } else if (desc.contentEquals("ZERO ITEMS")) {
+                        counter.setVisibility(View.VISIBLE);
+                        counter.setText("0");
+                    }
+                } catch (Exception e) {
+
+                }
+
+            }
+        });
     }
 }

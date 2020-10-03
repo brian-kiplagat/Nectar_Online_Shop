@@ -21,7 +21,9 @@
         android:title="Item"
         app:showAsAction="always" />
     <item
+
         android:id="@+id/cart"
+        android:actionLayout="@layout/g"
         android:icon="@drawable/ic_logo_cart_empty_straight_lines_bold_svg"
         android:title="Item"
         app:showAsAction="always" />

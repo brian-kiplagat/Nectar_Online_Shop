@@ -437,6 +437,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("seeCart", true);
                 startActivity(intent);
+                finish();
                 break;
 
         }

@@ -185,7 +185,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:checked="false"
-                android:text="TILL NUMBER" />
+                android:text="PAYBILL" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -237,7 +237,7 @@
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@drawable/mpesa_till" />
+                                android:src="@drawable/ic_paybill" />
 
                             <LinearLayout
 
@@ -269,18 +269,36 @@
                                     android:textColor="@color/material_on_background_emphasis_medium"
                                     android:textSize="13sp"
                                     android:textStyle="normal" />
-
                                 <TextView
-
+                                    android:id="@+id/pay"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="3dp"
                                     android:fontFamily="sans-serif-medium"
-                                    android:text="Pay to the till"
+                                    android:text="Pay exactly"
                                     android:textColor="@color/material_on_background_emphasis_medium"
                                     android:textSize="13sp"
                                     android:textStyle="normal" />
-
+                                <TextView
+                                    android:id="@+id/paybillNO"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="Paybill 403203"
+                                    android:textColor="@color/material_on_background_emphasis_medium"
+                                    android:textSize="13sp"
+                                    android:textStyle="normal" />
+                                <TextView
+                                   android:id="@+id/accountNO"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="Account number: 444414144"
+                                    android:textColor="@color/material_on_background_emphasis_medium"
+                                    android:textSize="13sp"
+                                    android:textStyle="normal" />
 
                                 <TextView
 
@@ -299,7 +317,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:checkable="false"
-                                    android:text="@string/kopokopTill_for_messaging_payment"
+                                    android:text="COPY PAYBILL"
                                     android:textSize="15sp"
                                     app:chipIcon="@drawable/ic_logo_cart_empty_straight_lines_bold_svg"
                                     app:chipIconEnabled="true"
@@ -377,7 +395,7 @@
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@drawable/mpesa_till" />
+                                android:src="@drawable/ic_paybill" />
 
                             <LinearLayout
                                 android:id="@+id/linear1"
@@ -432,6 +450,37 @@
                                     android:textColor="@color/material_on_surface_emphasis_medium"
                                     android:textSize="13sp"
                                     android:textStyle="normal" />
+                                <TextView
+                                    android:id="@+id/pay1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="Pay exactly"
+                                    android:textColor="@color/material_on_background_emphasis_medium"
+                                    android:textSize="13sp"
+                                    android:textStyle="normal" />
+                                <TextView
+                                    android:id="@+id/paybillNO1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="Paybill 403203"
+                                    android:textColor="@color/material_on_background_emphasis_medium"
+                                    android:textSize="13sp"
+                                    android:textStyle="normal" />
+                                <TextView
+                                    android:id="@+id/accountNO1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="Account number: 444414144"
+                                    android:textColor="@color/material_on_background_emphasis_medium"
+                                    android:textSize="13sp"
+                                    android:textStyle="normal" />
+
 
                                 <com.google.android.material.chip.Chip
                                     android:id="@+id/till_copy_mpesa_on_delivery"
@@ -439,7 +488,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:checkable="false"
-                                    android:text="@string/kopokopTill_for_messaging_payment"
+                                    android:text="COPY PAYBILL"
                                     android:textSize="15sp"
                                     app:chipIcon="@drawable/ic_logo_cart_empty_straight_lines_bold_svg"
                                     app:chipIconEnabled="true"

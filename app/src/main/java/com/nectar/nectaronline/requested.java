@@ -366,30 +366,18 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
         MenuItem item = menu.findItem(R.id.cart);
         MenuItemCompat.setActionView(item, R.layout.badge);
         RelativeLayout notification = (RelativeLayout) MenuItemCompat.getActionView(item);
-        counter = (TextView) notification.findViewById(R.id.counter);
+        counter = notification.findViewById(R.id.counter);
         counter.setVisibility(View.INVISIBLE);
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.app_bar_search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        counter.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onQueryTextSubmit(String searchQuery) {
-                Log.i("Query", searchQuery);
-
-                Fragment_Shop shop = new Fragment_Shop();
-                shop.fetch(true, true, searchQuery);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                Log.i("Query Text Change", newText);
-                Fragment_Shop shop = new Fragment_Shop();
-                shop.fetch(true, true, newText);
-                return false;
+            public void onClick(View v) {
+                Log.i("onOptionsItemSelected: ", "CART");
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("seeCart", true);
+                startActivity(intent);
+                finish();
             }
         });
-
         return true;
     }
 
@@ -438,13 +426,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
 
 
                 break;
-            case R.id.cart:
-                Log.i("onOptionsItemSelected: ", "CART");
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra("seeCart", true);
-                startActivity(intent);
-                finish();
-                break;
+
 
         }
 

@@ -117,7 +117,6 @@
                     android:id="@+id/center"
                     android:layout_width="30dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
@@ -131,21 +130,43 @@
                     android:textColor="@android:color/white"
                     android:textSize="20sp" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/DELIVERY"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:checkable="false"
-                    android:text="INTRANSIT"
-                    android:textSize="15sp"
-                    app:chipIcon="@drawable/ic_logo_cart_empty_straight_lines_bold_svg"
-                    app:chipIconEnabled="true"
-                    app:chipIconSize="15dp"
-                    app:chipIconTint="@color/colorPrimaryDark"
-                    app:iconStartPadding="5dp" />
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/ID"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="3dp"
+                        android:checkable="false"
+                        android:text="ID: 564"
+                        android:textSize="15sp"
+                        app:chipIcon="@drawable/ic_logo_cart_empty_straight_lines_bold_svg"
+                        app:chipIconEnabled="true"
+                        app:chipIconSize="15dp"
+                        app:chipIconTint="@color/colorPrimaryDark"
+                        app:iconStartPadding="5dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/DELIVERY"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="false"
+                        android:text="INTRANSIT"
+                        android:textSize="15sp"
+                        app:chipIcon="@drawable/ic_logo_cart_empty_straight_lines_bold_svg"
+                        app:chipIconEnabled="true"
+                        app:chipIconSize="15dp"
+                        app:chipIconTint="@color/colorPrimaryDark"
+                        app:iconStartPadding="5dp" />
+
+                </LinearLayout>
 
             </RelativeLayout>
 

@@ -49,6 +49,12 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
     Context context;
     String price;
     MaterialButton totalPrice;
+    TextView pay;
+    TextView paybill;
+    TextView accno;
+    TextView pay1;
+    TextView paybill1;
+    TextView accno1;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.badge. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -101,6 +107,12 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         payondelivery = v.findViewById(R.id.payondelivery);
         chip_pod = v.findViewById(R.id.till_copy);
         chip_till = v.findViewById(R.id.till_copy_mpesa_on_delivery);
+        pay = v.findViewById(R.id.pay);
+        paybill = v.findViewById(R.id.paybillNO);
+        accno = v.findViewById(R.id.accountNO);
+        pay1 = v.findViewById(R.id.pay1);
+        paybill1 = v.findViewById(R.id.paybillNO1);
+        accno1 = v.findViewById(R.id.accountNO1);
         finish = v.findViewById(R.id.finish);
         finish.setOnClickListener(this);
         chip_till.setOnClickListener(this);
@@ -112,6 +124,12 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
     }
 
     public void updateDetails() {
+        pay.setText("Pay exactly " + R.string.cashUnit + " " + price);
+        paybill.setText("Paybill: " + R.string.paybill_number);
+        accno.setText("Account number: " + new Preferences(context).getNumber());
+        pay1.setText("Pay exactly " + R.string.cashUnit + " " + price);
+        paybill1.setText("Paybill: " + R.string.paybill_number);
+        accno1.setText("Account number: " + new Preferences(context).getNumber());
         SharedPreferences preferences = context.getSharedPreferences("nectar", Context.MODE_PRIVATE);
         if (preferences.contains("total")) {
             price = preferences.getString("total", "");
@@ -395,9 +413,10 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
 
     private void copyTill() {
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("saved to clip", getString(R.string.kopokopTill_for_messaging_payment));
+        ClipData clip = ClipData.newPlainText("saved to clip", getString(R.string.paybill_number));
         clipboard.setPrimaryClip(clip);
-        toast("Till copied to clipboard");
+        toast("Paybill copied to clipboard");
+
     }
 
     private void toast(String s) {

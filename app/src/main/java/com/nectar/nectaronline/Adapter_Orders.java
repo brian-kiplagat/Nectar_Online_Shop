@@ -40,6 +40,7 @@ public class Adapter_Orders extends RecyclerView.Adapter<Adapter_Orders.ViewHold
         final Model_Orders model = (Model_Orders) list.get(position);
         String link = context.getString(R.string.website_adress) + "/nectar/seller/" + model.getImages();
         Glide.with(context).load(link).into(holder.prod_image);
+        holder.id.setText("Order ID: "+model.getId());
         holder.brand.setText(model.getBrand());
         holder.name.setText(model.getName());
         holder.number_of_items.setText(model.getQuantity());
@@ -114,7 +115,7 @@ public class Adapter_Orders extends RecyclerView.Adapter<Adapter_Orders.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView cash;
-
+        Chip id;
         TextView brand;
         TextView name;
         TextView size;
@@ -130,6 +131,7 @@ public class Adapter_Orders extends RecyclerView.Adapter<Adapter_Orders.ViewHold
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            id = itemView.findViewById(R.id.ID);
             cash = itemView.findViewById(R.id.CASH);
             fav = itemView.findViewById(R.id.favourite);
             cartStuff = itemView.findViewById(R.id.cartStuff);

@@ -2,7 +2,6 @@ package com.nectar.nectaronline;
 
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,9 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -108,8 +109,6 @@ public class Adapter_Orders extends RecyclerView.Adapter<Adapter_Orders.ViewHold
 
     @Override
     public int getItemCount() {
-        Log.i(String.valueOf(list.size()), "getItemCount: ");
-
         return list.size();
     }
 
@@ -129,6 +128,7 @@ public class Adapter_Orders extends RecyclerView.Adapter<Adapter_Orders.ViewHold
         TextView explanation;
         com.facebook.shimmer.ShimmerFrameLayout shimm;
 
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             id = itemView.findViewById(R.id.ID);
@@ -145,6 +145,7 @@ public class Adapter_Orders extends RecyclerView.Adapter<Adapter_Orders.ViewHold
             prod_image = itemView.findViewById(R.id.drinkimage);
             shimm = itemView.findViewById(R.id.shimmer);
             explanation = itemView.findViewById(R.id.Explanation);
+
         }
     }
 

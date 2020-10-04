@@ -369,7 +369,7 @@ public class SignUp extends AppCompatActivity {
                             dialogBuilder.dismiss();
                             break;
                         }
-                        String url = getString(R.string.website_adress) + "/nectar/signup.php";
+                        String url = getString(R.string.website_adress) + "/nectar/buy/signup.php";
                         RequestBody formBody = new FormBody.Builder()
                                 .add("name", NAME)
                                 .add("email", EMAIL)

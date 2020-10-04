@@ -196,7 +196,7 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                             final String state = obje.getString("state");
                             final String images = obje.getString("images");
                             final String sellerID = obje.getString("sellerID");
-                            final String productID = obje.getString("productID");
+                            final String productID = obje.getString("id");
                             final String quantity = obje.getString("quantity");
 
                             //Here within this for loop i could add the prices

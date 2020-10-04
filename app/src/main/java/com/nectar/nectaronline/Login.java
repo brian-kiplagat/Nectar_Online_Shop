@@ -139,7 +139,7 @@ public class Login extends AppCompatActivity {
                             dialogBuilder.dismiss();
                             break;
                         }
-                        String url = getString(R.string.website_adress) + "/nectar/login.php";
+                        String url = getString(R.string.website_adress) + "/nectar/buy/login.php";
                         RequestBody formBody = new FormBody.Builder()
                                 .add("email", mail)
                                 .add("password", pass)

@@ -124,12 +124,12 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
     }
 
     public void updateDetails() {
-        pay.setText("Pay exactly " + R.string.cashUnit + " " + price);
-        paybill.setText("Paybill: " + R.string.paybill_number);
-        accno.setText("Account number: " + new Preferences(context).getNumber());
-        pay1.setText("Pay exactly " + R.string.cashUnit + " " + price);
-        paybill1.setText("Paybill: " + R.string.paybill_number);
-        accno1.setText("Account number: " + new Preferences(context).getNumber());
+        pay.setText("Pay exactly " + context.getString(R.string.cashUnit) + " " + price);
+        paybill.setText("Paybill: " + context.getString(R.string.paybill_number));
+        accno.setText("Account number: +" + new Preferences(context).getNumber());
+        pay1.setText("Pay exactly " + context.getString(R.string.cashUnit) + " " + price);
+        paybill1.setText("Paybill: " + context.getString(R.string.paybill_number));
+        accno1.setText("Account number: +" + new Preferences(context).getNumber());
         SharedPreferences preferences = context.getSharedPreferences("nectar", Context.MODE_PRIVATE);
         if (preferences.contains("total")) {
             price = preferences.getString("total", "");

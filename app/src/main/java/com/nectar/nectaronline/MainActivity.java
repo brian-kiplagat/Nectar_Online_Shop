@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             Log.i("Has extra", "NO");
         }
-        checkContactsPermission();
+       // checkContactsPermission();
     }
 
     private void checkContactsPermission() {

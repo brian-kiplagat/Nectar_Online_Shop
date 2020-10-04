@@ -443,24 +443,6 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
         RequestBody formBody = new FormBody.Builder()
 
                 .add("productID", ID)
-                .add("sellerID", SELLERID)
-                .add("brand", BRAND)
-                .add("name", NAME)
-                .add("newPrice", NEWPRICE)
-                .add("old", OLD)
-                .add("color", COLOR)
-                .add("description", DESC)
-                .add("specification", SPEC)
-                .add("keyfeatures", KEYFEATURES)
-                .add("size", SIZE)
-                .add("color", COLOR)
-                .add("instock", INSTOCK)
-                .add("weight", WEIGHT)
-                .add("material", MATERIAL)
-                .add("inbox", WHATSINTHEBOX)
-                .add("waranty", WARANTY)
-                .add("state", STATE)
-                .add("images", IMAGES)
                 .add("email", preferences.getEmail())
                 .add("phone", preferences.getNumber())
                 .add("quantity", "1")
@@ -481,7 +463,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
             try {
                 final String res = response.body().string().trim();
-                Log.i("response", res);
+                Log.i("ADDING TO CART", res);
                 JSONObject obj = new JSONObject(res);
                 String code = obj.getString("RESPONSE_CODE");
                 if (code.contentEquals("SUCCESS")) {

@@ -166,7 +166,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
             public void run() {
                 try {
 
-                    String url = getString(R.string.website_adress) + "/nectar/getitems.php";
+                    String url = getString(R.string.website_adress) + "/nectar/buy/getitems.php";
                     RequestBody formBody = new FormBody.Builder()
                             .add("search", QUERY)//then from server can check if to search or not the return an appropriate respons
                             .add("query", queryWord)
@@ -274,13 +274,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
                 } catch (Exception e) {
                     Log.i("EXCEPTION ERROR: ", e.getLocalizedMessage());
                     Snackbar.make(recyclerView, "Ops ! Network connection seem to be poor, trying to connect again", Snackbar.LENGTH_LONG).show();
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            fetch(false, false, "");
 
-                        }
-                    });
                 }
 
             }

@@ -50,7 +50,7 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
     String price;
     MaterialButton totalPrice;
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    // the fragment initialization parameters, e.badge. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -168,7 +168,7 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                toast("Ops! Please Try again");
             }
 
             @Override
@@ -313,13 +313,12 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
 
     private void payNow(final String price) {
         String url = getString(R.string.website_adress) + "/nectar/payment/stk.php";
-        Log.i("PHONE", new Preferences(context).getNumber().substring(1));
+        Log.i("PHONE", new Preferences(context).getNumber());
 
         RequestBody formBody = new FormBody.Builder()
                 .add("email", new Preferences(context).getEmail())//then from server can check if to search or not the return an appropriate respons
                 .add("amount", price)
-                .add("phone", new Preferences(context).getNumber().substring(1))
-
+                .add("phone", new Preferences(context).getNumber())
                 .build();
 
         OkHttpClient client = new OkHttpClient();

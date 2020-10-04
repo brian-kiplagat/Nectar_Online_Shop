@@ -52,7 +52,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
     private List<Object> listChips = new ArrayList<>();
 
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    // the fragment initialization parameters, e.badge. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 

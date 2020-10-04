@@ -62,7 +62,7 @@ public class Fragment_Profile extends Fragment implements View.OnClickListener {
 
 
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    // the fragment initialization parameters, e.badge. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -128,7 +128,7 @@ public class Fragment_Profile extends Fragment implements View.OnClickListener {
         String DESCRIPTION = preferences.getString("desc", "");
 
         name.getEditText().setText(NAME);
-        phone.getEditText().setText(PHONE);
+        phone.getEditText().setText("+"+PHONE);
         address.getEditText().setText(ADDRESS);
         description.getEditText().setText(DESCRIPTION);
         name_person.setText(NAME);
@@ -256,7 +256,7 @@ public class Fragment_Profile extends Fragment implements View.OnClickListener {
                     return;
                 }
                 final String NAME = name.getEditText().getText().toString().trim();
-                final String NUMBER = phone.getEditText().getText().toString().trim();
+                final String NUMBER = phone.getEditText().getText().toString().trim().substring(1);
                 final String ADDRESS = address.getEditText().getText().toString().trim();
                 final String DESCRIPTION = description.getEditText().getText().toString().trim();
                 final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
@@ -359,7 +359,7 @@ public class Fragment_Profile extends Fragment implements View.OnClickListener {
             @Override
             public void run() {
                 name.getEditText().setText(name_new);
-                phone.getEditText().setText(number_new);
+                phone.getEditText().setText("+"+number_new);
                 address.getEditText().setText(address_new);
                 description.getEditText().setText(description_new);
                 name_person.setText(name_new);

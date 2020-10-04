@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -36,6 +37,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -170,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sell:
-                drawerLayout.closeDrawers();
+               // drawerLayout.closeDrawers();
                 Log.i("SELL", "onNavigationItemSelected: ");
                 try {
                     Intent intent1 = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.sell_link)));
@@ -183,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 break;
             case R.id.developer:
-                drawerLayout.closeDrawers();
+               // drawerLayout.closeDrawers();
                 Intent intent = new Intent(getApplicationContext(), metadata.class);
                 intent.putExtra("payload", "developer");
                 startActivity(intent);
@@ -191,14 +193,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.about:
-                drawerLayout.closeDrawers();
+              //  drawerLayout.closeDrawers();
                 Intent intent2 = new Intent(getApplicationContext(), metadata.class);
                 intent2.putExtra("payload", "about");
                 startActivity(intent2);
                Log.i("ABOUT", "onNavigationItemSelected: ");
                 break;
             case R.id.contact:
-                drawerLayout.closeDrawers();
+               // drawerLayout.closeDrawers();
                 Intent intent3= new Intent(getApplicationContext(), metadata.class);
                 intent3.putExtra("payload", "contact");
                 startActivity(intent3);
@@ -206,19 +208,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.i("CONTACT", "onNavigationItemSelected: ");
                 break;
             case R.id.logout:
-                drawerLayout.closeDrawers();
-                SharedPreferences preferences = getSharedPreferences("nectar", MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.remove("email");
-                editor.remove("password");
-                editor.apply();
-                Intent intent4 = new Intent(MainActivity.this, Login.class);
-                intent4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent4);
-                finish();
+               // drawerLayout.closeDrawers();
+                MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(MainActivity.this);
+                builder.setTitle("LOGOUT").setMessage("We'll miss you soo much, next time you'll have to login again").setPositiveButton("OKAY", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SharedPreferences preferences = getSharedPreferences("nectar", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.remove("email");
+                        editor.remove("password");
+                        editor.apply();
+                        Intent intent4 = new Intent(MainActivity.this, Login.class);
+                        intent4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent4);
+                        finish();
+                    }
+                }).setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).setCancelable(true).show();
+
                 Log.i("LOGOUT", "onNavigationItemSelected: ");
                 break;
+            case R.id.orders:
+                //drawerLayout.closeDrawers();
+                Intent intent5= new Intent(getApplicationContext(), metadata.class);
+                intent5.putExtra("payload", "orders");
+                startActivity(intent5);
+                Log.i("CONTACT", "onNavigationItemSelected: ");
+                break;
+            case R.id.favourite:
+                //drawerLayout.closeDrawers();
 
+                Intent intent6= new Intent(getApplicationContext(), metadata.class);
+                intent6.putExtra("payload", "favourites");
+                startActivity(intent6);
+                Log.i("CONTACT", "onNavigationItemSelected: ");
+                break;
         }
 
         return false;

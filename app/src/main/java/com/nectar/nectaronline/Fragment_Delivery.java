@@ -34,7 +34,7 @@ public class Fragment_Delivery extends Fragment implements View.OnClickListener 
     Chip number;
 
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    // the fragment initialization parameters, e.badge. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -102,7 +102,7 @@ public class Fragment_Delivery extends Fragment implements View.OnClickListener 
         email.setText(preferences.getEmail());
         address.setText(preferences.getAddress());
         desc.setText(preferences.getDescription());
-        number.setText(preferences.getNumber());
+        number.setText("+"+preferences.getNumber());
         String location = new Preferences(context).getAddress();
         int shippingFee = getShipping(location);
         if (shippingFee == 0) {

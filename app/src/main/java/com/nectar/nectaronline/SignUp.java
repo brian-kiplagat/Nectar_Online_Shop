@@ -341,7 +341,7 @@ public class SignUp extends AppCompatActivity {
         final String NAME = name.getEditText().getText().toString().trim();
         final String EMAIL = email.getEditText().getText().toString().trim();
         final String PASSWORD = password.getEditText().getText().toString().trim();
-        final String NUMBER = number.getEditText().getText().toString().trim();
+        final String NUMBER = number.getEditText().getText().toString().trim().substring(1);
         final String ADDRESS = address.getEditText().getText().toString().trim();
         final String DESCRIPTION = description.getEditText().getText().toString().trim();
 

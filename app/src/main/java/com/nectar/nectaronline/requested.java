@@ -364,7 +364,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.item_requested_menu, menu);
         MenuItem item = menu.findItem(R.id.cart);
-        MenuItemCompat.setActionView(item, R.layout.g);
+        MenuItemCompat.setActionView(item, R.layout.badge);
         RelativeLayout notification = (RelativeLayout) MenuItemCompat.getActionView(item);
         counter = (TextView) notification.findViewById(R.id.counter);
         counter.setVisibility(View.INVISIBLE);
@@ -480,6 +480,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
                 .add("state", STATE)
                 .add("images", IMAGES)
                 .add("email", preferences.getEmail())
+                .add("phone", preferences.getNumber())
                 .add("quantity", "1")
                 .build();
 
@@ -502,6 +503,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
                 JSONObject obj = new JSONObject(res);
                 String code = obj.getString("RESPONSE_CODE");
                 if (code.contentEquals("SUCCESS")) {
+                    getCount();
                     toast("Added to cart");
                 } else {
                     toast("Ops ! Lets try that again");

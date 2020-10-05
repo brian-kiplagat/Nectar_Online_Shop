@@ -521,9 +521,10 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
 
             case R.id.fav:
                 Preferences preferences = new Preferences(getApplicationContext());
-                String url = getString(R.string.website_adress) + "/nectar/client/addtofav.php";
+                String url = getString(R.string.website_adress) + "/nectar/buy/addtofav.php";
                 RequestBody formBody = new FormBody.Builder()
                         .add("email", preferences.getEmail())
+                        .add("productID", ID)
                         .build();
 
                 OkHttpClient client = new OkHttpClient();
@@ -541,6 +542,28 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
                     public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                         String res = response.body().string();
                         Log.i("FAV-RESPONSE", res);
+                        try {
+                            JSONObject obj = new JSONObject(res);
+                            String code = obj.getString("RESPONSE_CODE");
+                            String desc = obj.getString("RESPONSE_DESC");
+                            if (code.contentEquals("SUCCESS")) {
+                               toast("Added to favourites");
+                               requested.this.runOnUiThread(new Runnable() {
+                                   @Override
+                                   public void run() {
+                                       favourites.setImageResource(R.drawable.ic_baseline_favorite_24);
+
+                                   }
+                               });
+
+                            } else if (desc.contentEquals("ZERO ITEMS")) {
+                                counter.setVisibility(View.VISIBLE);
+                                counter.setText("0");
+                            }
+                        } catch (Exception e) {
+
+                        }
+
                     }
                 });
                 Log.i("REQUESTED", "ADD TO CART");

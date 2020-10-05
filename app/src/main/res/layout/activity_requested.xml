@@ -242,6 +242,7 @@
                         android:id="@+id/fav"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
+                        android:tint="@color/colorPrimaryDark"
                         android:layout_margin="5dp"
                         android:src="@drawable/ic_baseline_favorite_border_24" />
                 </LinearLayout>

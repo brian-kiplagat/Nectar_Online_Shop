@@ -143,7 +143,7 @@ public class Fragment_Favourites extends Fragment implements SwipeRefreshLayout.
                     final String res = response.body().string().trim();
                     Log.i("FAVOURITES", res);
                     JSONObject obj = new JSONObject(res);
-                    String code = obj.getString("RESPONSE_CODE");
+                    final String code = obj.getString("RESPONSE_CODE");
                     String desc = obj.getString("RESPONSE_DESC");
 
                     if (code.contentEquals("SUCCESS")) {
@@ -174,14 +174,14 @@ public class Fragment_Favourites extends Fragment implements SwipeRefreshLayout.
                             final String state = obje.getString("state");
                             final String images = obje.getString("images");
                             final String sellerID = obje.getString("sellerID");
-                            // final String quantity = obje.getString("quantity");
+                            final String productID = obje.getString("productID");
                             // final String delivery = obje.getString("delivery");
 
                             //Here within this for loop i could add the prices
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ModeL_Shop_Items model = new ModeL_Shop_Items(name, brand, id, newPrice, old, description, keyfeatures, specification, color, size, weight, material, inbox, waranty, instock, state, images, sellerID);
+                                    Model_Orders model = new Model_Orders(name,brand,id,old,newPrice,description,keyfeatures,specification,color,size,weight,material,inbox,waranty,instock,state,images,sellerID,productID,"","");
                                     list.add(model);
                                     shimmerFrameLayout.stopShimmer();
                                     shimmerFrameLayout.setVisibility(View.GONE);
@@ -195,7 +195,7 @@ public class Fragment_Favourites extends Fragment implements SwipeRefreshLayout.
                             });
                         }
 
-                    } else if (desc.contentEquals("ZERO ITEMS")) {
+                    } else if (desc.contentEquals("ERROR: ZERO ITEMS FROM FAVS")) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -248,7 +248,7 @@ public class Fragment_Favourites extends Fragment implements SwipeRefreshLayout.
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            final ModeL_Shop_Items model = (ModeL_Shop_Items) list.get(position);
+            final Model_Orders model = (Model_Orders) list.get(position);
             String link = context.getString(R.string.website_adress) + "/nectar/seller/" + model.getImages();
             Glide.with(context).load(link).into(holder.prod_image);
 
@@ -299,13 +299,14 @@ public class Fragment_Favourites extends Fragment implements SwipeRefreshLayout.
                 @Override
                 public void onClick(View v) {
                     toast("Deleting");
+                    delete(model.getId());
                 }
             });
             holder.buy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     toast("Adding to cart");
-                    addToCart(model.getId());
+                    addToCart(model.getProductID());
                 }
             });
 
@@ -355,6 +356,53 @@ public class Fragment_Favourites extends Fragment implements SwipeRefreshLayout.
         }
     }
 
+    private void delete(String id) {
+        String url = getString(R.string.website_adress) + "/nectar/buy/deletefavourites.php";//can get to cart and filer all the IDs from the product ID can send back all the data as a json volley
+        RequestBody formBody = new FormBody.Builder()
+                //then from server can check if to search or not the return an appropriate respons
+                .add("id", id)
+                .add("email", new Preferences(context).getEmail())
+                .build();
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String res = response.body().string();
+                    Log.i("DELETE", res);
+                    try {
+                        JSONObject obj = new JSONObject(res);
+                        String code = obj.getString("RESPONSE_CODE");
+                        String desc = obj.getString("RESPONSE_DESC");
+                        if (code.contentEquals("SUCCESS")) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    fetch(new Preferences(context).getEmail());
+                                    toast("Deleted");
+
+                                }
+                            });
+                         } else {
+                            toast("Ops! Try again");
+                        }
+                    } catch (Exception e) {
+                        Log.i("Error", e.getMessage());
+                    }
+                }
+            }
+        });
+    }
+
     private void addToCart(String productID) {
         String url = getString(R.string.website_adress) + "/nectar/buy/addtocart.php";//can get to cart and filer all the IDs from the product ID can send back all the data as a json volley
         RequestBody formBody = new FormBody.Builder()
@@ -387,7 +435,8 @@ public class Fragment_Favourites extends Fragment implements SwipeRefreshLayout.
                         String desc = obj.getString("RESPONSE_DESC");
 
                         if (code.contentEquals("SUCCESS")) {
-                            toast("Added");
+                            toast("Added to cart");
+
                         } else {
                             toast("Ops! Try again");
                         }

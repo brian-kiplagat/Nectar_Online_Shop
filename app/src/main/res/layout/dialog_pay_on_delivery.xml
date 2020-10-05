@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:drawableLeft="@drawable/ic_baseline_arrow_right_24"
-                    android:text="Go to lipa na Mpesa"
+                    android:text="Pay in cash to the agent"
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="?android:attr/textColorSecondary" />
 
@@ -76,25 +76,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_baseline_arrow_right_24"
-                    android:text="Select buy goods and services"
+                    android:text="Note we do not carry change"
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="?android:attr/textColorSecondary" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_baseline_arrow_right_24"
-                    android:text="Enter our till number"
-                    android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ic_baseline_arrow_right_24"
-                    android:text="We have copied it to your clipboard"
-                    android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary" />
 
                 <TextView
                     android:id="@+id/payExact"

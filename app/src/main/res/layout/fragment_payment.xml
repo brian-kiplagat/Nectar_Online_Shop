@@ -178,14 +178,14 @@
             </LinearLayout>
 
             <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/till"
+                android:id="@+id/cashondelivery"
                 style="?attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:checked="false"
-                android:text="PAYBILL" />
+                android:text="CASH ON DELIVERY" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -237,7 +237,7 @@
                                 android:layout_marginTop="10dp"
                                 android:layout_marginEnd="10dp"
                                 android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_paybill" />
+                                android:src="@drawable/ic_payment_method_small" />
 
                             <LinearLayout
 
@@ -270,37 +270,6 @@
                                     android:textSize="13sp"
                                     android:textStyle="normal" />
                                 <TextView
-                                    android:id="@+id/pay"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="Pay exactly"
-                                    android:textColor="@color/material_on_background_emphasis_medium"
-                                    android:textSize="13sp"
-                                    android:textStyle="normal" />
-                                <TextView
-                                    android:id="@+id/paybillNO"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="Paybill 403203"
-                                    android:textColor="@color/material_on_background_emphasis_medium"
-                                    android:textSize="13sp"
-                                    android:textStyle="normal" />
-                                <TextView
-                                   android:id="@+id/accountNO"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="Account number: 444414144"
-                                    android:textColor="@color/material_on_background_emphasis_medium"
-                                    android:textSize="13sp"
-                                    android:textStyle="normal" />
-
-                                <TextView
 
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -311,21 +280,19 @@
                                     android:textSize="13sp"
                                     android:textStyle="normal" />
 
-                                <com.google.android.material.chip.Chip
-                                    android:id="@+id/till_copy"
-                                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                                <TextView
+                                    android:id="@+id/pay"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:checkable="false"
-                                    android:text="COPY PAYBILL"
-                                    android:textSize="15sp"
-                                    app:chipIcon="@drawable/ic_logo_cart_empty_straight_lines_bold_svg"
-                                    app:chipIconEnabled="true"
-                                    app:chipIconSize="15dp"
-                                    app:iconStartPadding="5dp" />
+                                    android:layout_marginTop="3dp"
+                                    android:fontFamily="sans-serif-medium"
+                                    android:text="Pay exactly"
+                                    android:textColor="@color/material_on_background_emphasis_medium"
+                                    android:textSize="13sp"
+                                    android:textStyle="normal" />
 
 
-                            </LinearLayout>
+                                </LinearLayout>
 
                         </RelativeLayout>
                     </RelativeLayout>
@@ -335,7 +302,7 @@
             </LinearLayout>
 
             <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/payondelivery"
+                android:id="@+id/mpesaondelivery"
                 style="?attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

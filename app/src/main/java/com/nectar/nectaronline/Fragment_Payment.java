@@ -41,17 +41,14 @@ import okhttp3.Response;
  */
 public class Fragment_Payment extends Fragment implements View.OnClickListener {
     MaterialRadioButton popup;
-    MaterialRadioButton till;
-    MaterialRadioButton payondelivery;
+    MaterialRadioButton paybillondelivery;
+    MaterialRadioButton cashondelivery;
     Chip chip_till;
-    Chip chip_pod;
     Button finish;
     Context context;
     String price;
     MaterialButton totalPrice;
     TextView pay;
-    TextView paybill;
-    TextView accno;
     TextView pay1;
     TextView paybill1;
     TextView accno1;
@@ -102,21 +99,17 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         View v = inflater.inflate(R.layout.fragment_payment, container, false);
         context = getActivity().getApplicationContext();
         popup = v.findViewById(R.id.popup);
-        till = v.findViewById(R.id.till);
+        paybillondelivery = v.findViewById(R.id.mpesaondelivery);
         totalPrice = v.findViewById(R.id.total);
-        payondelivery = v.findViewById(R.id.payondelivery);
-        chip_pod = v.findViewById(R.id.till_copy);
-        chip_till = v.findViewById(R.id.till_copy_mpesa_on_delivery);
+        cashondelivery = v.findViewById(R.id.cashondelivery);
+         chip_till = v.findViewById(R.id.till_copy_mpesa_on_delivery);
         pay = v.findViewById(R.id.pay);
-        paybill = v.findViewById(R.id.paybillNO);
-        accno = v.findViewById(R.id.accountNO);
-        pay1 = v.findViewById(R.id.pay1);
+         pay1 = v.findViewById(R.id.pay1);
         paybill1 = v.findViewById(R.id.paybillNO1);
         accno1 = v.findViewById(R.id.accountNO1);
         finish = v.findViewById(R.id.finish);
         finish.setOnClickListener(this);
         chip_till.setOnClickListener(this);
-        chip_pod.setOnClickListener(this);
 
 
         return v;
@@ -129,8 +122,6 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
             price = preferences.getString("total", "");
             totalPrice.setText(getString(R.string.cashUnit) + " " + price);
             pay.setText("Pay exactly " + context.getString(R.string.cashUnit) + " " + price);
-            paybill.setText("Paybill: " + context.getString(R.string.paybill_number));
-            accno.setText("Account number: +" + new Preferences(context).getNumber());
             pay1.setText("Pay exactly " + context.getString(R.string.cashUnit) + " " + price);
             paybill1.setText("Paybill: " + context.getString(R.string.paybill_number));
             accno1.setText("Account number: +" + new Preferences(context).getNumber());
@@ -148,19 +139,17 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
                 if (popup.isChecked()) {
                     payNow(price);
                     toastLong("Standby to enter pin");
-                } else if (till.isChecked()) {
-                    orderWithTill();
-                   copyTill();
-                } else if (payondelivery.isChecked()) {
-                    orderWithPOD();
+                } else if (paybillondelivery.isChecked()) {
+                    orderWithPaybillMpesaOnDelivery();
                     copyTill();
+                } else if (cashondelivery.isChecked()) {
+                    cashondelivery();
 
                 } else {
                     toast("please select a payment method");
                 }
                 break;
-            case R.id.till_copy:
-            case R.id.till_copy_mpesa_on_delivery:
+              case R.id.till_copy_mpesa_on_delivery:
                 copyTill();
                 break;
 
@@ -168,8 +157,62 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void orderWithPOD() {
-        String url = getString(R.string.website_adress) + "/nectar/buy/orderviapod.php";
+    private void orderWithPaybillMpesaOnDelivery() {
+        String url = getString(R.string.website_adress) + "/nectar/buy/mpesaondelivery.php";
+        Log.i("PHONE", new Preferences(context).getNumber().substring(1));
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("email", new Preferences(context).getEmail())//then from server can check if to search or not the return an appropriate response
+                .add("amount", price)
+                .add("phone", new Preferences(context).getNumber())
+
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                toast("Ops! Please Try again");
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String res = response.body().string();
+                    Log.i("POD RES", res);
+                    try {
+                        JSONObject obj = new JSONObject(res);
+                        String code = obj.getString("RESPONSE_CODE");
+                        if (code.contentEquals("SUCCESS")) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    showMpesaonDeliveryDialog();
+
+                                }
+                            });
+                        } else {
+                            toast("Ops, we could not process your payment try again later");
+                        }
+                    } catch (Exception e) {
+                        Log.i("ERROR", e.getLocalizedMessage());
+                    }
+                } else {
+                    toast("Ops! Try again");
+                }
+            }
+        });
+
+
+    }
+
+    private void cashondelivery() {
+        String url = getString(R.string.website_adress) + "/nectar/buy/cashondelivery.php";
         Log.i("PHONE", new Preferences(context).getNumber().substring(1));
 
         RequestBody formBody = new FormBody.Builder()
@@ -222,64 +265,11 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
 
     }
 
-    private void orderWithTill() {
-        String url = getString(R.string.website_adress) + "/nectar/buy/orderviatill.php";
-        Log.i("PHONE", new Preferences(context).getNumber().substring(1));
-
-        RequestBody formBody = new FormBody.Builder()
-                .add("email", new Preferences(context).getEmail())//then from server can check if to search or not the return an appropriate respons
-                .add("amount", price)
-                .add("phone", new Preferences(context).getNumber())
-
-                .build();
-
-        OkHttpClient client = new OkHttpClient();
-        final Request request = new Request.Builder()
-                .url(url)
-                .post(formBody)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String res = response.body().string();
-                    Log.i("TILL RES", res);
-                    try {
-                        JSONObject obj = new JSONObject(res);
-                        String code = obj.getString("RESPONSE_CODE");
-                        if (code.contentEquals("SUCCESS")) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    showTillDialog();
-
-                                }
-                            });
-                        } else {
-                            toast("Ops, we could not process your payment try again later");
-                        }
-                    } catch (Exception e) {
-                        Log.i("ERROR", e.getLocalizedMessage());
-                    }
-                } else {
-                    toast("Ops! Try again");
-                }
-            }
-        });
-
-
-    }
-
-    private void showTillDialog() {
+    private void showMpesaonDeliveryDialog() {
 
         final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        View dialogView = layoutInflater.inflate(R.layout.dialog_till_dark, null);
+        View dialogView = layoutInflater.inflate(R.layout.dialog_mpesaondelivery, null);
         TextView main = dialogView.findViewById(R.id.shop);
         TextView primary = dialogView.findViewById(R.id.exp);
         TextView secondary = dialogView.findViewById(R.id.secondary);

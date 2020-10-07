@@ -1,6 +1,5 @@
 package com.nectar.nectaronline;
 
-import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -10,15 +9,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -177,7 +173,15 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
         STATE = intent.getStringExtra("state");
         IMAGES = intent.getStringExtra("images");
         fetchImages(IMAGES);
-        previos.setText("KSH " + OLD);
+        if (OLD.contentEquals("0")) {
+            View v = findViewById(R.id.view);
+            v.setVisibility(View.INVISIBLE);
+            previos.setText("No offer yet");
+
+        } else {
+            previos.setText("KSH " + OLD);
+
+        }
         name.setText(NAME);
         brand.setText("Brand: " + BRAND);
         amount.setText("KSH " + NEWPRICE);
@@ -185,7 +189,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
         specs.setText(SPEC);
         key_features.setText(KEYFEATURES);
         color.setText(COLOR);
-        weight.setText(WEIGHT);
+        weight.setText(WEIGHT + " Kgs");
         inbox.setText(WHATSINTHEBOX);
         instock.setText("Instock " + INSTOCK);
         material.setText(MATERIAL);
@@ -322,22 +326,13 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
 
 
     private void fetchImages(String images) {
-        list = new ArrayList<>();
-        Model_Images model = new Model_Images(IMAGES);
-        list.add(model);
-        adapter = new Adapter_Images(list, getApplicationContext());
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-
-        /*//use json array containing all the images
+        //use json array containing all the images
         Log.i("fetchImages: ", images);
         list = new ArrayList<>();
         try {
-            JSONObject jObj = new JSONObject(images);
-            JSONArray array = jObj.getJSONArray("image");
+            JSONArray array = new JSONArray(images);
             for (int i = 0; i < array.length(); i++) {
-                JSONObject object = array.getJSONObject(i);
-                String poster = object.getString("poster");
+                String poster = array.getString(i);
                 Model_Images model = new Model_Images(poster);
                 list.add(model);
                 adapter = new Adapter_Images(list, getApplicationContext());
@@ -349,7 +344,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
 
         } catch (Exception e) {
             Log.i("ERR", e.getLocalizedMessage());
-        }*/
+        }
 
     }
 
@@ -575,45 +570,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
         }
     }
 
-    public class Adapter_Images extends RecyclerView.Adapter<Adapter_Images.ViewHolder> {
-        List<Object> objectList;
-        Context context;
 
-        public Adapter_Images(List<Object> objectList, Context context) {
-            this.objectList = objectList;
-            this.context = context;
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_images, parent, false);
-            return new ViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            Model_Images model = (Model_Images) list.get(position);
-            String link = getString(R.string.website_adress) + "/nectar/seller/" + model.getPoster();
-            Glide.with(context).load(link).into(holder.imageView);
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return list.size();
-        }
-
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            ImageView imageView;
-
-            public ViewHolder(@NonNull View itemView) {
-                super(itemView);
-                imageView = itemView.findViewById(R.id.image);
-            }
-        }
-    }
 
 
     private void updateContacts(JSONObject obj) {

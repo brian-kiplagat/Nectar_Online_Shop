@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +30,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -333,8 +335,16 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             final String sellerID = model.getSellerID();
             final String productID = model.getProductID();
             final String cartID = model.getId();
-            String link = getString(R.string.website_adress) + "/nectar/seller/" + images;
-            Glide.with(context).load(link).into(holder.prod_image);
+            try {
+                // JSONObject object = new JSONObject(model.getImages());
+                JSONArray array = new JSONArray(model.getImages());
+                String prelink = array.getString(0);
+                Log.i("LINK", prelink);
+                String link = context.getString(R.string.website_adress) + "/nectar/seller/" + prelink;
+                Glide.with(context).load(link).into(holder.prod_image);
+            } catch (Exception e) {
+                Log.i("PARSE ERROR", e.getLocalizedMessage());
+            }
             holder.cash.setText("Ksh " + model.getFinalPrice());
             holder.brand.setText(model.getBrand());
             holder.name.setText(model.getName());
@@ -502,6 +512,111 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                     }).setCancelable(true).show();
                 }
             });
+            holder.help.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
+                            LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+                            View dialogView = layoutInflater.inflate(R.layout.dialog_cart_requested, null);
+                            TextView main = dialogView.findViewById(R.id.shop);
+                            TextView primary = dialogView.findViewById(R.id.exp);
+                            TextView secondary = dialogView.findViewById(R.id.secondary);
+                            TextView delivery_info;
+                            TextView return_policy;
+                            TextView warranty;
+                            TextView specs;
+                            TextView key_features;
+                            TextView color;
+                            TextView weight;
+                            TextView inbox;
+                            Chip instock;
+                            Chip state;
+                            TextView name;
+                            TextView brand;
+                            TextView amount;
+                            Chip stars;
+                            Chip previos;
+                            TextView material;
+                            TextView description;
+                            TextView size;
+                            Button finish;
+
+                            com.mikhaellopez.circularimageview.CircularImageView circularImageView;
+                            circularImageView = dialogView.findViewById(R.id.circularImageView);
+                            finish= dialogView.findViewById(R.id.okay);
+                            name =  dialogView.findViewById(R.id.name);
+                            brand =  dialogView.findViewById(R.id.brand);
+                            amount =  dialogView.findViewById(R.id.money);
+                            stars =  dialogView.findViewById(R.id.stars);
+                            previos =  dialogView.findViewById(R.id.previos);
+
+                            delivery_info =  dialogView.findViewById(R.id.deliverInfo);
+                            return_policy = dialogView. findViewById(R.id.return_policy);
+                            warranty = dialogView. findViewById(R.id.waranty);
+                            specs =  dialogView.findViewById(R.id.spec);
+                            key_features =  dialogView.findViewById(R.id.key);
+                            color =  dialogView.findViewById(R.id.color);
+                            weight =  dialogView.findViewById(R.id.weight);
+                            inbox =  dialogView.findViewById(R.id.inbox);
+                            instock =  dialogView.findViewById(R.id.instock);
+                            material =  dialogView.findViewById(R.id.material);
+                            description =  dialogView.findViewById(R.id.description);
+                            size =  dialogView.findViewById(R.id.size);
+                            state =  dialogView.findViewById(R.id.state);
+                            recyclerView =  dialogView.findViewById(R.id.recycler_view);
+                            recyclerView.setHasFixedSize(true);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+                            //use json array containing all the images
+                            Log.i("fetchImages: ", images);
+                            previos.setText("KSH " + model.getInitialPrice());
+                            name.setText(model.getName());
+                            brand.setText("Brand: " + model.getBrand());
+                            amount.setText("KSH " + model.getInstock());
+                            warranty.setText(model.getWarranty());
+                            specs.setText(model.getSpecification());
+                            key_features.setText(model.getKeyFeatures());
+                            color.setText(model.getColour());
+                            weight.setText(model.getWeight()+" Kgs");
+                            inbox.setText(model.getInsideBox());
+                            instock.setText("Instock " + model.getInstock());
+                            material.setText(model.getMaterial());
+                            description.setText(model.getDescription());
+                            size.setText(model.getSize());
+                            List<Object> objectList;
+                            objectList = new ArrayList<>();
+
+                            try {
+                                JSONArray array = new JSONArray(images);
+                                for (int i = 0; i < array.length(); i++) {
+                                    String poster= array.getString(i);
+                                    Model_Images model = new Model_Images(poster);
+                                    objectList.add(model);
+                                    adapter = new Adapter_Images(objectList, context);
+                                    recyclerView.setAdapter(adapter);
+                                    adapter.notifyDataSetChanged();
+
+                                }
+
+
+                            } catch (Exception e) {
+                                Log.i("ERR", e.getLocalizedMessage());
+                            }
+                            finish.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialogBuilder.dismiss();
+                                }
+                            });
+                            dialogBuilder.setView(dialogView);
+                            dialogBuilder.setCancelable(false);
+                            dialogBuilder.show();
+                        }
+                    });
+                }
+            });
 
 
         }
@@ -520,12 +635,14 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             ImageView delete;
             ImageView prod_image;
             ImageView fav;
+            ImageView help;
             RelativeLayout cartStuff;
             TextView explanation;
             com.facebook.shimmer.ShimmerFrameLayout shimm;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
+                help = itemView.findViewById(R.id.help);
                 cash = itemView.findViewById(R.id.CASH);
                 fav = itemView.findViewById(R.id.favourite);
                 cartStuff = itemView.findViewById(R.id.cartStuff);

@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 
+import org.json.JSONArray;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -50,8 +52,16 @@ public class Adapter_Items extends RecyclerView.Adapter<Adapter_Items.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final ModeL_Shop_Items model = (ModeL_Shop_Items) list.get(position);
         holder.content.setVisibility(View.INVISIBLE);
-        String link = context.getString(R.string.website_adress) + "/nectar/seller/" + model.getImages();
-        Glide.with(context).load(link).into(holder.image);
+        try {
+            // JSONObject object = new JSONObject(model.getImages());
+            JSONArray array = new JSONArray(model.getImages());
+            String prelink = array.getString(0);
+            Log.i("LINK",prelink);
+            String link = context.getString(R.string.website_adress) + "/nectar/seller/" +prelink;
+            Glide.with(context).load(link).into(holder.image);
+        } catch (Exception e) {
+            Log.i("PARSE ERROR",e.getLocalizedMessage());
+        }
         holder.shimm.stopShimmer();
         holder.shimm.setVisibility(View.GONE);
         holder.content.setVisibility(View.VISIBLE);
@@ -98,8 +108,9 @@ public class Adapter_Items extends RecyclerView.Adapter<Adapter_Items.ViewHolder
                 intent.putExtra("state", state);
                 intent.putExtra("images", images);
                 intent.putExtra("sellerID", sellerID);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
+
 
             }
         });

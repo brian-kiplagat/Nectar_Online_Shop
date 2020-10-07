@@ -316,8 +316,16 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             final ModeL_Shop_Items model = (ModeL_Shop_Items) list.get(position);
             holder.content.setVisibility(View.INVISIBLE);
-            String link = getString(R.string.website_adress) + "/nectar/seller/" + model.getImages();
-            Glide.with(context).load(link).into(holder.image);
+             try {
+               // JSONObject object = new JSONObject(model.getImages());
+                JSONArray array = new JSONArray(model.getImages());
+                String prelink = array.getString(0);
+                Log.i("LINK",prelink);
+                String link = context.getString(R.string.website_adress) + "/nectar/seller/" +prelink;
+                Glide.with(context).load(link).into(holder.image);
+            } catch (Exception e) {
+                Log.i("PARSE ERROR",e.getLocalizedMessage());
+            }
             holder.shimm.stopShimmer();
             holder.shimm.setVisibility(View.GONE);
             holder.content.setVisibility(View.VISIBLE);

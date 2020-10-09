@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -14,12 +16,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
@@ -30,7 +35,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -136,7 +140,13 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
         Log.i("NUMBER", number);
         //fetch(number);
         swipeRefreshLayout.setOnRefreshListener(this);
-
+        OnBackPressedCallback callback=new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                getShopFragment.moveToTheShopFragment();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this,callback);
         return v;
 
     }
@@ -570,6 +580,8 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                             recyclerView.setHasFixedSize(true);
                             recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
                             //use json array containing all the images
+
+
                             Log.i("fetchImages: ", images);
                             previos.setText("KSH " + model.getInitialPrice());
                             name.setText(model.getName());
@@ -579,19 +591,51 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                             specs.setText(model.getSpecification());
                             key_features.setText(model.getKeyFeatures());
                             color.setText(model.getColour());
-                            weight.setText(model.getWeight()+" Kgs");
+                            weight.setText(model.getWeight() + " Kgs");
                             inbox.setText(model.getInsideBox());
                             instock.setText("Instock " + model.getInstock());
                             material.setText(model.getMaterial());
                             description.setText(model.getDescription());
                             size.setText(model.getSize());
+                            if (model.getState().contentEquals("BRAND")) {
+                                state.setText("BRAND NEW");
+                                state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_brand_new, null));
+                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                                    state.setChipIconTint(getResources().getColorStateList(R.color.yellow, null));
+                                }
+                            } else if (model.getState().contentEquals("REFURBISHED")) {
+                                state.setText("REFURBISHED");
+                                state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_refurb, null));
+                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                                    state.setChipIconTint(getResources().getColorStateList(R.color.blue_azure, null));
+                                }
+                            } else if (model.getState().contentEquals("SECOND")) {
+                                state.setText("SECOND HAND");
+                                state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_second_hand, null));
+                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                                    state.setChipIconTint(getResources().getColorStateList(R.color.red, null));
+                                }
+                            } else if (model.getState().contentEquals("FRESH")) {
+                                state.setText("FRESH");
+                                state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_vegetables, null));
+                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                                    state.setChipIconTint(getResources().getColorStateList(R.color.blue_azure, null));
+                                }
+                            } else if (model.getState().contentEquals("FRESHLY COOKED")) {
+                                state.setText("FRESHLY COOKED");
+                                state.setChipIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_baseline_fastfood_24, null));
+                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                                    state.setChipIconTint(getResources().getColorStateList(R.color.purple_light, null));
+                                }
+                            }
+
                             List<Object> objectList;
                             objectList = new ArrayList<>();
 
                             try {
                                 JSONArray array = new JSONArray(images);
                                 for (int i = 0; i < array.length(); i++) {
-                                    String poster= array.getString(i);
+                                    String poster = array.getString(i);
                                     Model_Images model = new Model_Images(poster);
                                     objectList.add(model);
                                     adapter = new Adapter_Images(objectList, context);
@@ -665,6 +709,16 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void updateQuantity(String id, String email, int quantity) {
+        final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        View dialogView = layoutInflater.inflate(R.layout.dialog_wait, null);
+        ImageView logo = dialogView.findViewById(R.id.circularImageView);
+        Animation rotate = AnimationUtils.loadAnimation(context, R.anim.clockwise_slow);
+        rotate.setFillAfter(true);
+        logo.startAnimation(rotate);
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.show();
         String url = getString(R.string.website_adress) + "/nectar/buy/editquantity.php";
         RequestBody formBody = new FormBody.Builder()//Try to UPDATE `quantity` WHERE `email`=$email AND `id`=$id
                 .add("id", id)
@@ -682,7 +736,14 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                toast("Ops! We could not update your total try again");
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialogBuilder.dismiss();
+                        Log.i("Could not update", "ERROR");
+                    }
+                });
             }
 
             @Override
@@ -694,13 +755,12 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                     JSONObject obj = new JSONObject(res);
                     String code = obj.getString("RESPONSE_CODE");
                     if (code.contentEquals("SUCCESS")) {
-                        toast("Edited");
+                        //toast("Edited");
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-
+                                dialogBuilder.dismiss();
                                 deletedListener.onDelete();
-                                Log.i("Removed to fav: ", "Yeah");
                             }
                         });
 
@@ -708,9 +768,24 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                         toast("Ops. An error happened, try again");
                         String desc = obj.getString("RESPONSE_DESC");
                         Log.i("ERROR: ", desc);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialogBuilder.dismiss();
+
+                            }
+                        });
                     }
                 } catch (Exception e) {
+                    toast("Ops! Try again");
+                    Log.i("Error", e.getLocalizedMessage());
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            dialogBuilder.dismiss();
 
+                        }
+                    });
                 }
             }
         });

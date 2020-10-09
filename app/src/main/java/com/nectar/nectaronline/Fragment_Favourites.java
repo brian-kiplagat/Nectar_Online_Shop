@@ -195,7 +195,7 @@ public class Fragment_Favourites extends Fragment implements SwipeRefreshLayout.
                             });
                         }
 
-                    } else if (desc.contentEquals("ERROR: ZERO ITEMS FROM FAVS")) {
+                    } else if (desc.contentEquals("ZERO ITEMS")) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

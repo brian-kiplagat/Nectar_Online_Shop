@@ -10,7 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -158,6 +161,16 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
     }
 
     private void orderWithPaybillMpesaOnDelivery() {
+        final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        View dialogView = layoutInflater.inflate(R.layout.dialog_wait, null);
+        ImageView logo = dialogView.findViewById(R.id.circularImageView);
+        Animation rotate = AnimationUtils.loadAnimation(context, R.anim.clockwise_slow);
+        rotate.setFillAfter(true);
+        logo.startAnimation(rotate);
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.show();
         String url = getString(R.string.website_adress) + "/nectar/buy/mpesaondelivery.php";
         Log.i("PHONE", new Preferences(context).getNumber().substring(1));
 
@@ -165,7 +178,6 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
                 .add("email", new Preferences(context).getEmail())//then from server can check if to search or not the return an appropriate response
                 .add("amount", price)
                 .add("phone", new Preferences(context).getNumber())
-
                 .build();
 
         OkHttpClient client = new OkHttpClient();
@@ -191,7 +203,7 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-
+                                    dismissDialog(dialogBuilder);
                                     showMpesaonDeliveryDialog();
 
                                 }
@@ -211,7 +223,27 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
 
     }
 
+    private void dismissDialog(final AlertDialog dialogBuilder) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                dialogBuilder.dismiss();
+
+            }
+        });
+    }
+
     private void cashondelivery() {
+        final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        View dialogView = layoutInflater.inflate(R.layout.dialog_wait, null);
+        ImageView logo = dialogView.findViewById(R.id.circularImageView);
+        Animation rotate = AnimationUtils.loadAnimation(context, R.anim.clockwise_slow);
+        rotate.setFillAfter(true);
+        logo.startAnimation(rotate);
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.show();
         String url = getString(R.string.website_adress) + "/nectar/buy/cashondelivery.php";
         Log.i("PHONE", new Preferences(context).getNumber().substring(1));
 
@@ -230,6 +262,7 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                dismissDialog(dialogBuilder);
                 toast("Ops! Please Try again");
             }
 
@@ -242,15 +275,16 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
                         JSONObject obj = new JSONObject(res);
                         String code = obj.getString("RESPONSE_CODE");
                         if (code.contentEquals("SUCCESS")) {
+                            dismissDialog(dialogBuilder);
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-
                                     showPayOnDeliveryDialog();
 
                                 }
                             });
                         } else {
+                            dismissDialog(dialogBuilder);
                             toast("Ops, we could not process your payment try again later");
                         }
                     } catch (Exception e) {
@@ -321,6 +355,16 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
     }
 
     private void payNow(final String price) {
+        final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        View dialogView = layoutInflater.inflate(R.layout.dialog_wait, null);
+        ImageView logo = dialogView.findViewById(R.id.circularImageView);
+        Animation rotate = AnimationUtils.loadAnimation(context, R.anim.clockwise_slow);
+        rotate.setFillAfter(true);
+        logo.startAnimation(rotate);
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setCancelable(false);
+        dialogBuilder.show();
         String url = getString(R.string.website_adress) + "/nectar/payment/stk.php";
         Log.i("PHONE", new Preferences(context).getNumber());
 
@@ -339,7 +383,8 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
+                toast("Ops! Try again");
+                dismissDialog(dialogBuilder);
             }
 
             @Override
@@ -354,6 +399,7 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
                         //
                         if (code.contentEquals("SUCCESS")) {
                             toast("We are processing your payment");
+                            dismissDialog(dialogBuilder);
                             //Show alert
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
@@ -388,10 +434,12 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
                             });
 
                         } else {
+                            dismissDialog(dialogBuilder);
                             toast("Ops, we could not process your payment try again later");
                         }
                     } catch (Exception e) {
-
+                        toast("Ops! Try again");
+                        dismissDialog(dialogBuilder);
                     }
                 }else {
                     toast("An error happened please try again");

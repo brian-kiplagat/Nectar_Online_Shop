@@ -207,10 +207,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 Log.i("CONTACT", "onNavigationItemSelected: ");
                 break;
-            case R.id.logout:
+            case R.id.changeaccount:
                // drawerLayout.closeDrawers();
                 MaterialAlertDialogBuilder builder=new MaterialAlertDialogBuilder(MainActivity.this);
-                builder.setTitle("LOGOUT").setMessage("We'll miss you soo much, next time you'll have to login again").setPositiveButton("OKAY", new DialogInterface.OnClickListener() {
+                builder.setTitle("CHANGE ACCOUNT").setMessage("You'll have to login again,We'll miss you soo much").setPositiveButton("OKAY", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         SharedPreferences preferences = getSharedPreferences("nectar", MODE_PRIVATE);
@@ -231,6 +231,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }).setCancelable(true).show();
 
                 Log.i("LOGOUT", "onNavigationItemSelected: ");
+                break;
+            case R.id.logout:
+                finish();
                 break;
             case R.id.orders:
                 //drawerLayout.closeDrawers();

@@ -132,7 +132,7 @@ public class Fragment_Orders extends Fragment implements SwipeRefreshLayout.OnRe
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                 try {
                     final String res = response.body().string().trim();
-                    //Log.i("ORDERS", res);
+                    Log.i("GET ORDERS", res);
                     JSONObject obj = new JSONObject(res);
                     String code = obj.getString("RESPONSE_CODE");
                     String desc = obj.getString("RESPONSE_DESC");

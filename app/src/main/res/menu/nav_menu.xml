@@ -26,6 +26,10 @@
         android:icon="@drawable/ic_baseline_contact_phone_24"
         android:title="@string/info" />
     <item
+        android:id="@+id/changeaccount"
+        android:icon="@drawable/ic_baseline_person_pin_24"
+        android:title="@string/changeaccount" />
+    <item
         android:id="@+id/logout"
         android:icon="@drawable/ic_baseline_power_settings_new_24"
         android:title="@string/logout" />

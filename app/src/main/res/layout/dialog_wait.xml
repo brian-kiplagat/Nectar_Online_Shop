@@ -1,0 +1,46 @@
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginBottom="7dp"
+    android:elevation="8dp"
+    app:cardCornerRadius="9dp"
+    app:cardElevation="8dp"
+
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/circularImageView"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_logo_cart_empty_straight_lines_bold_svg"
+            app:civ_border="true"
+            app:civ_border_color="@color/colorPrimary"
+            app:civ_border_width="1dp"
+            app:civ_shadow="true"
+            app:civ_shadow_color="@color/colorPrimaryDark"
+            app:civ_shadow_radius="1dp" />
+
+        <View
+            android:layout_alignLeft="@id/circularImageView"
+            android:layout_alignRight="@id/circularImageView"
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1.9dp"
+            android:layout_below="@+id/circularImageView"
+            android:layout_margin="3dp"
+            android:background="@drawable/ic_blue_gradient" />
+
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

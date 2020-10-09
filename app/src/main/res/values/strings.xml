@@ -51,4 +51,5 @@
     <string name="return_policy">"Goods once sold cannot be returned "</string>
     <string name="contacts_permission">Allow Nectar to access contacts</string>
     <string name="paybill_number">4030243</string>
+    <string name="changeaccount">CHANGE ACCOUNT</string>
 </resources>

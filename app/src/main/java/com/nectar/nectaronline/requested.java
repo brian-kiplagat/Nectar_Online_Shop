@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,8 +40,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -50,6 +55,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class requested extends AppCompatActivity implements Adapter_Items.Clicked, View.OnClickListener {
+
     TextView counter;
     Toolbar toolbar;
     RecyclerView recyclerView;
@@ -107,7 +113,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
     ImageView share;
     ImageView favourites;
 
-
+    Chip offer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +134,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
         amount = findViewById(R.id.money);
         stars = findViewById(R.id.stars);
         previos = findViewById(R.id.previos);
-
+        offer = findViewById(R.id.offer);
         delivery_info = findViewById(R.id.deliverInfo);
         return_policy = findViewById(R.id.return_policy);
         warranty = findViewById(R.id.waranty);
@@ -145,6 +151,8 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
         state = findViewById(R.id.state);
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
+        linearLayoutManager.getItemCount();
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         sellersRecyclerView = findViewById(R.id.recycler_view_sellers);
         sellersRecyclerView.setHasFixedSize(true);
@@ -177,9 +185,24 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
             View v = findViewById(R.id.view);
             v.setVisibility(View.INVISIBLE);
             previos.setText("No offer yet");
-
-        } else {
+            offer.setVisibility(View.GONE);
+        } else if (OLD.contentEquals(NEWPRICE)) {
+            offer.setVisibility(View.GONE);
             previos.setText("KSH " + OLD);
+        } else {
+            DecimalFormat df = new DecimalFormat("0.00");
+            previos.setText("KSH " + OLD);
+            int newPrice = Integer.parseInt(NEWPRICE);
+            int oldprice = Integer.parseInt(OLD);
+            if (oldprice > newPrice) {
+                float decrease = oldprice - newPrice;
+                float percentage = (decrease / oldprice) * 100;
+                offer.setText("-" + String.valueOf(df.format(percentage)) + "%");
+            } else {
+                float increase = newPrice - oldprice;
+                float percentage = (increase / oldprice) * 100;
+                offer.setText("+" + String.valueOf(df.format(percentage)) + "%");
+            }
 
         }
         name.setText(NAME);
@@ -231,10 +254,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
             }
         }
 
-
-        // new Seller().execute();
         getSellerInfo(SELLERID);
-
     }
 
     private void getSellerInfo(String sellerid) {
@@ -657,4 +677,5 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
             }
         });
     }
+
 }

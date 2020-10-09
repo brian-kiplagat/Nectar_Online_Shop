@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -151,6 +152,8 @@ public class Fragment_Profile extends Fragment implements View.OnClickListener {
             //Glide.with(context).load(R.drawable.ic_outline_account_circle_24).into(circularImageView);
             Snackbar.make(circularImageView, "Add a profile picture by clicking the picture", Snackbar.LENGTH_LONG).show();
         }
+
+
         return v;
 
 

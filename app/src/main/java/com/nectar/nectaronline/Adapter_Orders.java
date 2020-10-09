@@ -2,6 +2,7 @@ package com.nectar.nectaronline;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +15,9 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.snackbar.Snackbar;
+
+import org.json.JSONArray;
 
 import java.util.List;
 
@@ -39,19 +40,32 @@ public class Adapter_Orders extends RecyclerView.Adapter<Adapter_Orders.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Model_Orders model = (Model_Orders) list.get(position);
-        String link = context.getString(R.string.website_adress) + "/nectar/seller/" + model.getImages();
-        Glide.with(context).load(link).into(holder.prod_image);
-        holder.id.setText("Order ID: "+model.getId());
+        try {
+
+            JSONArray array = new JSONArray(model.getImages());
+            String prelink = array.getString(0);
+            Log.i("LINK", prelink);
+            String link = context.getString(R.string.website_adress) + "/nectar/seller/" + prelink;
+            Glide.with(context).load(link).into(holder.prod_image);
+        } catch (Exception e) {
+            Log.i("PARSE ERROR", e.getLocalizedMessage());
+        }
+        holder.id.setText("Order ID: " + model.getId());
         holder.brand.setText(model.getBrand());
         holder.name.setText(model.getName());
         holder.number_of_items.setText(model.getQuantity());
-        holder.cash.setText(context.getString(R.string.cashUnit) + " " + model.getFinalPrice());
+        Log.i("QUANTITY",model.getQuantity());
+        Log.i("Final pirce",model.getFinalPrice());
 
+        holder.cash.setText(context.getString(R.string.cashUnit) + " " + model.getFinalPrice());
+        String x=String.valueOf(Integer.parseInt(model.getFinalPrice())*Integer.parseInt(model.getQuantity()));
+        Log.i(x, "onBindViewHolder: ");
+        holder.price.setText(x);
         holder.shimm.stopShimmer();
         holder.shimm.setVisibility(View.GONE);
         holder.prod_image.setVisibility(View.VISIBLE);
         holder.brand.setText(model.getBrand());
-        holder.price.setText(model.getFinalPrice());
+        //holder.price.setText(model.getFinalPrice());
         if (model.getState().contentEquals("BRAND")) {
             holder.state.setText("BRAND NEW");
             holder.state.setChipIcon(ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_baseline_brand_new, null));

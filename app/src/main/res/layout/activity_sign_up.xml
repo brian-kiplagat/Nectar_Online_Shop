@@ -182,7 +182,7 @@
                 android:hint="Address description"
                 app:endIconMode="clear_text"
                 app:errorEnabled="true"
-                app:helperText="Your email goes here"
+                app:helperText="E.g Nyayo 3 room 4"
                 app:startIconDrawable="@drawable/ic_baseline_home_work_24">
 
                 <com.google.android.material.textfield.TextInputEditText

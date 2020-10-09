@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         viewPager.setAdapter(adapter);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_baseline_add_shopping_cart_24);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_logo_cart_empty_straight_lines_bold_svg);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_baseline_local_shipping_24);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_baseline_person_pin_24);
 
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.openNavDrawer, R.string.closeNavDrawer);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);

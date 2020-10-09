@@ -181,7 +181,7 @@ public class Fragment_Favourites extends Fragment implements SwipeRefreshLayout.
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Model_Orders model = new Model_Orders(name,brand,id,old,newPrice,description,keyfeatures,specification,color,size,weight,material,inbox,waranty,instock,state,images,sellerID,productID,"","");
+                                    Model_Orders model = new Model_Orders(name,brand,id,newPrice,old,description,keyfeatures,specification,color,size,weight,material,inbox,waranty,instock,state,images,sellerID,productID,"","");
                                     list.add(model);
                                     shimmerFrameLayout.stopShimmer();
                                     shimmerFrameLayout.setVisibility(View.GONE);

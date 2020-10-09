@@ -249,9 +249,16 @@ public class Fragment_Favourites extends Fragment implements SwipeRefreshLayout.
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             final Model_Orders model = (Model_Orders) list.get(position);
-            String link = context.getString(R.string.website_adress) + "/nectar/seller/" + model.getImages();
-            Glide.with(context).load(link).into(holder.prod_image);
+            try {
 
+                JSONArray array = new JSONArray(model.getImages());
+                String prelink = array.getString(0);
+                Log.i("LINK", prelink);
+                String link = context.getString(R.string.website_adress) + "/nectar/seller/" + prelink;
+                Glide.with(context).load(link).into(holder.prod_image);
+            } catch (Exception e) {
+                Log.i("PARSE ERROR", e.getLocalizedMessage());
+            }
             holder.brand.setText(model.getBrand());
             holder.name.setText(model.getName());
             holder.number_of_items.setText("Stock: " + model.getInstock());

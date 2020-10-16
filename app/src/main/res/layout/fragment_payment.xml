@@ -177,358 +177,38 @@
 
             </LinearLayout>
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/cashondelivery"
-                style="?attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:checked="false"
-                android:text="CASH ON DELIVERY" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginBottom="7dp">
-
-
-
-                </RelativeLayout>
-
-                <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginBottom="7dp"
-                    android:elevation="8dp"
-                    app:cardCornerRadius="9dp"
-                    app:cardElevation="8dp"
-
-                    >
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="4dp"
-                            android:layout_marginTop="20dp">
-
-
-                            <ImageView
-                                android:id="@+id/courier"
-                                android:layout_width="130dp"
-                                android:layout_height="130dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentRight="true"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginEnd="10dp"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_payment_method_small" />
-
-                            <LinearLayout
-
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_marginLeft="5dp"
-                                android:layout_toLeftOf="@id/courier"
-                                android:orientation="vertical">
-
-                                <TextView
-
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="MPESA"
-                                    android:textColor="@android:color/primary_text_light_nodisable"
-                                    android:textSize="18sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="Press finish to book"
-                                    android:textColor="@color/material_on_background_emphasis_medium"
-                                    android:textSize="13sp"
-                                    android:textStyle="normal" />
-                                <TextView
-
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="Wait for delivery"
-                                    android:textColor="@color/material_on_surface_emphasis_medium"
-                                    android:textSize="13sp"
-                                    android:textStyle="normal" />
-
-                                <TextView
-                                    android:id="@+id/pay"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="Pay exactly"
-                                    android:textColor="@color/material_on_background_emphasis_medium"
-                                    android:textSize="13sp"
-                                    android:textStyle="normal" />
-
-
-                                </LinearLayout>
-
-                        </RelativeLayout>
-                    </RelativeLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-            </LinearLayout>
-
-            <com.google.android.material.radiobutton.MaterialRadioButton
-                android:id="@+id/mpesaondelivery"
-                style="?attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:checked="false"
-                android:text="MPESA ON DELIVERY" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginBottom="7dp">
-
-
-
-
-                </RelativeLayout>
-
-                <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginBottom="7dp"
-                    android:elevation="8dp"
-                    app:cardCornerRadius="9dp"
-                    app:cardElevation="8dp"
-
-                    >
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="4dp"
-                            android:layout_marginTop="20dp">
-
-
-                            <ImageView
-                                android:id="@+id/courier"
-                                android:layout_width="130dp"
-                                android:layout_height="130dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_alignParentRight="true"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginEnd="10dp"
-                                android:layout_marginRight="10dp"
-                                android:src="@drawable/ic_paybill" />
-
-                            <LinearLayout
-                                android:id="@+id/linear1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentLeft="true"
-                                android:layout_marginLeft="5dp"
-                                android:layout_toLeftOf="@id/courier"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/NAME"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="MPESA"
-                                    android:textColor="@android:color/primary_text_light_nodisable"
-                                    android:textSize="18sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="Press finish to book"
-                                    android:textColor="@color/material_on_background_emphasis_medium"
-                                    android:textSize="13sp"
-                                    android:textStyle="normal" />
-
-                                <TextView
-
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="Wait for delivery"
-                                    android:textColor="@color/material_on_background_emphasis_medium"
-                                    android:textSize="13sp"
-                                    android:textStyle="normal" />
-
-
-                                <TextView
-                                    android:id="@+id/SIZE"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="Pay upon delivery"
-                                    android:textColor="@color/material_on_surface_emphasis_medium"
-                                    android:textSize="13sp"
-                                    android:textStyle="normal" />
-                                <TextView
-                                    android:id="@+id/pay1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="Pay exactly"
-                                    android:textColor="@color/material_on_background_emphasis_medium"
-                                    android:textSize="13sp"
-                                    android:textStyle="normal" />
-                                <TextView
-                                    android:id="@+id/paybillNO1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="Paybill 403203"
-                                    android:textColor="@color/material_on_background_emphasis_medium"
-                                    android:textSize="13sp"
-                                    android:textStyle="normal" />
-                                <TextView
-                                    android:id="@+id/accountNO1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="3dp"
-                                    android:fontFamily="sans-serif-medium"
-                                    android:text="Account number: 444414144"
-                                    android:textColor="@color/material_on_background_emphasis_medium"
-                                    android:textSize="13sp"
-                                    android:textStyle="normal" />
-
-
-                                <com.google.android.material.chip.Chip
-                                    android:id="@+id/till_copy_mpesa_on_delivery"
-                                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:checkable="false"
-                                    android:text="COPY PAYBILL"
-                                    android:textSize="15sp"
-                                    app:chipIcon="@drawable/ic_logo_cart_empty_straight_lines_bold_svg"
-                                    app:chipIconEnabled="true"
-                                    app:chipIconSize="15dp"
-                                    app:iconStartPadding="5dp" />
-
-
-                            </LinearLayout>
-                        </RelativeLayout>
-                    </RelativeLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-            </LinearLayout>
-
-            <com.google.android.material.card.MaterialCardView
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginBottom="7dp"
-                android:elevation="8dp"
-                app:cardCornerRadius="9dp"
-                app:cardElevation="8dp">
+                android:layout_marginBottom="7dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1.9dp"
-                        android:layout_below="@+id/linear1"
-                        android:layout_margin="3dp"
-                        android:background="@drawable/ic_blue_gradient" />
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginBottom="7dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginTop="3dp"
-                            android:fontFamily="sans-serif-medium"
-                            android:text="TOTAL"
-                            android:textColor="@color/material_on_background_emphasis_medium"
-                            android:textSize="14sp"
-                            android:textStyle="normal" />
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="3dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="TOTAL"
+                    android:textColor="@color/material_on_background_emphasis_medium"
+                    android:textSize="14sp"
+                    android:textStyle="normal" />
 
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/total"
-                            style="?attr/borderlessButtonStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:text="KSH 900"
-                            app:icon="@drawable/ic_payment_method_small" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/total"
+                    style="?attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="KSH 900"
+                    app:icon="@drawable/ic_payment_method_small" />
 
-                    </RelativeLayout>
-
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/finish"
@@ -545,6 +225,27 @@
                 android:padding="10dp"
                 android:text="FINISH ORDER"
                 android:textSize="20dp" />
+
+            <ImageView
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_completed_with_clipboard_and_tick"
+                app:tint="@color/blue_azure" />
+
+            <com.google.android.material.button.MaterialButton
+                style="?attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:text="Our agent will call shortly" />
 
         </RadioGroup>
     </ScrollView>

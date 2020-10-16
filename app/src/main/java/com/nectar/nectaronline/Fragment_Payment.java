@@ -44,17 +44,12 @@ import okhttp3.Response;
  */
 public class Fragment_Payment extends Fragment implements View.OnClickListener {
     MaterialRadioButton popup;
-    MaterialRadioButton paybillondelivery;
-    MaterialRadioButton cashondelivery;
-    Chip chip_till;
     Button finish;
     Context context;
     String price;
     MaterialButton totalPrice;
     TextView pay;
     TextView pay1;
-    TextView paybill1;
-    TextView accno1;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.badge. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -102,17 +97,9 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         View v = inflater.inflate(R.layout.fragment_payment, container, false);
         context = getActivity().getApplicationContext();
         popup = v.findViewById(R.id.popup);
-        paybillondelivery = v.findViewById(R.id.mpesaondelivery);
         totalPrice = v.findViewById(R.id.total);
-        cashondelivery = v.findViewById(R.id.cashondelivery);
-         chip_till = v.findViewById(R.id.till_copy_mpesa_on_delivery);
-        pay = v.findViewById(R.id.pay);
-         pay1 = v.findViewById(R.id.pay1);
-        paybill1 = v.findViewById(R.id.paybillNO1);
-        accno1 = v.findViewById(R.id.accountNO1);
         finish = v.findViewById(R.id.finish);
         finish.setOnClickListener(this);
-        chip_till.setOnClickListener(this);
 
 
         return v;
@@ -124,10 +111,6 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         if (preferences.contains("total")) {
             price = preferences.getString("total", "");
             totalPrice.setText(getString(R.string.cashUnit) + " " + price);
-            pay.setText("Pay exactly " + context.getString(R.string.cashUnit) + " " + price);
-            pay1.setText("Pay exactly " + context.getString(R.string.cashUnit) + " " + price);
-            paybill1.setText("Paybill: " + context.getString(R.string.paybill_number));
-            accno1.setText("Account number: +" + new Preferences(context).getNumber());
 
         } else {
             toast("Ops, an error happened, please cancel this page and try again");
@@ -137,90 +120,10 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.finish:
-                if (popup.isChecked()) {
-                    payNow(price);
-                    toastLong("Standby to enter pin");
-                } else if (paybillondelivery.isChecked()) {
-                    orderWithPaybillMpesaOnDelivery();
-                    copyTill();
-                } else if (cashondelivery.isChecked()) {
-                    cashondelivery();
-
-                } else {
-                    toast("please select a payment method");
-                }
-                break;
-              case R.id.till_copy_mpesa_on_delivery:
-                copyTill();
-                break;
-
-
+        if (v.getId() == R.id.finish) {
+            payNow(price);
+            toastLong("Standby to enter pin");
         }
-    }
-
-    private void orderWithPaybillMpesaOnDelivery() {
-        final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
-        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        View dialogView = layoutInflater.inflate(R.layout.dialog_wait, null);
-        ImageView logo = dialogView.findViewById(R.id.circularImageView);
-        Animation rotate = AnimationUtils.loadAnimation(context, R.anim.clockwise_slow);
-        rotate.setFillAfter(true);
-        logo.startAnimation(rotate);
-        dialogBuilder.setView(dialogView);
-        dialogBuilder.setCancelable(false);
-        dialogBuilder.show();
-        String url = getString(R.string.website_adress) + "/nectar/buy/mpesaondelivery.php";
-        Log.i("PHONE", new Preferences(context).getNumber().substring(1));
-
-        RequestBody formBody = new FormBody.Builder()
-                .add("email", new Preferences(context).getEmail())//then from server can check if to search or not the return an appropriate response
-                .add("amount", price)
-                .add("phone", new Preferences(context).getNumber())
-                .build();
-
-        OkHttpClient client = new OkHttpClient();
-        final Request request = new Request.Builder()
-                .url(url)
-                .post(formBody)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                toast("Ops! Please Try again");
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String res = response.body().string();
-                    Log.i("POD RES", res);
-                    try {
-                        JSONObject obj = new JSONObject(res);
-                        String code = obj.getString("RESPONSE_CODE");
-                        if (code.contentEquals("SUCCESS")) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    dismissDialog(dialogBuilder);
-                                    showMpesaonDeliveryDialog();
-
-                                }
-                            });
-                        } else {
-                            toast("Ops, we could not process your payment try again later");
-                        }
-                    } catch (Exception e) {
-                        Log.i("ERROR", e.getLocalizedMessage());
-                    }
-                } else {
-                    toast("Ops! Try again");
-                }
-            }
-        });
-
-
     }
 
     private void dismissDialog(final AlertDialog dialogBuilder) {
@@ -231,127 +134,6 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
 
             }
         });
-    }
-
-    private void cashondelivery() {
-        final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
-        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        View dialogView = layoutInflater.inflate(R.layout.dialog_wait, null);
-        ImageView logo = dialogView.findViewById(R.id.circularImageView);
-        Animation rotate = AnimationUtils.loadAnimation(context, R.anim.clockwise_slow);
-        rotate.setFillAfter(true);
-        logo.startAnimation(rotate);
-        dialogBuilder.setView(dialogView);
-        dialogBuilder.setCancelable(false);
-        dialogBuilder.show();
-        String url = getString(R.string.website_adress) + "/nectar/buy/cashondelivery.php";
-        Log.i("PHONE", new Preferences(context).getNumber().substring(1));
-
-        RequestBody formBody = new FormBody.Builder()
-                .add("email", new Preferences(context).getEmail())//then from server can check if to search or not the return an appropriate response
-                .add("amount", price)
-                .add("phone", new Preferences(context).getNumber())
-
-                .build();
-
-        OkHttpClient client = new OkHttpClient();
-        final Request request = new Request.Builder()
-                .url(url)
-                .post(formBody)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                dismissDialog(dialogBuilder);
-                toast("Ops! Please Try again");
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String res = response.body().string();
-                    Log.i("POD RES", res);
-                    try {
-                        JSONObject obj = new JSONObject(res);
-                        String code = obj.getString("RESPONSE_CODE");
-                        if (code.contentEquals("SUCCESS")) {
-                            dismissDialog(dialogBuilder);
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    showPayOnDeliveryDialog();
-
-                                }
-                            });
-                        } else {
-                            dismissDialog(dialogBuilder);
-                            toast("Ops, we could not process your payment try again later");
-                        }
-                    } catch (Exception e) {
-                        Log.i("ERROR", e.getLocalizedMessage());
-                    }
-                } else {
-                    toast("Ops! Try again");
-                }
-            }
-        });
-
-
-    }
-
-    private void showMpesaonDeliveryDialog() {
-
-        final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
-        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        View dialogView = layoutInflater.inflate(R.layout.dialog_mpesaondelivery, null);
-        TextView main = dialogView.findViewById(R.id.shop);
-        TextView primary = dialogView.findViewById(R.id.exp);
-        TextView secondary = dialogView.findViewById(R.id.secondary);
-        TextView pay = dialogView.findViewById(R.id.payExact);
-        pay.setText("Pay exacty Ksh "+price);
-        MaterialButton button = dialogView.findViewById(R.id.continueAdding);
-        button.setText("CONTINUE SHOPPING");
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialogBuilder.dismiss();
-                Intent intent = new Intent(context, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                getActivity().finish();
-
-            }
-        });
-        dialogBuilder.setView(dialogView);
-        dialogBuilder.setCancelable(false);
-        dialogBuilder.show();
-    }
-
-    private void showPayOnDeliveryDialog() {
-        final AlertDialog dialogBuilder = new AlertDialog.Builder(getActivity()).create();
-        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-        View dialogView = layoutInflater.inflate(R.layout.dialog_pay_on_delivery, null);
-        TextView main = dialogView.findViewById(R.id.shop);
-        TextView primary = dialogView.findViewById(R.id.exp);
-        TextView secondary = dialogView.findViewById(R.id.secondary);
-        TextView pay = dialogView.findViewById(R.id.payExact);
-        pay.setText("Pay exacty Ksh "+price);
-        MaterialButton button = dialogView.findViewById(R.id.continueAdding);
-        button.setText("CONTINUE SHOPPING");
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialogBuilder.dismiss();
-                Intent intent = new Intent(context, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                getActivity().finish();
-
-            }
-        });
-        dialogBuilder.setView(dialogView);
-        dialogBuilder.setCancelable(false);
-        dialogBuilder.show();
     }
 
     private void payNow(final String price) {
@@ -450,13 +232,6 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void copyTill() {
-        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("saved to clip", getString(R.string.paybill_number));
-        clipboard.setPrimaryClip(clip);
-        toast("Paybill copied to clipboard");
-
-    }
 
     private void toast(String s) {
         Snackbar.make(finish, s, Snackbar.LENGTH_SHORT).show();

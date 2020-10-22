@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,10 +39,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -207,7 +204,9 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
         }
         name.setText(NAME);
         brand.setText("Brand: " + BRAND);
-        amount.setText("KSH " + NEWPRICE);
+        NumberFormat myFormat = NumberFormat.getInstance();
+        myFormat.setGroupingUsed(true); // this will also round numbers, 3
+        amount.setText("KSH " + myFormat.format(Integer.parseInt(NEWPRICE)));
         warranty.setText(WARANTY);
         specs.setText(SPEC);
         key_features.setText(KEYFEATURES);

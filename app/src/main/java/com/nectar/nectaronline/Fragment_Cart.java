@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -45,6 +43,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -242,7 +241,9 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                totalCash.setText(String.valueOf(finalTotal));
+                                NumberFormat myFormat = NumberFormat.getInstance();
+                                myFormat.setGroupingUsed(true); // this will also round numbers, 3
+                                totalCash.setText(String.valueOf(myFormat.format(finalTotal)));
                                 PRICE = String.valueOf(String.valueOf(finalTotal));
                                 Log.i("TOTAL NOW", PRICE);
                             }
@@ -361,7 +362,9 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             holder.instock.setText("Stock: " + model.getInstock());
             holder.state.setText(model.getState());
             holder.brand.setText(model.getBrand());
-            holder.price.setText(String.valueOf(priceCount[0] * Integer.parseInt(model.getFinalPrice())));
+            NumberFormat myFormat = NumberFormat.getInstance();
+            myFormat.setGroupingUsed(true); // this will also round numbers, 3
+            holder.price.setText(String.valueOf(myFormat.format(priceCount[0] * Integer.parseInt(model.getFinalPrice()))));
             holder.number_of_items.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {

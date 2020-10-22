@@ -1,10 +1,9 @@
 package com.nectar.nectaronline;
 
-import android.Manifest;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -14,12 +13,14 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONArray;
@@ -275,7 +276,45 @@ public class Login extends AppCompatActivity {
     }
 
     public void forgotPassword(View view) {
+        final SharedPreferences preferences = getSharedPreferences("nectar", Context.MODE_PRIVATE);
+        if (preferences.contains("password")) {
+            String PASSWORD = preferences.getString("password", "");
+            final AlertDialog dialogBuilder = new AlertDialog.Builder(Login.this).create();
+            final LayoutInflater inflater = Login.this.getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.dialog_confirm, null);
+            ImageView imageView = dialogView.findViewById(R.id.image);
+            MaterialButton okay = dialogView.findViewById(R.id.okay);
+            MaterialButton cancel = dialogView.findViewById(R.id.cancel);
+            TextView main = dialogView.findViewById(R.id.main);
+            TextView primary = dialogView.findViewById(R.id.exp);
+            TextView secondary = dialogView.findViewById(R.id.secondary);
+            imageView.setImageResource(R.drawable.ic_baseline_help_outline_24);
+            okay.setText("OKAY");
+            cancel.setText("RESET");
+            main.setText("FORGOT PASSWORD ?");
+            primary.setText("We saved your previous password for you. Here it is, keep it safe");
+            secondary.setText(PASSWORD);
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    resetPassword();
+                }
+            });
+            okay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialogBuilder.dismiss();
+                }
+            });
+            dialogBuilder.setView(dialogView);
+            dialogBuilder.show();
 
+        } else {//no password stored
+            resetPassword();
+        }
+    }
+
+    private void resetPassword() {
     }
 
     @Override

@@ -23,6 +23,7 @@ import com.google.android.material.card.MaterialCardView;
 
 import org.json.JSONArray;
 
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -62,11 +63,11 @@ public class Adapter_Items extends RecyclerView.Adapter<Adapter_Items.ViewHolder
         } catch (Exception e) {
             Log.i("PARSE ERROR",e.getLocalizedMessage());
         }
-        holder.shimm.stopShimmer();
-        holder.shimm.setVisibility(View.GONE);
         holder.content.setVisibility(View.VISIBLE);
         holder.brand.setText(model.getBrand());
-        holder.price.setText("KSH " + model.getFinalPrice());
+        NumberFormat myFormat = NumberFormat.getInstance();
+        myFormat.setGroupingUsed(true); // this will also round numbers, 3
+        holder.price.setText("KSH " + myFormat.format(Integer.parseInt(model.getFinalPrice())));
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,13 +130,11 @@ public class Adapter_Items extends RecyclerView.Adapter<Adapter_Items.ViewHolder
         TextView price;
         ImageView image;
         MaterialCardView cardView;
-        com.facebook.shimmer.ShimmerFrameLayout shimm;
         RelativeLayout content;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             content = itemView.findViewById(R.id.content);
-            shimm = itemView.findViewById(R.id.shimmer);
             brand = itemView.findViewById(R.id.brand);
             price = itemView.findViewById(R.id.price);
             image = itemView.findViewById(R.id.image);

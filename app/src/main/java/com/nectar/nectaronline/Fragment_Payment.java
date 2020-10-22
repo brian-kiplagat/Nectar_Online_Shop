@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -110,7 +111,10 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         SharedPreferences preferences = context.getSharedPreferences("nectar", Context.MODE_PRIVATE);
         if (preferences.contains("total")) {
             price = preferences.getString("total", "");
-            totalPrice.setText(getString(R.string.cashUnit) + " " + price);
+            NumberFormat myFormat = NumberFormat.getInstance();
+            myFormat.setGroupingUsed(true); // this will also round numbers, 3
+            totalPrice.setText(getString(R.string.cashUnit) + " " +String.valueOf(myFormat.format(Integer.parseInt(price))));
+
 
         } else {
             toast("Ops, an error happened, please cancel this page and try again");

@@ -52,4 +52,6 @@
     <string name="contacts_permission">Allow Nectar to access contacts</string>
     <string name="paybill_number">4030243</string>
     <string name="changeaccount">CHANGE ACCOUNT</string>
+    <string name="channel_name">MY CHANNEL</string>
+    <string name="channel_description">MY CHANNEL DESCRIPTION</string>
 </resources>

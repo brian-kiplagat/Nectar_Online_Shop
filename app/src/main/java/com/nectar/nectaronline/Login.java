@@ -1,9 +1,16 @@
 package com.nectar.nectaronline;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -19,13 +26,21 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -33,7 +48,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class Login extends AppCompatActivity {
-
+    private static final String CHANNEL_ID = "MAINACTIVITY";
     TextInputLayout email;
     TextInputLayout password;
 
@@ -41,6 +56,8 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getNotificationBigPicture();
+
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -272,6 +289,129 @@ public class Login extends AppCompatActivity {
 
     public void signIn(View view) {
         startActivity(new Intent(getApplicationContext(), SignUp.class));
+
+    }
+
+    private void getNotificationBigPicture() {
+        String url = getString(R.string.website_adress) + "/nectar/buy/getblackfriday.php";
+        RequestBody formBody = new FormBody.Builder()
+                .add("offer", "")
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String res = response.body().string();
+                Log.i("BLACK FRIDAY RESPONSE", res);
+                //get the first image
+                try {
+                    JSONObject obj = new JSONObject(res);
+                    String code = obj.getString("RESPONSE_CODE");
+                    String desc = obj.getString("RESPONSE_DESC");
+                    if (code.contentEquals("SUCCESS")) {
+                        String STUFF = obj.getString("SHOP_ITEMS");
+                        //Log.i("SHOP ITEMS: ", STUFF);
+                        JSONObject object = new JSONObject(STUFF);
+                        JSONArray array = object.getJSONArray("items");
+                        JSONObject obje = array.getJSONObject(0);
+                        final String id = obje.getString("id");
+                        final String brand = obje.getString("brand");
+                        final String name = obje.getString("name");
+                        final String newPrice = obje.getString("new");
+                        final String old = obje.getString("old");
+                        final String description = obje.getString("description");
+                        final String specification = obje.getString("specification");
+                        final String keyfeatures = obje.getString("keyfeatures");
+                        final String size = obje.getString("size");
+                        final String color = obje.getString("color");
+                        final String instock = obje.getString("instock");
+                        final String weight = obje.getString("weight");
+                        final String material = obje.getString("material");
+                        final String inbox = obje.getString("inbox");
+                        final String waranty = obje.getString("waranty");
+                        final String state = obje.getString("state");
+                        final String images = obje.getString("images");
+                        final String tag = obje.getString("tag");
+                        final String offerString = "Get " + size + " " + name + " 70% OFF!";
+                        try {
+                            // JSONObject object = new JSONObject(model.getImages());
+                            JSONArray array2 = new JSONArray(images);
+                            String prelink = array2.getString(0);
+                            Log.i("LINK_IMAGES", prelink);
+                            String link = getString(R.string.website_adress) + "/nectar/seller/" + prelink;
+                            InputStream inputStream;
+                            try {
+                                inputStream = new java.net.URL(link).openStream();
+                                final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // Create an Intent for the activity you want to start
+                                        Intent resultIntent = new Intent(getApplicationContext(), Login.class);
+// Create the TaskStackBuilder and add the intent, which inflates the back stack
+                                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+                                        stackBuilder.addNextIntentWithParentStack(resultIntent);
+// Get the PendingIntent containing the entire back stack
+                                        PendingIntent resultPendingIntent =
+                                                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                                                .setSmallIcon(R.drawable.ic_logo)
+                                                .setContentTitle("THIS BLACK FRIDAY: 3.00 PM - 3.20 PM \uD83D\uDE3D \uD83E\uDD11 \uD83D\uDE2C")
+                                                .setContentText(offerString)
+                                                .setStyle(new NotificationCompat.BigPictureStyle()
+                                                        .bigPicture(bitmap))
+                                                .setContentIntent(resultPendingIntent).build();
+                                        //.setStyle(new NotificationCompat.BigTextStyle()
+                                        //                                                        .bigText(offerString))
+                                        // Create the NotificationChannel, but only on API 26+ because
+                                        // the NotificationChannel class is new and not in the support library
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            CharSequence name = getString(R.string.channel_name);
+                                            String description = getString(R.string.channel_description);
+                                            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                                            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+                                            channel.setDescription(description);
+                                            // Register the channel with the system; you can't change the importance
+                                            // or other notification behaviors after this
+                                            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+                                            notificationManager.createNotificationChannel(channel);
+                                        }
+                                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
+
+                                        // notificationId is a unique int for each notification that you must define
+                                        int notificationId = 1;
+                                        notificationManager.notify(notificationId, notification);
+
+                                    }
+                                });
+
+
+                            } catch (IOException e) {
+                                Log.i("EXEP", e.getMessage());
+                            }
+                        } catch (Exception e) {
+                            Log.i("PARSE ERROR", e.getLocalizedMessage());
+                        }
+
+
+                    }
+
+
+                } catch (Exception e) {
+                    Log.i("PARSE ERROR", e.getLocalizedMessage());
+                }
+            }
+        });
 
     }
 

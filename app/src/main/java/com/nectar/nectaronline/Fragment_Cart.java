@@ -365,7 +365,6 @@ public class Fragment_Cart extends Fragment implements SwipeRefreshLayout.OnRefr
             myFormat.setGroupingUsed(true); // this will also round numbers, 3
             holder.price.setText(String.valueOf(myFormat.format(priceCount[0] * Integer.parseInt(model.getFinalPrice()))));
             holder.cash.setText("Ksh " + myFormat.format(Integer.parseInt(model.getFinalPrice())));
-
             holder.number_of_items.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {

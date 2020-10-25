@@ -21,6 +21,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -60,6 +62,7 @@ public class Fragment_Profile extends Fragment implements View.OnClickListener {
     com.mikhaellopez.circularimageview.CircularImageView circularImageView;
     Button edit;
     Button finish;
+    private AutoCompleteTextView dropDownText;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -120,7 +123,28 @@ public class Fragment_Profile extends Fragment implements View.OnClickListener {
         circularImageView.setOnClickListener(this);
         edit.setOnClickListener(this);
         finish.setOnClickListener(this);
+        String[] items = new String[]{
 
+                "Baringo", "Bomet", "Bungoma",
+                "Busia", "Elgeyo Marakwet", "Embu",
+                "Garissa", "Homa Bay", "Isiolo",
+                "Kajiado", "Kakamega", "Kericho",
+                "Kiambu", "Kilifi", "Kirinyaga",
+                "Kisii", "Kisumu", "Kitui",
+                "Kwale", "Laikipia", "Lamu",
+                "Machakos", "Makueni", "Mandera",
+                "Meru", "Migori", "Marsabit",
+                "Mombasa", "Muranga", "Nairobi",
+                "Nakuru", "Nandi", "Narok",
+                "Nyamira", "Nyandarua", "Nyeri",
+                "Samburu", "Siaya", "Taita Taveta",
+                "Tana River", "Tharaka Nithi", "Trans Nzoia",
+                "Turkana", "Uasin Gishu", "Vihiga",
+                "Wajir", "West Pokot"};
+
+        dropDownText = v.findViewById(R.id.dropdown_text);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.dropdown_item, items);
+        dropDownText.setAdapter(adapter);
         SharedPreferences preferences = context.getSharedPreferences("nectar", Context.MODE_PRIVATE);
         String NAME = preferences.getString("name", "");
         EMAIL = preferences.getString("email", "");

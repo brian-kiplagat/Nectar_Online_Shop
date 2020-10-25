@@ -125,10 +125,10 @@ public class Fragment_Delivery extends Fragment implements View.OnClickListener 
     }
 
     private int getShipping(String location) {
-        if (location.contentEquals("Nairobi")) {
+        if (location.contentEquals("Nairobi")||location.contentEquals("Kiambu")) {
             return 0;
         } else {
-            return 0;
+            return 350;
         }
     }
 

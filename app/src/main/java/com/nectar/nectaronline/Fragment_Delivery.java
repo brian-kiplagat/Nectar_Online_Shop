@@ -128,7 +128,7 @@ public class Fragment_Delivery extends Fragment implements View.OnClickListener 
         if (location.contentEquals("Nairobi")||location.contentEquals("Kiambu")) {
             return 0;
         } else {
-            return 350;
+            return 250;
         }
     }
 

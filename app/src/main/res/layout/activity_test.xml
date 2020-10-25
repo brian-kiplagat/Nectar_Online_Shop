@@ -81,73 +81,6 @@
 
             </RelativeLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/email"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:layout_marginBottom="3dp"
-                android:hint="Email"
-                app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="20dp"
-                app:boxCornerRadiusBottomStart="20dp"
-                app:boxCornerRadiusTopEnd="20dp"
-                app:boxCornerRadiusTopStart="20dp"
-                app:endIconMode="clear_text"
-                app:errorEnabled="true"
-                app:helperText="your email"
-                app:startIconDrawable="@drawable/ic_outline_account_circle_24">
-
-                <com.google.android.material.textfield.TextInputEditText
-
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-
-                    />
-
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/pin"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:layout_marginBottom="3dp"
-                android:hint="Password"
-                android:paddingBottom="5dp"
-                app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="20dp"
-                app:boxCornerRadiusBottomStart="20dp"
-                app:boxCornerRadiusTopEnd="20dp"
-                app:boxCornerRadiusTopStart="20dp"
-                app:counterEnabled="true"
-                app:counterMaxLength="6"
-                app:endIconMode="password_toggle"
-                app:errorEnabled="true"
-                app:helperText="your password"
-                app:startIconDrawable="@drawable/ic_outline_account_circle_24">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPassword" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <Button
-                android:id="@+id/button"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:drawableRight="@drawable/ic_outline_account_circle_24"
-                android:drawablePadding="3dp"
-                android:drawableTint="@android:color/white"
-                android:onClick="SignInExistingUsers"
-                android:text="login" />
 
             <LinearLayout
                 android:layout_gravity="center"
@@ -171,7 +104,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="1dp"
                     android:onClick="forgotPassword"
-                    android:text="FORGOT PASSWORD?"
+                    android:text="WE UPDATED"
                     android:textColor="@color/colorPrimary"
 
                     />
@@ -193,7 +126,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:text="NOT A MEMBER"
+                android:text="DO YOU HAVE THE LATEST UPDATE INSTALLED"
                 android:textSize="11sp" />
 
 
@@ -216,8 +149,7 @@
                 android:drawableRight="@drawable/ic_outline_add_circle_outline_24"
                 android:drawablePadding="3dp"
                 android:drawableTint="@android:color/white"
-                android:onClick="SignUpNewUsers"
-                android:text="CREATE ACCOUNT" />
+                android:text="UPDATE NOW" />
 
             <LinearLayout
                 android:layout_width="match_parent"

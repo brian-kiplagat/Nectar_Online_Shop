@@ -9,6 +9,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -175,6 +177,7 @@ public class Login extends AppCompatActivity {
                         JSONObject obj = new JSONObject(res);
                         String code = obj.getString("RESPONSE_CODE");
                         String desc = obj.getString("RESPONSE_DESC");
+                        String version = obj.getString("LATEST");
                         //
                         if (code.contentEquals("SUCCESS")) {
                             JSONArray array = obj.getJSONArray("DETAILS");
@@ -208,10 +211,25 @@ public class Login extends AppCompatActivity {
                             toast(desc);
                         }
                         dismissDialoge(dialogBuilder);
+                        try {
+                            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                            String versionName = pInfo.versionName;
+                            int verCode = pInfo.versionCode;
+                            if (verCode < Integer.parseInt(version)) {
+                                showVersionNotification();
+                                Log.i("SHOWING DIALOG","TRUE");
+                            }else{
+                                Log.i("NOT SHOWING DIALOG","VERSION CODE IS "+verCode+" SERVER VERSION IS "+version);
+
+                            }
+
+                        } catch (PackageManager.NameNotFoundException e) {
+                            Log.i("PK", e.getLocalizedMessage());
+                        }
                         break;
 
                     } catch (Exception e) {
-                        Log.i("ERROR", e.getLocalizedMessage());
+                        Log.i("LOGIN ERROR", e.getLocalizedMessage());
                     }
 
                 }
@@ -220,6 +238,44 @@ public class Login extends AppCompatActivity {
         thread.start();
 
 
+    }
+
+    private void showVersionNotification() {
+        // Create an Intent for the activity you want to start
+        Intent resultIntent = new Intent(getApplicationContext(), test.class);
+// Create the TaskStackBuilder and add the intent, which inflates the back stack
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+// Get the PendingIntent containing the entire back stack
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        String longtext = "The Nectar shopping app is rising to be one of the leading online shop for goods. Search, find and discover a wide variety of accessories. This update bring new exciting features. Click to update";
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_updated);
+        Notification notification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_logo)
+                .setContentTitle("Hey "+new Preferences(getApplicationContext()).getName())
+                .setContentText("We updated the app")
+                .setLargeIcon(largeIcon)
+                .setContentIntent(resultPendingIntent).setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(longtext)).build();
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("CHANNEL_ID", "name", importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+// notificationId is a unique int for each notification that you must define
+        int notificationId = 2;
+        notificationManager.notify(notificationId, notification);
     }
 
     private void dismissDialoge(final AlertDialog dialogBuilder) {

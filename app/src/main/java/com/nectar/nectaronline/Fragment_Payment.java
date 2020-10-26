@@ -1,10 +1,11 @@
 package com.nectar.nectaronline;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,11 +17,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.chip.Chip;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -44,13 +50,14 @@ import okhttp3.Response;
  * create an instance of this fragment.
  */
 public class Fragment_Payment extends Fragment implements View.OnClickListener {
+    private static final int LOCATION_REQUEST_CODE = 1;
     MaterialRadioButton popup;
     Button finish;
     Context context;
     String price;
     MaterialButton totalPrice;
-    TextView pay;
-    TextView pay1;
+    private FusedLocationProviderClient fusedLocationClient;
+    String loc;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.badge. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -101,10 +108,41 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
         totalPrice = v.findViewById(R.id.total);
         finish = v.findViewById(R.id.finish);
         finish.setOnClickListener(this);
-
-
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+        getLocation();
         return v;
 
+    }
+
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestLocationPermissions();
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            // Logic to handle location object
+                           loc = String.valueOf(location.getLatitude()) + "," + String.valueOf(location.getLongitude());
+                            Log.i("LocationResult: ", loc);
+
+                        }else{
+                            loc="WAS NULL";
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                loc="FAILED TO OBTAIN";
+            }
+        });
+
+    }
+
+    private void requestLocationPermissions() {
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
     }
 
     public void updateDetails() {
@@ -113,7 +151,7 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
             price = preferences.getString("total", "");
             NumberFormat myFormat = NumberFormat.getInstance();
             myFormat.setGroupingUsed(true); // this will also round numbers, 3
-            totalPrice.setText(getString(R.string.cashUnit) + " " +String.valueOf(myFormat.format(Integer.parseInt(price))));
+            totalPrice.setText(getString(R.string.cashUnit) + " " + String.valueOf(myFormat.format(Integer.parseInt(price))));
 
 
         } else {
@@ -158,6 +196,7 @@ public class Fragment_Payment extends Fragment implements View.OnClickListener {
                 .add("email", new Preferences(context).getEmail())//then from server can check if to search or not the return an appropriate respons
                 .add("amount", price)
                 .add("phone", new Preferences(context).getNumber())
+                .add("location", loc)
                 .build();
 
         OkHttpClient client = new OkHttpClient();

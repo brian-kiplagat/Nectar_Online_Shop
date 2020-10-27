@@ -399,35 +399,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
-            case R.id.whatsapp:
-                Log.i("onOptionsItemSelected: ", "WHATSAPP");
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("saved to clip", getString(R.string.kopokopTill_for_messaging_payment));
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(getApplicationContext(), "Till number: " + getString(R.string.kopokopTill_for_messaging_payment) + " copied to clipboard", Toast.LENGTH_SHORT).show();
-                String link = getString(R.string.website_adress) + "/nectar/seller/" + IMAGES;
-                String string = "RE: Order for goods" + "\n" + "Im interested in this" + "\n" + "Brand: " + BRAND + "\n" + "Name: "
-                        + NAME + "\n" + "DESCRIPTION: " + DESC + "\n" +
-                        "SPECIFICATION: " + SPEC + "\n" + "KEY FEATURES: " +
-                        KEYFEATURES + "\n" + "SIZE: " + SIZE + "\n" + "COLOR: " + COLOR + "\n" + "INSTOCK: " +
-                        INSTOCK + "\n" + "WEIGHT: " + WEIGHT + "\n" + "MATERIAL: " + MATERIAL + "\n" + "WHATS IN THE BOX: " +
-                        WHATSINTHEBOX + "\n" + "WARANTY: " + WARANTY + "\n" + "STATE: " + STATE + "\n" + "Image link: " + "\n" + link + "\n" + "PRICE: Ksh " + NEWPRICE +
-                        "\n" + "To complete this order, Now go to your Mpesa menu, select lipa na Mpesa, select buy goods and services, enter our till number:" + getString(R.string.kopokopTill_for_messaging_payment) + " " + "we've copied it for you just paste, enter Ksh " + NEWPRICE + " then pay and finish the transaction, well process and deliver to your location ASAP.Note that this is a slower method. We advice you add this item to cart and checkout,  :-)" + "\n" + "****" + "\n";
-                //now convert the string to a whatsapp message
-                try {
-                    String url = "https://api.whatsapp.com/send?phone=" + getString(R.string.phone_adress) + "&text=" + URLEncoder.encode(string, "UTF-8");
-                    Toast.makeText(getApplicationContext(), "Taking you to Whatsapp", Toast.LENGTH_SHORT).show();
-                    Intent intent2 = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(intent2);
-
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getApplicationContext(), "OPs! An error occurred, try again", Toast.LENGTH_SHORT).show();
-
-                }
-                break;
-
-            case R.id.call:
+           case R.id.call:
                 Log.i("onOptionsItemSelected: ", "CALL");
                 try {
                     Intent callIntent = new Intent(Intent.ACTION_DIAL);

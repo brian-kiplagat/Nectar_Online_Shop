@@ -9,11 +9,7 @@
         android:icon="@drawable/ic_logo_cart_empty_straight_lines_bold_svg"
         android:title="Item"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/whatsapp"
-        android:icon="@drawable/ic_whatsapp"
-        android:title="Item"
-        app:showAsAction="always" />
+
     <item
         android:id="@+id/call"
         android:icon="@drawable/ic_baseline_call"

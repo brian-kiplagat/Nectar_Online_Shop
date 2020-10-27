@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "773685656987",
+    "firebase_url": "https://nectar-mobile-softworks.firebaseio.com",
+    "project_id": "nectar-mobile-softworks",
+    "storage_bucket": "nectar-mobile-softworks.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:773685656987:android:c0b30bf845a135dc83f53e",
+        "android_client_info": {
+          "package_name": "com.nectar.nectaronline"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "773685656987-fa94b07qr0i99o7umime77dpnh4k9n8k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJCaf6qfBxzdv5Li2Q3aIN3gDbyZrHuAM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "773685656987-fa94b07qr0i99o7umime77dpnh4k9n8k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

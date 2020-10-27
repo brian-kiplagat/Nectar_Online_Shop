@@ -125,7 +125,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     }
+private void uploadToken(){
+    String url = getString(R.string.website_adress) + "/nectar/buy/uploadtoken.php";
+    RequestBody formBody = new FormBody.Builder()
+            .add("token", new Preferences(getApplicationContext()).getToken())
+            .add("email", new Preferences(getApplicationContext()).getEmail())//then from server can check if to search or not the return an appropriate respons
+            .build();
+    Log.i( "DEVICE TOKEN-:-> ",new Preferences(getApplicationContext()).getToken());
 
+    OkHttpClient client = new OkHttpClient();
+    final Request request = new Request.Builder()
+            .url(url)
+            .post(formBody)
+            .build();
+    client.newCall(request).enqueue(new Callback() {
+        @Override
+        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+        }
+
+        @Override
+        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            String res = response.body().string();
+            Log.i("TOKEN RESPONSE", res);
+            try {
+                JSONObject obj = new JSONObject(res);
+                String code = obj.getString("RESPONSE_CODE");
+                String desc = obj.getString("RESPONSE_DESC");
+                   } catch (Exception e) {
+
+            }
+
+        }
+    });
+
+        }
     private void getCount() {
         String url = getString(R.string.website_adress) + "/nectar/buy/getcount.php";
         RequestBody formBody = new FormBody.Builder()
@@ -419,6 +453,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         getCount();
+        uploadToken();
         Intent intent = getIntent();
         if (intent.hasExtra("seeCart")) {
             Log.i("Has extra", "POSITIVE");

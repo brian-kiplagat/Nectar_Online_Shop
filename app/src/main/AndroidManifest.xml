@@ -17,21 +17,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <receiver android:exported="true"
-            android:name=".BootReceived"
-            android:enabled="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
-            >
+        <service
+            android:name="MyFirebaseMessagingService"
+            android:exported="false">
             <intent-filter>
-                <action android:name="android.intent.action.INPUT_METHOD_CHANGED"/>
-                <action android:name="android.intent.action.BOOT_COMPLETED"  />
-                <action android:name="android.intent.action.REBOOT"/>
-                <action android:name="android.intent.action.ACTION_SHUTDOWN"/>
-
-
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-
-        </receiver>
+        </service>
 
         <activity android:name=".Checkout" />
         <activity android:name=".metadata" />

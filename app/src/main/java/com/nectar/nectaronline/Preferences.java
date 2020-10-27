@@ -15,6 +15,10 @@ public class Preferences {
         return preferences.getString("email", "");
     }
 
+    public String getToken() {
+        SharedPreferences preferences = context.getSharedPreferences("nectar", Context.MODE_PRIVATE);
+        return preferences.getString("token", "");
+    }
     public String getPassword() {
         SharedPreferences preferences = context.getSharedPreferences("nectar", Context.MODE_PRIVATE);
         return preferences.getString("password", "");

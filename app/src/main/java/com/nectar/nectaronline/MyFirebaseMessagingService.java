@@ -37,10 +37,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.io.IOException;
 import java.net.URL;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-
 /**
  * NOTE: There can only be one service in each app that receives FCM messages. If multiple
  * are declared in the Manifest then the first one will be chosen.

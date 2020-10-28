@@ -7,11 +7,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,14 +27,20 @@ import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.snackbar.Snackbar;
+import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -309,29 +320,37 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_items, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_items2, parent, false);
             return new ViewHolder(v);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
             final ModeL_Shop_Items model = (ModeL_Shop_Items) list.get(position);
-            holder.content.setVisibility(View.INVISIBLE);
+            final int min = 1;
+            final int max = 6;
+            final int random = new Random().nextInt((max - min) + 1) + min;
+            Animation slide= AnimationUtils.loadAnimation(context,R.anim.fromleft);
+            holder.ratingBar.startAnimation(slide);
+            holder.ratingBar.setNumStars(5);
+            holder.ratingBar.setRating((float) random);
+
              try {
                // JSONObject object = new JSONObject(model.getImages());
                 JSONArray array = new JSONArray(model.getImages());
                 String prelink = array.getString(0);
                 Log.i("LINK",prelink);
                 String link = context.getString(R.string.website_adress) + "/nectar/seller/" +prelink;
-                Glide.with(context).load(link).into(holder.image);
+                 Picasso.get().load(link).placeholder(R.drawable.alien).into(holder.image);
+                //Glide.with(context).load(link).into(holder.image);
             } catch (Exception e) {
                 Log.i("PARSE ERROR",e.getLocalizedMessage());
             }
-            holder.content.setVisibility(View.VISIBLE);
             holder.brand.setText(model.getBrand());
+            holder.name.setText(model.getName());
             NumberFormat myFormat = NumberFormat.getInstance();
             myFormat.setGroupingUsed(true); // this will also round numbers, 3
-            holder.price.setText("KSH " + myFormat.format(Integer.parseInt(model.getFinalPrice())));
+            holder.price.setText(getString(R.string.cashUnit)+" " + myFormat.format(Integer.parseInt(model.getFinalPrice())));
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -372,8 +391,15 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
                     intent.putExtra("state", state);
                     intent.putExtra("images", images);
                     intent.putExtra("sellerID",sellerID);
+                    intent.putExtra("rating",String.valueOf(random));
                     startActivity(intent);
 
+                }
+            });
+            holder.favourites.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addtofav(model.getId(),holder.favourites);
                 }
             });
 
@@ -385,20 +411,82 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
+            RatingBar ratingBar;
             TextView brand;
+            TextView name;
             TextView price;
             ImageView image;
-            MaterialCardView cardView;
-            RelativeLayout content;
+            ConstraintLayout cardView;
+            ImageButton favourites;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
-                content = itemView.findViewById(R.id.content);
+                favourites=itemView.findViewById(R.id.favourite);
+                ratingBar=itemView.findViewById(R.id.ratingBar);
+                name=itemView.findViewById(R.id.name);
                 brand = itemView.findViewById(R.id.brand);
                 price = itemView.findViewById(R.id.price);
                 image = itemView.findViewById(R.id.image);
                 cardView = itemView.findViewById(R.id.cardView);
             }
         }
+    }
+
+    private void addtofav(final String id,final ImageView favourites) {
+        Preferences preferences = new Preferences(context);
+        String url = getString(R.string.website_adress) + "/nectar/buy/addtofav.php";
+        RequestBody formBody = new FormBody.Builder()
+                .add("email", preferences.getEmail())
+                .add("productID", id)
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String res = response.body().string();
+                Log.i("FAV-RESPONSE", res);
+                try {
+                    JSONObject obj = new JSONObject(res);
+                    String code = obj.getString("RESPONSE_CODE");
+                    String desc = obj.getString("RESPONSE_DESC");
+                    if (code.contentEquals("SUCCESS")) {
+                        toast("Added to favourites");
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                favourites.setImageResource(R.drawable.ic_baseline_favorite_24);
+
+                            }
+                        });
+
+                    } else{
+                        toast("Ops! Try again");
+
+                    }
+                } catch (Exception e) {
+                    toast("Ops! An error occured Try again");
+
+                }
+
+            }
+        });
+        Log.i("REQUESTED", "ADD TO CART");
+
+    }
+
+
+
+    private void toast(String s){
+        Snackbar.make(recyclerView,s,Snackbar.LENGTH_SHORT).show();
     }
 }

@@ -50,9 +50,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import android.widget.RatingBar;
 
 public class requested extends AppCompatActivity implements Adapter_Items.Clicked, View.OnClickListener {
-
+    RatingBar ratingBar;
     TextView counter;
     Toolbar toolbar;
     RecyclerView recyclerView;
@@ -118,7 +119,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("BUY");
         setSupportActionBar(toolbar);
-
+        ratingBar=findViewById(R.id.ratingBar);
         circularImageView = findViewById(R.id.circularImageView);
         circularImageView2 = findViewById(R.id.circularImageViewseller);
         sellerName2 = findViewById(R.id.seller_name);
@@ -159,6 +160,8 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
         add.setOnClickListener(this);
 
         Intent intent = getIntent();
+        ratingBar.setNumStars(5);
+        ratingBar.setRating((float) Integer.parseInt(intent.getStringExtra("rating")));
         ID = intent.getStringExtra("id");//Each is unique to the product
         SELLERID = intent.getStringExtra("sellerID");//Each is unique to the product
         BRAND = intent.getStringExtra("brand");

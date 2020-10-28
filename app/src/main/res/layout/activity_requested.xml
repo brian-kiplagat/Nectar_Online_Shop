@@ -185,56 +185,17 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                    <RatingBar
+                        android:id="@+id/ratingBar"
+                        style="@style/Widget.AppCompat.RatingBar.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_marginStart="4dp"
+                        android:layout_marginLeft="4dp"
+                        android:rating="3.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/price" />
 
-                        <ImageView
-                            android:id="@+id/n1"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_margin="3dp"
-                            android:src="@drawable/ic_baseline_star_border_24" />
-
-                        <ImageView
-                            android:id="@+id/n2"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_margin="3dp"
-                            android:src="@drawable/ic_baseline_star_border_24" />
-
-                        <ImageView
-                            android:id="@+id/n3"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_margin="3dp"
-                            android:src="@drawable/ic_baseline_star_border_24" />
-
-                        <ImageView
-                            android:id="@+id/n4"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_margin="3dp"
-                            android:src="@drawable/ic_baseline_star_border_24" />
-
-                        <ImageView
-                            android:id="@+id/n5"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_margin="3dp"
-                            android:src="@drawable/ic_baseline_star_border_24" />
-
-
-                    </LinearLayout>
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/stars"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="3dp"
-                        android:checked="true"
-                        android:text="5 stars" />
                 </LinearLayout>
 
                 <LinearLayout

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 
@@ -59,7 +60,9 @@ public class Adapter_Items extends RecyclerView.Adapter<Adapter_Items.ViewHolder
             String prelink = array.getString(0);
             Log.i("LINK",prelink);
             String link = context.getString(R.string.website_adress) + "/nectar/seller/" +prelink;
-            Glide.with(context).load(link).into(holder.image);
+            //     Glide.with(context).load(link).into(holder.image);
+            Picasso.get().load(link).placeholder(R.drawable.alien).into(holder.image);
+
         } catch (Exception e) {
             Log.i("PARSE ERROR",e.getLocalizedMessage());
         }

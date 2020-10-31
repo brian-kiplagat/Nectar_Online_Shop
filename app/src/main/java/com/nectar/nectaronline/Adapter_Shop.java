@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -236,7 +237,8 @@ public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> 
                         favourites.post(new Runnable() {
                             @Override
                             public void run() {
-                                favourites.setImageResource(R.drawable.ic_baseline_favorite_24);
+                                //favourites.setImageResource(R.drawable.ic_baseline_favorite_24);
+                                favourites.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimary), android.graphics.PorterDuff.Mode.SRC_IN);
 
 
                             }

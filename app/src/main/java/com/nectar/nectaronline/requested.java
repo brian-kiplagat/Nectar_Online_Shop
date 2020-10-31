@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,8 +37,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -50,9 +49,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import android.widget.RatingBar;
 
-public class requested extends AppCompatActivity implements View.OnClickListener {
+public class requested extends AppCompatActivity implements View.OnClickListener,Adapter_Shop.ChangedListener {
     RatingBar ratingBar;
     TextView counter;
     Toolbar toolbar;
@@ -320,7 +318,7 @@ public class requested extends AppCompatActivity implements View.OnClickListener
                                 requested.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        sellersAdapter = new Adapter_Shop(getApplicationContext(), sellerList);
+                                        sellersAdapter = new Adapter_Shop(getApplicationContext(), sellerList,requested.this);
                                         sellersAdapter.notifyDataSetChanged();
                                         sellersRecyclerView.setAdapter(sellersAdapter);
                                     }
@@ -412,8 +410,6 @@ public class requested extends AppCompatActivity implements View.OnClickListener
                     Toast.makeText(this, "Please install a calling app like a dialler to proceed", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
-
-
                 break;
 
 
@@ -649,5 +645,15 @@ public class requested extends AppCompatActivity implements View.OnClickListener
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
+    @Override
+    public void onChange() {
+        Log.i("REQUESTED", "onChange: ");
+        getCount();
+    }
 }

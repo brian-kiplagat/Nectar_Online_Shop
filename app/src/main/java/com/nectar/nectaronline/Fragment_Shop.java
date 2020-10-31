@@ -1,46 +1,27 @@
 package com.nectar.nectaronline;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.snackbar.Snackbar;
-import com.squareup.picasso.Picasso;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -52,7 +33,8 @@ import okhttp3.Response;
  * Use the {@link Fragment_Shop#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedListener, SwipeRefreshLayout.OnRefreshListener {
+public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedListener, SwipeRefreshLayout.OnRefreshListener, Adapter_Shop.ChangedListener {
+    private static final String TAG = "FRAGMENT_SHOP";
     private RecyclerView recyclerView;
     private RecyclerView recyclerChips;
     private Context context;
@@ -232,7 +214,7 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
                                     list.add(model);
                                     shimmerFrameLayout.stopShimmer();
                                     shimmerFrameLayout.setVisibility(View.GONE);
-                                    adapter = new Adapter_Shop(context, list);
+                                    adapter = new Adapter_Shop(context, list, Fragment_Shop.this);
                                     adapter.notifyDataSetChanged();
                                     swipeRefreshLayout.setRefreshing(false);
                                     recyclerView.setAdapter(adapter);
@@ -293,10 +275,24 @@ public class Fragment_Shop extends Fragment implements Adapter_Chips.ClickedList
     }
 
 
+    private void toast(String s) {
+        Snackbar.make(recyclerView, s, Snackbar.LENGTH_SHORT).show();
+    }
 
+    CartChangeListener cartChangeListener;
 
+    public void setCartChangeListener(CartChangeListener cartChangeListener) {
+        this.cartChangeListener = cartChangeListener;
+    }
 
-    private void toast(String s){
-        Snackbar.make(recyclerView,s,Snackbar.LENGTH_SHORT).show();
+    public interface CartChangeListener {
+        void onNumberChange();
+    }
+
+    @Override
+    public void onChange() {
+        cartChangeListener.onNumberChange();
+        Log.i(TAG, "onChange: ");
+
     }
 }

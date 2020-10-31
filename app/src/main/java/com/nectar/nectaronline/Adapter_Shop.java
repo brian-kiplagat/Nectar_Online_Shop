@@ -18,25 +18,20 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.nectar.nectaronline.ModeL_Shop_Items;
-import com.nectar.nectaronline.Preferences;
-import com.nectar.nectaronline.R;
-import com.nectar.nectaronline.requested;
 import com.squareup.picasso.Picasso;
-import okhttp3.FormBody;
-import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.xml.sax.SAXNotRecognizedException;
 
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Random;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -45,10 +40,17 @@ import okhttp3.Response;
 public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> {
     Context context;
     List<Object> list;
+    ChangedListener changedListener;
 
-    public Adapter_Shop(Context context, List<Object> list) {
+    public interface ChangedListener {
+        void onChange();
+    }
+
+
+    public Adapter_Shop(Context context, List<Object> list, ChangedListener changedListener) {
         this.context = context;
         this.list = list;
+        this.changedListener = changedListener;
     }
 
     @NonNull
@@ -134,20 +136,66 @@ public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> 
         holder.add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toast("Adding",v);
+                toast("Adding", v);
+                addToCart(model.getId(), holder.add);
+                changedListener.onChange();
             }
         });
 
         holder.favourites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addtofav(model.getId(),holder.favourites);
+                addtofav(model.getId(), holder.favourites);
             }
         });
 
     }
 
-    private void addtofav(final String id,final ImageView favourites) {
+    private void addToCart(String ID, final View v) {
+        Preferences preferences = new Preferences(context);
+        String url = context.getString(R.string.website_adress) + "/nectar/buy/addtocart.php";
+        RequestBody formBody = new FormBody.Builder()
+
+                .add("productID", ID)
+                .add("email", preferences.getEmail())
+                .add("phone", preferences.getNumber())
+                .add("quantity", "1")
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    final String res = response.body().string().trim();
+                    Log.i("ADDING TO CART", res);
+                    JSONObject obj = new JSONObject(res);
+                    String code = obj.getString("RESPONSE_CODE");
+                    if (code.contentEquals("SUCCESS")) {
+                        toast("Added to cart", v);
+                    } else {
+                        toast("Ops ! Lets try that again", v);
+                        String desc = obj.getString("RESPONSE_DESC");
+                        Log.i("ERROR: ", desc);
+                    }
+                } catch (Exception e) {
+                    Log.i("ERROR: ", e.getLocalizedMessage());
+                }
+            }
+        });
+
+    }
+
+    private void addtofav(final String id, final ImageView favourites) {
         Preferences preferences = new Preferences(context);
         String url = context.getString(R.string.website_adress) + "/nectar/buy/addtofav.php";
         RequestBody formBody = new FormBody.Builder()

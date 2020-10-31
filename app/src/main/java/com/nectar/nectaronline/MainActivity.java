@@ -68,7 +68,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Fragment_Cart.DeletedListener , Fragment_Cart.GetShopFragment {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Fragment_Cart.DeletedListener , Fragment_Cart.GetShopFragment, Fragment_Shop.CartChangeListener {
     private static final int CONTACT_PERM_REQUEST_CODE = 1;
     Toolbar toolbar;
     private Fragment_Cart cart;
@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         profile = new Fragment_Profile();
         cart.setDeletedListener(this);
         cart.setGetShopFragment(this);
+        shop.setCartChangeListener(this);
         tabLayout.setupWithViewPager(viewPager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager(), 0);
         adapter.addFragment(shop, "SHOP");
@@ -413,6 +414,11 @@ private void uploadToken(){
     public void moveToTheShopFragment() {
         tabLayout.setScrollX(tabLayout.getWidth());
         tabLayout.getTabAt(0).select();
+    }
+
+    @Override
+    public void onNumberChange() {
+        getCount();
     }
 
 

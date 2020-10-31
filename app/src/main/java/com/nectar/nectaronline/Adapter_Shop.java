@@ -138,7 +138,7 @@ public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> 
             public void onClick(View v) {
                 toast("Adding", v);
                 addToCart(model.getId(), holder.add);
-                changedListener.onChange();
+
             }
         });
 
@@ -182,6 +182,15 @@ public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> 
                     String code = obj.getString("RESPONSE_CODE");
                     if (code.contentEquals("SUCCESS")) {
                         toast("Added to cart", v);
+                        v.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                changedListener.onChange();
+
+
+                            }
+                        });
+
                     } else {
                         toast("Ops ! Lets try that again", v);
                         String desc = obj.getString("RESPONSE_DESC");

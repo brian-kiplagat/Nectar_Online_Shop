@@ -419,6 +419,8 @@ private void uploadToken(){
     @Override
     public void onNumberChange() {
         getCount();
+        cart.fetch(new Preferences(getApplicationContext()).getEmail());
+
     }
 
 

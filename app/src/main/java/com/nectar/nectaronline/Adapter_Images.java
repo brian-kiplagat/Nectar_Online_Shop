@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -34,7 +35,8 @@ public class Adapter_Images extends RecyclerView.Adapter<Adapter_Images.ViewHold
         Model_Images model = (Model_Images) objectList.get(position);
 
         String link = context.getString(R.string.website_adress) + "/nectar/seller/" + model.getPoster();
-        Glide.with(context).load(link).into(holder.imageView);
+        //Glide.with(context).load(link).into(holder.imageView);
+        Picasso.get().load(link).placeholder(R.drawable.alien).into(holder.imageView);
 
     }
 

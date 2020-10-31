@@ -52,7 +52,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import android.widget.RatingBar;
 
-public class requested extends AppCompatActivity implements Adapter_Items.Clicked, View.OnClickListener {
+public class requested extends AppCompatActivity implements View.OnClickListener {
     RatingBar ratingBar;
     TextView counter;
     Toolbar toolbar;
@@ -320,7 +320,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
                                 requested.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        sellersAdapter = new Adapter_Items(getApplicationContext(), sellerList, requested.this);
+                                        sellersAdapter = new Adapter_Shop(getApplicationContext(), sellerList);
                                         sellersAdapter.notifyDataSetChanged();
                                         sellersRecyclerView.setAdapter(sellersAdapter);
                                     }
@@ -472,10 +472,7 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
         add.setEnabled(true);
     }
 
-    @Override
-    public void onClick() {
 
-    }
 
     @Override
     public void onClick(View v) {
@@ -651,5 +648,6 @@ public class requested extends AppCompatActivity implements Adapter_Items.Clicke
             }
         });
     }
+
 
 }

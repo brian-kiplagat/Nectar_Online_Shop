@@ -218,7 +218,7 @@
                         android:hint="Address description"
                         app:endIconMode="clear_text"
                         app:errorEnabled="true"
-                        app:helperText="E.g Nyayo 3 room 4"
+                        app:helperText="E.g Building X 1st floor"
                         app:startIconDrawable="@drawable/ic_baseline_home_work_24">
 
                         <com.google.android.material.textfield.TextInputEditText

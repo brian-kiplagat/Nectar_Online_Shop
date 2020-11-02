@@ -9,7 +9,8 @@
     <color name="purple_light">#880e4f</color>
     <color name="red">#D30606</color>
     <color name="card_background">@color/cardview_light_background</color>
-<color name="j_yellow">#ff5722</color>
+    <color name="j_yellow">#ff5722</color>
+    <color name="dark_favourites">@color/common_google_signin_btn_text_light_focused</color>
 
 
 </resources>

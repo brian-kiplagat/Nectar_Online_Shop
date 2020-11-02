@@ -67,7 +67,7 @@ public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> 
         final int min = 1;
         final int max = 6;
         final int random = new Random().nextInt((max - min) + 1) + min;
-        Animation slide= AnimationUtils.loadAnimation(context,R.anim.fromleft);
+        Animation slide = AnimationUtils.loadAnimation(context, R.anim.fromleft);
         holder.ratingBar.startAnimation(slide);
         holder.ratingBar.setNumStars(5);
         holder.ratingBar.setRating((float) random);
@@ -76,18 +76,18 @@ public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> 
             // JSONObject object = new JSONObject(model.getImages());
             JSONArray array = new JSONArray(model.getImages());
             String prelink = array.getString(0);
-            Log.i("LINK",prelink);
-            String link = context.getString(R.string.website_adress) + "/nectar/seller/" +prelink;
+            Log.i("LINK", prelink);
+            String link = context.getString(R.string.website_adress) + "/nectar/seller/" + prelink;
             Picasso.get().load(link).placeholder(R.drawable.alien).into(holder.image);
             //Glide.with(context).load(link).into(holder.image);
         } catch (Exception e) {
-            Log.i("PARSE ERROR",e.getLocalizedMessage());
+            Log.i("PARSE ERROR", e.getLocalizedMessage());
         }
         holder.brand.setText(model.getBrand());
         holder.name.setText(model.getName());
         NumberFormat myFormat = NumberFormat.getInstance();
         myFormat.setGroupingUsed(true); // this will also round numbers, 3
-        holder.price.setText(context.getString(R.string.cashUnit)+" " + myFormat.format(Integer.parseInt(model.getFinalPrice())));
+        holder.price.setText(context.getString(R.string.cashUnit) + " " + myFormat.format(Integer.parseInt(model.getFinalPrice())));
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,9 +127,9 @@ public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> 
                 intent.putExtra("waranty", waranty);
                 intent.putExtra("state", state);
                 intent.putExtra("images", images);
-                intent.putExtra("sellerID",sellerID);
-                intent.putExtra("rating",String.valueOf(random));
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+                intent.putExtra("sellerID", sellerID);
+                intent.putExtra("rating", String.valueOf(random));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
 
             }
@@ -142,13 +142,23 @@ public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> 
 
             }
         });
-
+        final boolean[] isfavourite = {false};
         holder.favourites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addtofav(model.getId(), holder.favourites);
+                if (isfavourite[0] == false) {
+                    addtofav(model.getId(), holder.favourites);
+                    isfavourite[0] = true;
+                    Log.i("FAV", "ADDING");
+                } else {
+                    removefromfav(model.getId(), holder.favourites);
+                    isfavourite[0] = false;
+                    Log.i("FAV", "REMOVING");
+
+                }
             }
         });
+
 
     }
 
@@ -233,7 +243,7 @@ public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> 
                     String code = obj.getString("RESPONSE_CODE");
                     String desc = obj.getString("RESPONSE_DESC");
                     if (code.contentEquals("SUCCESS")) {
-                        toast("Added to favourites",favourites);
+                        toast("Added to favourites", favourites);
                         favourites.post(new Runnable() {
                             @Override
                             public void run() {
@@ -243,12 +253,65 @@ public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> 
 
                             }
                         });
-                    } else{
-                        toast("Ops! Try again",favourites);
+                    } else {
+                        toast("Ops! Try again", favourites);
 
                     }
                 } catch (Exception e) {
-                    toast("Ops! An error occured Try again",favourites);
+                    toast("Ops! An error occured Try again", favourites);
+
+                }
+
+            }
+        });
+        Log.i("REQUESTED", "ADD TO CART");
+
+    }
+
+    private void removefromfav(final String id, final ImageView favourites) {
+        Preferences preferences = new Preferences(context);
+        String url = context.getString(R.string.website_adress) + "/nectar/buy/removefromfav.php";
+        RequestBody formBody = new FormBody.Builder()
+                .add("email", preferences.getEmail())
+                .add("productID", id)
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String res = response.body().string();
+                Log.i("FAV-RESPONSE", res);
+                try {
+                    JSONObject obj = new JSONObject(res);
+                    String code = obj.getString("RESPONSE_CODE");
+                    String desc = obj.getString("RESPONSE_DESC");
+                    if (code.contentEquals("SUCCESS")) {
+                        toast("Removed from favourites", favourites);
+                        favourites.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                //favourites.setImageResource(R.drawable.ic_baseline_favorite_24);
+                                favourites.setColorFilter(ContextCompat.getColor(context, R.color.dark_favourites), android.graphics.PorterDuff.Mode.SRC_IN);
+
+
+                            }
+                        });
+                    } else {
+                        toast("Ops! Try again", favourites);
+
+                    }
+                } catch (Exception e) {
+                    toast("Ops! An error occured Try again", favourites);
 
                 }
 
@@ -259,8 +322,8 @@ public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> 
     }
 
 
-    private void toast(String s,View v) {
-        Snackbar.make(v,s, Snackbar.LENGTH_SHORT).show();
+    private void toast(String s, View v) {
+        Snackbar.make(v, s, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -280,10 +343,10 @@ public class Adapter_Shop extends RecyclerView.Adapter<Adapter_Shop.ViewHolder> 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            add=itemView.findViewById(R.id.addToCart);
-            favourites=itemView.findViewById(R.id.favourite);
-            ratingBar=itemView.findViewById(R.id.ratingBar);
-            name=itemView.findViewById(R.id.name);
+            add = itemView.findViewById(R.id.addToCart);
+            favourites = itemView.findViewById(R.id.favourite);
+            ratingBar = itemView.findViewById(R.id.ratingBar);
+            name = itemView.findViewById(R.id.name);
             brand = itemView.findViewById(R.id.brand);
             price = itemView.findViewById(R.id.price);
             image = itemView.findViewById(R.id.image);

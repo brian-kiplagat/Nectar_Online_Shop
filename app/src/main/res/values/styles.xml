@@ -8,5 +8,8 @@
     </style>
 <style name="SplashScreen" parent="Theme.MaterialComponents.Light.NoActionBar">
     <item name="android:windowBackground">@drawable/background_splashscreen</item>
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+    <item name="android:navigationBarColor">@color/splash_nav_bar</item>
 </style>
 </resources>

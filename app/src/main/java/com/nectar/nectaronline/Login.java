@@ -40,6 +40,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -166,6 +167,7 @@ public class Login extends AppCompatActivity {
                                 .build();
 
                         OkHttpClient client = new OkHttpClient();
+                        client.newBuilder().readTimeout(60000, TimeUnit.MILLISECONDS);
                         final Request request = new Request.Builder()
                                 .url(url)
                                 .post(formBody)

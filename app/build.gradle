@@ -9,8 +9,8 @@ android {
         applicationId "com.nectar.nectaronline"
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 11
-        versionName "2.1"
+        versionCode 14
+        versionName "2.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

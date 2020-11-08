@@ -194,7 +194,7 @@
                         android:hint="Address"
                         app:endIconMode="dropdown_menu"
                         app:errorEnabled="true"
-                        app:helperText="Your email goes here"
+                        app:helperText="Your county goes here"
                         app:startIconDrawable="@drawable/ic_baseline_home_24">
 
                         <AutoCompleteTextView

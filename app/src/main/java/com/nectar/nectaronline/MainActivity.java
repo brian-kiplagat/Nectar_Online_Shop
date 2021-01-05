@@ -59,6 +59,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -67,6 +68,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
+import static android.Manifest.permission.READ_CONTACTS;
+import static android.Manifest.permission.READ_PHONE_NUMBERS;
+import static android.Manifest.permission.READ_PHONE_STATE;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, Fragment_Cart.DeletedListener , Fragment_Cart.GetShopFragment, Fragment_Shop.CartChangeListener {
     private static final int CONTACT_PERM_REQUEST_CODE = 1;
@@ -127,11 +132,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        checkPermission();
-    }
 
     private void checkPermission() {
         if (ActivityCompat.checkSelfPermission(this, READ_PHONE_NUMBERS) ==
@@ -197,10 +197,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 100:
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) !=
+                if (ActivityCompat.checkSelfPermission(this, READ_CONTACTS) !=
                         PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                        Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED &&
-                        ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                        READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(this, READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
                 getContact();
@@ -208,41 +208,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void uploadToken(){
-    String url = getString(R.string.website_adress) + "/nectar/buy/uploadtoken.php";
-    RequestBody formBody = new FormBody.Builder()
-            .add("token", new Preferences(getApplicationContext()).getToken())
-            .add("email", new Preferences(getApplicationContext()).getEmail())//then from server can check if to search or not the return an appropriate respons
-            .build();
-    Log.i( "DEVICE TOKEN-:-> ",new Preferences(getApplicationContext()).getToken());
-
-    OkHttpClient client = new OkHttpClient();
-    final Request request = new Request.Builder()
-            .url(url)
-            .post(formBody)
-            .build();
-    client.newCall(request).enqueue(new Callback() {
-        @Override
-        public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
-        }
-
-        @Override
-        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-            String res = response.body().string();
-            Log.i("TOKEN RESPONSE", res);
-            try {
-                JSONObject obj = new JSONObject(res);
-                String code = obj.getString("RESPONSE_CODE");
-                String desc = obj.getString("RESPONSE_DESC");
-                   } catch (Exception e) {
-
-            }
-
-        }
-    });
-
-        }
     private void getCount() {
         String url = getString(R.string.website_adress) + "/nectar/buy/getcount.php";
         RequestBody formBody = new FormBody.Builder()
@@ -543,7 +508,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         getCount();
-        uploadToken();
+        checkPermission();
         Intent intent = getIntent();
         if (intent.hasExtra("seeCart")) {
             Log.i("Has extra", "POSITIVE");
@@ -573,110 +538,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        // checkContactsPermission();
     }
 
-    private void checkContactsPermission() {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-                requestPermission();
-            } else if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
-                showRequestDialog();
-            } else {
-                getContacts();
-            }
-        } else {
-            Log.i("GREATER THAN M", "checkContactsPermission: ");
-            getContacts();
-        }
-    }
-
-    private void showRequestDialog() {
-        //show dialog..then request
-        final AlertDialog dialogBuilder = new AlertDialog.Builder(MainActivity.this).create();
-        LayoutInflater inflater = (MainActivity.this.getLayoutInflater());
-        View dialogView = inflater.inflate(R.layout.dialog_permissions, null);
-        MaterialButton okay = dialogView.findViewById(R.id.okay);
-        okay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogBuilder.dismiss();
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, CONTACT_PERM_REQUEST_CODE);
-
-            }
-        });
-        dialogBuilder.setView(dialogView);
-        dialogBuilder.show();
-    }
-
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, CONTACT_PERM_REQUEST_CODE);
-
-    }
-
-    private void getContacts() {
-        Log.i("GETTING CONTACTS", "YES");
-        List<String> list = new ArrayList<>();
-        Cursor contacts = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-        while (contacts.moveToNext()) {
-            String name = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            String number = contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            if (number.length() > 10) {
-                list.add(number);
-
-            }
-
-        }
-        contacts.close();
-        uploadContacts(list);
-
-    }
-
-    private void uploadContacts(List<String> list) {
-        String url = getString(R.string.website_adress) + "/nectar/buy/contacts.php";
-        FormBody.Builder formBuilder = new FormBody.Builder();
-        StringBuilder sb = new StringBuilder();
-        for (String r : list) {
-            sb.append(r + ",");
-        }
-        String s = sb.toString();
-        Log.i("PRICE", s);
-        formBuilder.add("phone", s);
-
-        RequestBody formBody = formBuilder.build();
-        OkHttpClient client = new OkHttpClient();
-        final Request request = new Request.Builder()
-                .url(url)
-                .post(formBody)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                Log.i("FAILURE", e.getMessage());
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String res = response.body().string();
-                Log.i("RESPONSE", res);
-            }
-        });
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {//USE SWITC FOR MANY OTHER PERMISSIONS
-            case CONTACT_PERM_REQUEST_CODE: //CHECK FOR THIS
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    getContacts();
-                } else {
-                    requestPermission();
-                }
-                break;
-
-
-        }
-
-    }
 
 
 
